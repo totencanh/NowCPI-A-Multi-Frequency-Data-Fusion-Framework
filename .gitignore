@@ -1,0 +1,21 @@
+# Local credentials and captured source data
+.env
+data/raw/*.json
+data/raw/source_payloads/
+
+# Python and Spark artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+spark-warehouse/
+metastore_db/
+
+# dbt and notebook artifacts
+infra/dbt/target/
+infra/dbt/logs/
+**/.ipynb_checkpoints/
+
+# Local runtime state
+workspace/*
+!workspace/.gitkeep
+*.log

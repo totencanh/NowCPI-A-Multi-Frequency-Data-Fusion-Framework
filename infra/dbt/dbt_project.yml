@@ -1,0 +1,25 @@
+name: nowcpi
+version: "1.0.0"
+config-version: 2
+
+profile: nowcpi
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  nowcpi:
+    staging:
+      +schema: staging
+      +materialized: view
+    intermediate:
+      +schema: intermediate
+      +materialized: table
+    mart:
+      +schema: mart
+      +materialized: table

@@ -1,0 +1,4 @@
+apache-airflow==2.9.2
+apache-airflow-providers-trino
+astronomer-cosmos
+python-dotenv

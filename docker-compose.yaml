@@ -1,0 +1,290 @@
+name: nowcpi
+
+x-airflow-common: &airflow-common
+  build:
+    context: ./infra/airflow
+  environment: &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
+    AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_SECRET_KEY:-nowcpi-local-development-key}
+    AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY:-}
+    TRINO_HOST: trino
+    TRINO_PORT: "8080"
+    TRINO_USER: nowcpi
+  volumes:
+    - ./infra/airflow/dags:/opt/airflow/dags
+    - ./infra/airflow/logs:/opt/airflow/logs
+    - ./infra/dbt:/opt/airflow/dbt
+  depends_on:
+    airflow-db:
+      condition: service_healthy
+  networks:
+    - nowcpi_network
+
+services:
+  # External API collectors run on the host for now and publish to this broker.
+  # Host clients use localhost:9094; containers on this network use kafka:9092.
+  kafka:
+    image: bitnamilegacy/kafka:latest
+    container_name: nowcpi-kafka
+    ports:
+      - "9094:9094"
+    environment:
+      KAFKA_CFG_NODE_ID: 1
+      KAFKA_CFG_PROCESS_ROLES: controller,broker
+      KAFKA_CFG_LISTENERS: INTERNAL://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - kafka_data:/bitnami/kafka
+    networks:
+      - nowcpi_network
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  # Object storage for Bronze/Silver/Gold lakehouse data.
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: nowcpi-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-nowcpi}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-nowcpi-local-password}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - nowcpi_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  minio-init:
+    image: quay.io/minio/mc:latest
+    container_name: nowcpi-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "mc alias set nowcpi http://minio:9000
+      ${MINIO_ROOT_USER:-nowcpi} ${MINIO_ROOT_PASSWORD:-nowcpi-local-password};
+      mc mb --ignore-existing nowcpi/${MINIO_BUCKET:-nowcpi};"
+    networks:
+      - nowcpi_network
+    restart: "no"
+
+  mariadb:
+    image: mariadb:10.5.16
+    container_name: nowcpi-mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MARIADB_DATABASE}
+      MYSQL_USER: ${MARIADB_USER}
+      MYSQL_PASSWORD: ${MARIADB_PASSWORD}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - nowcpi_network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  hive-metastore:
+    build:
+      context: ./infra/hive-metastore
+    container_name: nowcpi-hive-metastore
+    environment:
+      METASTORE_DB_HOSTNAME: mariadb
+      DB_DRIVER: mysql
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT:-http://minio:9000}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${MINIO_BUCKET:-lakehouse}
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+    ports:
+      - "9083:9083"
+    networks:
+      - nowcpi_network
+    restart: unless-stopped
+
+  trino:
+    build:
+      context: ./infra/trino
+    container_name: nowcpi-trino
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT:-http://minio:9000}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./infra/trino/conf:/etc/trino:ro
+      - trino_data:/var/trino/data
+    depends_on:
+      hive-metastore:
+        condition: service_started
+      minio-init:
+        condition: service_completed_successfully
+    networks:
+      - nowcpi_network
+    restart: unless-stopped
+
+  # Spark reads raw files from the project and writes Delta tables to MinIO.
+  spark-master:
+    build:
+      context: ./infra/spark
+    container_name: nowcpi-spark-master
+    environment:
+      SPARK_MODE: master
+      SPARK_MASTER_HOST: spark-master
+      AWS_REGION: us-east-1
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT:-http://minio:9000}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${MINIO_BUCKET:-nowcpi}
+    ports:
+      - "7077:7077"
+      - "8088:8080"
+    volumes:
+      - ./workspace:/opt/spark/work-dir
+      - ./processing:/opt/spark/app:ro
+      - ./data/raw:/opt/spark/data/raw:ro
+    depends_on:
+      kafka:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+      hive-metastore:
+        condition: service_started
+    networks:
+      - nowcpi_network
+    restart: unless-stopped
+
+  spark-worker:
+    build:
+      context: ./infra/spark
+    container_name: nowcpi-spark-worker
+    environment:
+      SPARK_MODE: worker
+      SPARK_MASTER_URL: spark://spark-master:7077
+      SPARK_WORKER_MEMORY: ${SPARK_WORKER_MEMORY:-2G}
+      SPARK_WORKER_CORES: ${SPARK_WORKER_CORES:-2}
+      AWS_REGION: us-east-1
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT:-http://minio:9000}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${MINIO_BUCKET:-nowcpi}
+    depends_on:
+      spark-master:
+        condition: service_started
+    ports:
+      - "8091:8081"
+    volumes:
+      - ./workspace:/opt/spark/work-dir
+      - ./processing:/opt/spark/app:ro
+      - ./data/raw:/opt/spark/data/raw:ro
+    networks:
+      - nowcpi_network
+
+  airflow-db:
+    image: postgres:15
+    container_name: nowcpi-airflow-db
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - airflow_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nowcpi_network
+    restart: unless-stopped
+    profiles: [airflow]
+
+  airflow-init:
+    <<: *airflow-common
+    container_name: nowcpi-airflow-init
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        airflow db migrate
+        airflow users create \
+          --username "$${AIRFLOW_ADMIN_USERNAME:-admin}" \
+          --password "$${AIRFLOW_ADMIN_PASSWORD:-admin}" \
+          --firstname NowCPI --lastname Admin \
+          --role Admin --email admin@nowcpi.local || true
+    restart: on-failure
+    profiles: [airflow]
+
+  airflow-scheduler:
+    <<: *airflow-common
+    container_name: nowcpi-airflow-scheduler
+    command: scheduler
+    depends_on:
+      airflow-db:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    profiles: [airflow]
+
+  airflow-webserver:
+    <<: *airflow-common
+    container_name: nowcpi-airflow
+    command: webserver
+    ports:
+      - "8085:8080"
+    depends_on:
+      airflow-db:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    profiles: [airflow]
+
+volumes:
+  kafka_data:
+  minio_data:
+  mariadb_data:
+  trino_data:
+  airflow_db_data:
+
+networks:
+  nowcpi_network:
+    driver: bridge
