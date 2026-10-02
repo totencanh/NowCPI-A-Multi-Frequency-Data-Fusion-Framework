@@ -2,3 +2,7 @@ apache-airflow==2.9.2
 apache-airflow-providers-trino
 astronomer-cosmos
 python-dotenv
+requests==2.32.3
+pandas==2.1.4
+yfinance==0.2.54
+docker==7.1.0

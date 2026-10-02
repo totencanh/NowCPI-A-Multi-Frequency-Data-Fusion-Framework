@@ -28,7 +28,7 @@ if [ -d "${HIVE_CUSTOM_CONF_DIR:-}" ]; then
   export HADOOP_CONF_DIR=$HIVE_CONF_DIR
 fi
 
-export HADOOP_CLASSPATH="/opt/hive/lib/hadoop-aws-3.3.4.jar:/opt/hive/lib/aws-java-sdk-bundle-1.12.262.jar:/opt/hive/lib/mysql-connector-j-8.0.33.jar:$HADOOP_CLASSPATH"
+export HADOOP_CLASSPATH="/opt/hive/lib/mysql-connector-j-8.0.33.jar:$HADOOP_CLASSPATH"
 
 export HADOOP_CLIENT_OPTS="$HADOOP_CLIENT_OPTS -Xmx1G $SERVICE_OPTS \
   -Dfs.s3a.threads.keepalivetime=60000 \
@@ -70,4 +70,4 @@ if [[ "${SKIP_SCHEMA_INIT}" == "false" ]]; then
 fi
 
 export METASTORE_PORT=${METASTORE_PORT:-9083}
-exec "$HIVE_HOME/bin/start-metastore"
+exec "$HIVE_HOME/bin/hive" --service metastore

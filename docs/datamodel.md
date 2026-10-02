@@ -17,10 +17,13 @@ Each collector wraps one source observation in a common event envelope:
 
 ## Medallion layers
 
-- **Raw files:** JSON snapshots produced by collectors in `data/raw/`.
+- **Raw files:** The initial JSON files remain in `data/raw/`; each subsequent
+  run writes a timestamped batch containing only new or revised events under
+  `data/raw/<source-file-stem>/`.
 - **Bronze:** Spark preserves every event field and `raw_payload`, adds
   `bronze_ingested_at`, `bronze_source_file`, and `bronze_batch_id`, then
-  merges on `event_id` into one Delta table at `s3a://lakehouse/bronze/cpi`.
+  merges on `event_id` into source-specific Delta tables under
+  `s3a://lakehouse/bronze/`.
 - **Silver:** planned; will validate types, normalize period/frequency fields,
   and apply series-specific quality rules.
 - **Gold:** planned through dbt; will expose aligned macro/market features and

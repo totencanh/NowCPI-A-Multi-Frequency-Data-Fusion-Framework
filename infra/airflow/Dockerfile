@@ -12,6 +12,8 @@ COPY requirements.txt /tmp/airflow-requirements.txt
 RUN uv pip install --target /home/airflow/.local/lib/python3.11/site-packages \
     --no-cache -r /tmp/airflow-requirements.txt
 
-RUN python -m venv /opt/dbt_venv
+USER root
+RUN python -m venv /opt/dbt_venv && chown -R airflow:root /opt/dbt_venv
+USER airflow
 COPY requirements-dbt.txt /tmp/dbt-requirements.txt
 RUN VIRTUAL_ENV=/opt/dbt_venv uv pip install --no-cache -r /tmp/dbt-requirements.txt

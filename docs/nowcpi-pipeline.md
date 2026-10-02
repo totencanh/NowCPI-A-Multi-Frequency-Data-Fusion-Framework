@@ -2,11 +2,13 @@
 
 ## Current flow
 
-The current CPI job is a batch load from `data/raw/imf_cpi_vietnam.json`. It
-does not consume Kafka yet. Spark preserves every input field and `raw_payload`,
-adds Bronze metadata, and merges by stable `event_id` into one Delta table at
-`s3a://lakehouse/bronze/cpi`. Spark registers `bronze.cpi` in Hive Metastore so
-Trino can query it as `delta.bronze.cpi`.
+The current Bronze jobs are batch loads from `data/raw/`; they do not consume
+Kafka yet. The CPI job processes headline CPI, CPI components, and PPI/IIP into
+separate Delta tables. The market job processes Brent, USD/VND, and domestic
+fuel into separate tables. Both jobs read the retained flat JSON baseline plus
+timestamped batches, keep the newest version of each `event_id`, preserve
+`raw_payload`, add Bronze metadata, and upsert into Delta on MinIO. News remains
+unimplemented because its crawler and raw input are empty.
 
 ## Start services
 
@@ -23,12 +25,16 @@ docker compose ps
 Wait until MariaDB, MinIO, Kafka, Hive Metastore, Spark, and Trino are running.
 The first build downloads the pinned Spark connector JARs.
 
-## Run CPI Bronze
+## Run CPI and market Bronze
 
 ```powershell
 docker compose exec spark-master /opt/bitnami/spark/bin/spark-submit `
   --master spark://spark-master:7077 `
   /opt/spark/app/spark/bronze/cpi.py
+
+docker compose exec spark-master /opt/bitnami/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  /opt/spark/app/spark/bronze/market.py
 ```
 
 The Spark image and local Python requirements both use Spark 3.5.0 and Delta
@@ -45,6 +51,8 @@ docker compose exec trino trino --execute "SELECT observation_period, value, uni
 
 The Delta transaction log is at `lakehouse/bronze/cpi/_delta_log` in MinIO.
 Repeated runs update matching `event_id` rows and insert new observations.
+Tables are registered as `bronze.cpi`, `bronze.cpi_components`,
+`bronze.ppi_iip`, `bronze.brent_oil`, `bronze.usd_vnd`, and `bronze.vn_fuel`.
 
 ## Next stages
 

@@ -81,5 +81,8 @@ if __name__ == "__main__":
 
     output_path = write_events("worldbank_ppi_iip_vietnam.json", events)
 
-    print(f"\nĐã lưu {len(events)} event vào: {output_path}")
+    if output_path:
+        print(f"\nĐã lưu {len(events)} event vào: {output_path}")
+    else:
+        print("\nKhông có event mới hoặc thay đổi; không tạo file batch.")
 

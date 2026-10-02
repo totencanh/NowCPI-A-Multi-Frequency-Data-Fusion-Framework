@@ -8,7 +8,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from ingestion.common import first_available, make_event, write_events
+from ingestion.common import first_available, make_event, read_event_batches, write_events
 
 
 def fetch_brent(start="2015-01-01"):
@@ -27,7 +27,14 @@ def fetch_brent(start="2015-01-01"):
 
 
 if __name__ == "__main__":
-    brent = fetch_brent()
+    previous_events = read_event_batches("brent_oil_daily.json")
+    latest_period = max(
+        (str(event.get("observation_period") or "")[:10] for event in previous_events),
+        default="",
+    )
+    # Re-fetch the latest observed day to capture source revisions, rather than
+    # downloading the full 2015-to-present history on every scheduled run.
+    brent = fetch_brent(start=latest_period or "2015-01-01")
 
     print("=" * 60)
     print("BRENT CRUDE OIL")
@@ -57,5 +64,8 @@ if __name__ == "__main__":
 
     output_path = write_events("brent_oil_daily.json", events)
 
-    print(f"\nĐã lưu {len(events)} event vào: {output_path}")
+    if output_path:
+        print(f"\nĐã lưu {len(events)} event vào: {output_path}")
+    else:
+        print("\nKhông có event mới hoặc thay đổi; không tạo file batch.")
 

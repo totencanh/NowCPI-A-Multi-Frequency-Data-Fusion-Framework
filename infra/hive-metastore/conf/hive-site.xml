@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <configuration>
-    <!-- Thrift URI (Hive 4.x) -->
+    <!-- Hive 3.1.3 and Spark 3.5 metastore client -->
     <property>
-        <name>metastore.thrift.uris</name>
+        <name>hive.metastore.uris</name>
         <value>thrift://hive-metastore:9083</value>
     </property>
 
@@ -13,7 +13,7 @@
     </property>
     <property>
         <name>javax.jdo.option.ConnectionURL</name>
-        <value>jdbc:mysql://mariadb:3306/${env.MARIADB_DATABASE}?createDatabaseIfNotExist=true&amp;useSSL=false&amp;allowPublicKeyRetrieval=true</value>
+        <value>jdbc:mysql://mariadb-hms:3306/${env.MARIADB_DATABASE}?createDatabaseIfNotExist=true&amp;useSSL=false&amp;allowPublicKeyRetrieval=true</value>
     </property>
     <property>
         <name>javax.jdo.option.ConnectionUserName</name>

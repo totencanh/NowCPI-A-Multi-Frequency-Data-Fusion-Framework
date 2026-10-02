@@ -97,12 +97,64 @@ def make_event(
     }
 
 
-def write_events(filename: str, events: Iterable[dict[str, Any]]) -> Path:
-    """Write a JSON array under NowCPI/data/raw, independent of cwd."""
+def _event_signature(event: dict[str, Any]) -> str:
+    """Compare source content without treating a new ingestion timestamp as a change."""
+    comparable = {key: value for key, value in event.items() if key != "ingested_at"}
+    return json.dumps(comparable, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def read_event_batches(filename: str) -> list[dict[str, Any]]:
+    """Read the legacy flat file and all immutable batches for a source."""
+    legacy_path = RAW_DATA_DIR / filename
+    batch_dir = RAW_DATA_DIR / Path(filename).stem
+    paths = ([legacy_path] if legacy_path.is_file() else []) + sorted(batch_dir.glob("*.json"))
+    events_by_id: dict[str, dict[str, Any]] = {}
+    for path in paths:
+        try:
+            content = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if isinstance(content, dict):
+            content = [content]
+        if not isinstance(content, list):
+            continue
+        for event in content:
+            if isinstance(event, dict):
+                event_id = event.get("event_id")
+                if event_id:
+                    events_by_id[str(event_id)] = event
+    return list(events_by_id.values())
+
+
+def write_events(filename: str, events: Iterable[dict[str, Any]]) -> Path | None:
+    """Write changed events to a timestamped batch, or nothing when unchanged."""
     RAW_DATA_DIR.mkdir(parents=True, exist_ok=True)
-    output_path = RAW_DATA_DIR / filename
+    batch_dir = RAW_DATA_DIR / Path(filename).stem
+    batch_dir.mkdir(parents=True, exist_ok=True)
+
+    known_signatures: dict[str, str] = {}
+    for old_event in read_event_batches(filename):
+        event_id = old_event.get("event_id")
+        if event_id:
+            known_signatures[str(event_id)] = _event_signature(old_event)
+
+    latest_events: dict[str, dict[str, Any]] = {}
+    for event in events:
+        event_id = event.get("event_id")
+        if event_id:
+            latest_events[str(event_id)] = event
+    changed_events = [
+        event
+        for event_id, event in latest_events.items()
+        if known_signatures.get(event_id) != _event_signature(event)
+    ]
+    if not changed_events:
+        return None
+
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    output_path = batch_dir / f"batch_{timestamp}.json"
     output_path.write_text(
-        json.dumps(list(events), ensure_ascii=False, indent=2, allow_nan=False),
+        json.dumps(changed_events, ensure_ascii=False, indent=2, allow_nan=False),
         encoding="utf-8",
     )
     return output_path

@@ -5,9 +5,13 @@ import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+import sys
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-RAW_DATA_DIR = PROJECT_ROOT / "data" / "raw"
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from ingestion.common import read_event_batches, write_events
 
 
 def fetch_usd_vnd(start="2015-01-01"):
@@ -27,7 +31,14 @@ def fetch_usd_vnd(start="2015-01-01"):
 
 
 if __name__ == "__main__":
-    usd_vnd = fetch_usd_vnd()
+    previous_events = read_event_batches("usd_vnd_daily.json")
+    latest_period = max(
+        (str(event.get("observation_period") or "")[:10] for event in previous_events),
+        default="",
+    )
+    # Re-fetch the latest observed day to capture source revisions, rather than
+    # downloading the full 2015-to-present history on every scheduled run.
+    usd_vnd = fetch_usd_vnd(start=latest_period or "2015-01-01")
 
     print("=" * 60)
     print("USD/VND EXCHANGE RATE")
@@ -66,12 +77,10 @@ if __name__ == "__main__":
             "raw_payload": row,
         })
 
-    RAW_DATA_DIR.mkdir(parents=True, exist_ok=True)
-    output_path = RAW_DATA_DIR / "usd_vnd_daily.json"
-    output_path.write_text(
-        json.dumps(events, ensure_ascii=False, indent=2, allow_nan=False),
-        encoding="utf-8",
-    )
+    output_path = write_events("usd_vnd_daily.json", events)
 
-    print(f"\nĐã lưu {len(events)} event vào: {output_path}")
+    if output_path:
+        print(f"\nĐã lưu {len(events)} event vào: {output_path}")
+    else:
+        print("\nKhông có event mới hoặc thay đổi; không tạo file batch.")
 

@@ -27,15 +27,12 @@ RUN curl -fSL -o /usr/local/spark-3.5.0-bin-hadoop3/jars/postgresql-42.7.3.jar \
     https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.12.791/aws-java-sdk-bundle-1.12.791.jar && \
     curl -fSL -o /usr/local/spark-3.5.0-bin-hadoop3/jars/spark-avro_2.12-3.5.0.jar \
     https://repo1.maven.org/maven2/org/apache/spark/spark-avro_2.12/3.5.0/spark-avro_2.12-3.5.0.jar && \
-    curl -fSL -o /usr/local/spark-3.5.0-bin-hadoop3/jars/hive-metastore-4.1.0.jar \
-    https://repo1.maven.org/maven2/org/apache/hive/hive-metastore/4.1.0/hive-metastore-4.1.0.jar && \
     chmod 644 /usr/local/spark-3.5.0-bin-hadoop3/jars/postgresql-42.7.3.jar \
         /usr/local/spark-3.5.0-bin-hadoop3/jars/delta-spark_2.12-3.0.0.jar \
         /usr/local/spark-3.5.0-bin-hadoop3/jars/delta-storage-3.0.0.jar \
         /usr/local/spark-3.5.0-bin-hadoop3/jars/hadoop-aws-3.3.4.jar \
         /usr/local/spark-3.5.0-bin-hadoop3/jars/aws-java-sdk-bundle-1.12.791.jar \
-        /usr/local/spark-3.5.0-bin-hadoop3/jars/spark-avro_2.12-3.5.0.jar \
-        /usr/local/spark-3.5.0-bin-hadoop3/jars/hive-metastore-4.1.0.jar
+        /usr/local/spark-3.5.0-bin-hadoop3/jars/spark-avro_2.12-3.5.0.jar
 
 RUN jupyter server extension enable --py jupyterlab_git --sys-prefix
 

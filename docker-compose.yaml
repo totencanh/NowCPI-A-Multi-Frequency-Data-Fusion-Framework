@@ -9,6 +9,11 @@ x-airflow-common: &airflow-common
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
     AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_SECRET_KEY:-nowcpi-local-development-key}
     AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY:-}
+    AIRFLOW_ADMIN_USERNAME: ${AIRFLOW_ADMIN_USERNAME:-admin}
+    AIRFLOW_ADMIN_PASSWORD: ${AIRFLOW_ADMIN_PASSWORD:-admin}
+    AIRFLOW_ADMIN_FIRSTNAME: ${AIRFLOW_ADMIN_FIRSTNAME:-NowCPI}
+    AIRFLOW_ADMIN_LASTNAME: ${AIRFLOW_ADMIN_LASTNAME:-Admin}
+    AIRFLOW_ADMIN_EMAIL: ${AIRFLOW_ADMIN_EMAIL:-admin@nowcpi.local}
     TRINO_HOST: trino
     TRINO_PORT: "8080"
     TRINO_USER: nowcpi
@@ -16,6 +21,9 @@ x-airflow-common: &airflow-common
     - ./infra/airflow/dags:/opt/airflow/dags
     - ./infra/airflow/logs:/opt/airflow/logs
     - ./infra/dbt:/opt/airflow/dbt
+    - ./ingestion:/opt/airflow/ingestion:ro
+    - ./data/raw:/opt/airflow/data/raw
+    - /var/run/docker.sock:/var/run/docker.sock
   depends_on:
     airflow-db:
       condition: service_healthy
@@ -107,14 +115,34 @@ services:
       retries: 10
     restart: unless-stopped
 
+  # Fresh Hive 3 metadata database; the previous Hive 4 database is preserved.
+  mariadb-hms:
+    image: mariadb:10.5.16
+    container_name: nowcpi-mariadb-hms
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MYSQL_DATABASE: nowcpi_hive_metastore
+      MYSQL_USER: ${MARIADB_USER}
+      MYSQL_PASSWORD: ${MARIADB_PASSWORD}
+    volumes:
+      - mariadb_hms_data:/var/lib/mysql
+    networks:
+      - nowcpi_network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
   hive-metastore:
     build:
       context: ./infra/hive-metastore
     container_name: nowcpi-hive-metastore
     environment:
-      METASTORE_DB_HOSTNAME: mariadb
+      METASTORE_DB_HOSTNAME: mariadb-hms
       DB_DRIVER: mysql
-      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_DATABASE: nowcpi_hive_metastore
       MARIADB_USER: ${MARIADB_USER}
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
       MINIO_ENDPOINT: ${MINIO_ENDPOINT:-http://minio:9000}
@@ -122,7 +150,7 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       MINIO_BUCKET: ${MINIO_BUCKET:-lakehouse}
     depends_on:
-      mariadb:
+      mariadb-hms:
         condition: service_healthy
       minio-init:
         condition: service_completed_successfully
@@ -282,6 +310,7 @@ volumes:
   kafka_data:
   minio_data:
   mariadb_data:
+  mariadb_hms_data:
   trino_data:
   airflow_db_data:
 
