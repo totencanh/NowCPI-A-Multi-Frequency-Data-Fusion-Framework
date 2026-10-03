@@ -10,7 +10,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775593+00:00",
+    "ingested_at": "2026-10-03T18:45:29.173916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1960",
     "raw_payload": {
       "indicator": {
@@ -42,7 +42,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775633+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1961",
     "raw_payload": {
       "indicator": {
@@ -74,7 +74,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775659+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1962",
     "raw_payload": {
       "indicator": {
@@ -106,7 +106,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775683+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1963",
     "raw_payload": {
       "indicator": {
@@ -138,7 +138,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775707+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1964",
     "raw_payload": {
       "indicator": {
@@ -170,7 +170,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775730+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1965",
     "raw_payload": {
       "indicator": {
@@ -202,7 +202,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775753+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1966",
     "raw_payload": {
       "indicator": {
@@ -234,7 +234,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775776+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1967",
     "raw_payload": {
       "indicator": {
@@ -266,7 +266,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775799+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1968",
     "raw_payload": {
       "indicator": {
@@ -298,7 +298,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775822+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1969",
     "raw_payload": {
       "indicator": {
@@ -330,7 +330,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775844+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1970",
     "raw_payload": {
       "indicator": {
@@ -362,7 +362,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775869+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1971",
     "raw_payload": {
       "indicator": {
@@ -394,7 +394,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775892+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1972",
     "raw_payload": {
       "indicator": {
@@ -426,7 +426,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775915+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1973",
     "raw_payload": {
       "indicator": {
@@ -458,7 +458,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775938+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1974",
     "raw_payload": {
       "indicator": {
@@ -490,7 +490,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775961+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1975",
     "raw_payload": {
       "indicator": {
@@ -522,7 +522,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.775984+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1976",
     "raw_payload": {
       "indicator": {
@@ -554,7 +554,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776018+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1977",
     "raw_payload": {
       "indicator": {
@@ -586,7 +586,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776042+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1978",
     "raw_payload": {
       "indicator": {
@@ -618,7 +618,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776065+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1979",
     "raw_payload": {
       "indicator": {
@@ -650,7 +650,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776088+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1980",
     "raw_payload": {
       "indicator": {
@@ -682,7 +682,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776112+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1981",
     "raw_payload": {
       "indicator": {
@@ -714,7 +714,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776134+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1982",
     "raw_payload": {
       "indicator": {
@@ -746,7 +746,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776158+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1983",
     "raw_payload": {
       "indicator": {
@@ -778,7 +778,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776180+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1984",
     "raw_payload": {
       "indicator": {
@@ -810,7 +810,7 @@
     "value": null,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776203+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1985",
     "raw_payload": {
       "indicator": {
@@ -842,7 +842,7 @@
     "value": 10.941045687236,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776228+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1986",
     "raw_payload": {
       "indicator": {
@@ -874,7 +874,7 @@
     "value": 8.46196269335657,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776253+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1987",
     "raw_payload": {
       "indicator": {
@@ -906,7 +906,7 @@
     "value": 4.9965329183232,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776278+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1988",
     "raw_payload": {
       "indicator": {
@@ -938,7 +938,7 @@
     "value": -2.59078047968546,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776303+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1989",
     "raw_payload": {
       "indicator": {
@@ -970,7 +970,7 @@
     "value": 2.26566012839673,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776327+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1990",
     "raw_payload": {
       "indicator": {
@@ -1002,7 +1002,7 @@
     "value": 7.71199078725995,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776353+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1991",
     "raw_payload": {
       "indicator": {
@@ -1034,7 +1034,7 @@
     "value": 12.7881906334883,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776378+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1992",
     "raw_payload": {
       "indicator": {
@@ -1066,7 +1066,7 @@
     "value": 12.6242019206347,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776402+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1993",
     "raw_payload": {
       "indicator": {
@@ -1098,7 +1098,7 @@
     "value": 13.3893656591289,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776426+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1994",
     "raw_payload": {
       "indicator": {
@@ -1130,7 +1130,7 @@
     "value": 13.601084104565,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776451+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1995",
     "raw_payload": {
       "indicator": {
@@ -1162,7 +1162,7 @@
     "value": 14.4594312309823,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776475+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1996",
     "raw_payload": {
       "indicator": {
@@ -1194,7 +1194,7 @@
     "value": 12.6208711696363,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776501+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1997",
     "raw_payload": {
       "indicator": {
@@ -1226,7 +1226,7 @@
     "value": 8.33399094697016,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776526+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1998",
     "raw_payload": {
       "indicator": {
@@ -1258,7 +1258,7 @@
     "value": 7.68431156660631,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776550+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:1999",
     "raw_payload": {
       "indicator": {
@@ -1290,7 +1290,7 @@
     "value": 10.0696263908142,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776575+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2000",
     "raw_payload": {
       "indicator": {
@@ -1322,7 +1322,7 @@
     "value": 8.56956647045686,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776600+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2001",
     "raw_payload": {
       "indicator": {
@@ -1354,7 +1354,7 @@
     "value": 7.24183948228023,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776624+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2002",
     "raw_payload": {
       "indicator": {
@@ -1386,7 +1386,7 @@
     "value": 9.38022080256542,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776648+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2003",
     "raw_payload": {
       "indicator": {
@@ -1418,7 +1418,7 @@
     "value": 9.9272130343424,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776672+00:00",
+    "ingested_at": "2026-10-03T18:45:29.177915+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2004",
     "raw_payload": {
       "indicator": {
@@ -1450,7 +1450,7 @@
     "value": 8.41942796097111,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776698+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2005",
     "raw_payload": {
       "indicator": {
@@ -1482,7 +1482,7 @@
     "value": 7.28981562909181,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776722+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2006",
     "raw_payload": {
       "indicator": {
@@ -1514,7 +1514,7 @@
     "value": 7.36419372055086,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776746+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2007",
     "raw_payload": {
       "indicator": {
@@ -1546,7 +1546,7 @@
     "value": 4.13333925927901,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776770+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2008",
     "raw_payload": {
       "indicator": {
@@ -1578,7 +1578,7 @@
     "value": 5.97580435297486,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776795+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2009",
     "raw_payload": {
       "indicator": {
@@ -1610,7 +1610,7 @@
     "value": -9.923181155088,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776821+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2010",
     "raw_payload": {
       "indicator": {
@@ -1642,7 +1642,7 @@
     "value": 7.34752635637473,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776846+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2011",
     "raw_payload": {
       "indicator": {
@@ -1674,7 +1674,7 @@
     "value": 7.16789501248851,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776870+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2012",
     "raw_payload": {
       "indicator": {
@@ -1706,7 +1706,7 @@
     "value": 5.12330892127126,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776894+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2013",
     "raw_payload": {
       "indicator": {
@@ -1738,7 +1738,7 @@
     "value": 6.23908505458006,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776919+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2014",
     "raw_payload": {
       "indicator": {
@@ -1770,7 +1770,7 @@
     "value": 9.19315527733437,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776943+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2015",
     "raw_payload": {
       "indicator": {
@@ -1802,7 +1802,7 @@
     "value": 7.82565785936875,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776968+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2016",
     "raw_payload": {
       "indicator": {
@@ -1834,7 +1834,7 @@
     "value": 8.28460517461811,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.776992+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2017",
     "raw_payload": {
       "indicator": {
@@ -1866,7 +1866,7 @@
     "value": 8.98843276330533,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.777017+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2018",
     "raw_payload": {
       "indicator": {
@@ -1898,7 +1898,7 @@
     "value": 8.20936731693142,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.777041+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2019",
     "raw_payload": {
       "indicator": {
@@ -1930,7 +1930,7 @@
     "value": 4.37905342327632,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.777067+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2020",
     "raw_payload": {
       "indicator": {
@@ -1962,7 +1962,7 @@
     "value": 3.20685187051204,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.777092+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2021",
     "raw_payload": {
       "indicator": {
@@ -1994,7 +1994,7 @@
     "value": 8.17971694506856,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.777117+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2022",
     "raw_payload": {
       "indicator": {
@@ -2026,7 +2026,7 @@
     "value": 3.62174883986941,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.777140+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2023",
     "raw_payload": {
       "indicator": {
@@ -2058,7 +2058,7 @@
     "value": 8.02122079785499,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.777164+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2024",
     "raw_payload": {
       "indicator": {
@@ -2090,7 +2090,7 @@
     "value": 8.94571141518811,
     "unit": "percent",
     "release_ts": null,
-    "ingested_at": "2026-10-02T19:06:25.777189+00:00",
+    "ingested_at": "2026-10-03T18:45:29.178916+00:00",
     "source_record_id": "NV.IND.TOTL.KD.ZG:2025",
     "raw_payload": {
       "indicator": {

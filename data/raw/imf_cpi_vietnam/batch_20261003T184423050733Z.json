@@ -10,7 +10,7 @@
     "value": 75.49733979843514,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2015-01",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -48,7 +48,7 @@
     "value": 75.45959112853596,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2015-02",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -86,7 +86,7 @@
     "value": 75.57278051522873,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2015-03",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -124,7 +124,7 @@
     "value": 75.67858240795007,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2015-04",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -162,7 +162,7 @@
     "value": 75.7996681398028,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2015-05",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -200,7 +200,7 @@
     "value": 76.06496697829202,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2015-06",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -238,7 +238,7 @@
     "value": 76.16385143536395,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2015-07",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -276,7 +276,7 @@
     "value": 76.11053673935893,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2015-08",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -314,7 +314,7 @@
     "value": 75.9507046122065,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2015-09",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -352,7 +352,7 @@
     "value": 76.03425038727993,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2015-10",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -390,7 +390,7 @@
     "value": 76.08762643105179,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2015-11",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -428,7 +428,7 @@
     "value": 76.10033306466573,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2015-12",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -466,7 +466,7 @@
     "value": 76.09896325867051,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2016-01",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -504,7 +504,7 @@
     "value": 76.41797011265116,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2016-02",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -542,7 +542,7 @@
     "value": 76.8531704524429,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2016-03",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -580,7 +580,7 @@
     "value": 77.11047486711699,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2016-04",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -618,7 +618,7 @@
     "value": 77.52748831519887,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2016-05",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -656,7 +656,7 @@
     "value": 77.88760349842286,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2016-06",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -694,7 +694,7 @@
     "value": 77.98729963090072,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2016-07",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -732,7 +732,7 @@
     "value": 78.06715862572312,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2016-08",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -770,7 +770,7 @@
     "value": 78.49114136421927,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2016-09",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -808,7 +808,7 @@
     "value": 79.1440306780866,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2016-10",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -846,7 +846,7 @@
     "value": 79.52447603355643,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2016-11",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -884,7 +884,7 @@
     "value": 79.70539421653243,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2016-12",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -922,7 +922,7 @@
     "value": 80.06916963573691,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2017-01",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -960,7 +960,7 @@
     "value": 80.25637135434519,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2017-02",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -998,7 +998,7 @@
     "value": 80.42330460676249,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2017-03",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1036,7 +1036,7 @@
     "value": 80.42587815250957,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.045221+00:00",
     "source_record_id": "cpi_headline:2017-04",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1074,7 +1074,7 @@
     "value": 80.00167749824163,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2017-05",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1112,7 +1112,7 @@
     "value": 79.8647946280418,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2017-06",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1150,7 +1150,7 @@
     "value": 79.95240630774892,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.007925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2017-07",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1188,7 +1188,7 @@
     "value": 80.68572977840341,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2017-08",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1226,7 +1226,7 @@
     "value": 81.16346998442135,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2017-09",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1264,7 +1264,7 @@
     "value": 81.49916209627693,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2017-10",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1302,7 +1302,7 @@
     "value": 81.60633349443398,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2017-11",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1340,7 +1340,7 @@
     "value": 81.77476896676635,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2017-12",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1378,7 +1378,7 @@
     "value": 82.19026656788647,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2018-01",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1416,7 +1416,7 @@
     "value": 82.78795418636781,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2018-02",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1454,7 +1454,7 @@
     "value": 82.565171801653,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2018-03",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1492,7 +1492,7 @@
     "value": 82.63403115493541,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2018-04",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1530,7 +1530,7 @@
     "value": 83.08727881582027,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2018-05",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1568,7 +1568,7 @@
     "value": 83.59286490741486,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2018-06",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1606,7 +1606,7 @@
     "value": 83.51712977180858,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2018-07",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1644,7 +1644,7 @@
     "value": 83.89471071550687,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2018-08",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1682,7 +1682,7 @@
     "value": 84.39262582360362,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2018-09",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1720,7 +1720,7 @@
     "value": 84.67247177083406,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2018-10",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1758,7 +1758,7 @@
     "value": 84.42827636224732,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2018-11",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1796,7 +1796,7 @@
     "value": 84.2140818251166,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2018-12",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1834,7 +1834,7 @@
     "value": 84.29678005346895,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2019-01",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1872,7 +1872,7 @@
     "value": 84.97250304237694,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2019-02",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1910,7 +1910,7 @@
     "value": 84.79440067600062,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2019-03",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1948,7 +1948,7 @@
     "value": 85.05700893489386,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2019-04",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -1986,7 +1986,7 @@
     "value": 85.47633998894268,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2019-05",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2024,7 +2024,7 @@
     "value": 85.39753080347333,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2019-06",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2062,7 +2062,7 @@
     "value": 85.55261271941242,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2019-07",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2100,7 +2100,7 @@
     "value": 85.79224558763903,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2019-08",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2138,7 +2138,7 @@
     "value": 86.06274853797704,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2019-09",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2176,7 +2176,7 @@
     "value": 86.56630167967305,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2019-10",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2214,7 +2214,7 @@
     "value": 87.39958889964116,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2019-11",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2252,7 +2252,7 @@
     "value": 88.62230914834711,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2019-12",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2290,7 +2290,7 @@
     "value": 89.71484497552845,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2020-01",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2328,7 +2328,7 @@
     "value": 89.5650211844189,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2020-02",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2366,7 +2366,7 @@
     "value": 88.92266085248433,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2020-03",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2404,7 +2404,7 @@
     "value": 87.55067311819099,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2020-04",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2442,7 +2442,7 @@
     "value": 87.52423281490988,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2020-05",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2480,7 +2480,7 @@
     "value": 88.10049236376315,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2020-06",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2518,7 +2518,7 @@
     "value": 88.45227762977117,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2020-07",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2556,7 +2556,7 @@
     "value": 88.51799767205,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2020-08",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2594,7 +2594,7 @@
     "value": 88.6282025791517,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2020-09",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2632,7 +2632,7 @@
     "value": 88.70433420516683,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2020-10",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2670,7 +2670,7 @@
     "value": 88.69688304109376,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2020-11",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2708,7 +2708,7 @@
     "value": 88.7880634368604,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2020-12",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2746,7 +2746,7 @@
     "value": 88.8434671884452,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2021-01",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2784,7 +2784,7 @@
     "value": 90.1921998638328,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2021-02",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2822,7 +2822,7 @@
     "value": 89.95075534479714,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2021-03",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2860,7 +2860,7 @@
     "value": 89.9163042055001,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2021-04",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2898,7 +2898,7 @@
     "value": 90.0587316313616,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2021-05",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2936,7 +2936,7 @@
     "value": 90.22750169443844,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2021-06",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -2974,7 +2974,7 @@
     "value": 90.78907766498516,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2021-07",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3012,7 +3012,7 @@
     "value": 91.01414378851628,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2021-08",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3050,7 +3050,7 @@
     "value": 90.45395173349824,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2021-09",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3088,7 +3088,7 @@
     "value": 90.27023975752752,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2021-10",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3126,7 +3126,7 @@
     "value": 90.55991695690956,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2021-11",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3164,7 +3164,7 @@
     "value": 90.39546014771545,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.046725+00:00",
     "source_record_id": "cpi_headline:2021-12",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3202,7 +3202,7 @@
     "value": 90.56865784935816,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2022-01",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3240,7 +3240,7 @@
     "value": 91.47651807564073,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2022-02",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3278,7 +3278,7 @@
     "value": 92.118408802977,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2022-03",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3316,7 +3316,7 @@
     "value": 92.28827514880956,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2022-04",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3354,7 +3354,7 @@
     "value": 92.63703254059692,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.008963+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2022-05",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3392,7 +3392,7 @@
     "value": 93.27196676163082,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2022-06",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3430,7 +3430,7 @@
     "value": 93.6406708462394,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2022-07",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3468,7 +3468,7 @@
     "value": 93.64535287978188,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2022-08",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3506,7 +3506,7 @@
     "value": 94.018155029596,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2022-09",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3544,7 +3544,7 @@
     "value": 94.15466939069903,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2022-10",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3582,7 +3582,7 @@
     "value": 94.51923627057984,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2022-11",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3620,7 +3620,7 @@
     "value": 94.507421366046,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2022-12",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3658,7 +3658,7 @@
     "value": 94.9944181083452,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2023-01",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3696,7 +3696,7 @@
     "value": 95.4208480512336,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2023-02",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3734,7 +3734,7 @@
     "value": 95.20529235548588,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2023-03",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3772,7 +3772,7 @@
     "value": 94.87921422916828,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2023-04",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3810,7 +3810,7 @@
     "value": 94.88633017023548,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2023-05",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3848,7 +3848,7 @@
     "value": 95.14005621711068,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2023-06",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3886,7 +3886,7 @@
     "value": 95.57275319278612,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2023-07",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3924,7 +3924,7 @@
     "value": 96.41484472116773,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2023-08",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -3962,7 +3962,7 @@
     "value": 97.45602862931165,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2023-09",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4000,7 +4000,7 @@
     "value": 97.536137484845,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2023-10",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4038,7 +4038,7 @@
     "value": 97.77851478649475,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2023-11",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4076,7 +4076,7 @@
     "value": 97.8917423066175,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2023-12",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4114,7 +4114,7 @@
     "value": 98.1965781459898,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2024-01",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4152,7 +4152,7 @@
     "value": 99.21517125109813,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2024-02",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4190,7 +4190,7 @@
     "value": 98.98439676276804,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2024-03",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4228,7 +4228,7 @@
     "value": 99.0567543568016,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2024-04",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4266,7 +4266,7 @@
     "value": 99.10321197459496,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2024-05",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4304,7 +4304,7 @@
     "value": 99.267029583989,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2024-06",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4342,7 +4342,7 @@
     "value": 99.73884577560172,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2024-07",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4380,7 +4380,7 @@
     "value": 99.73814760368128,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2024-08",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4418,7 +4418,7 @@
     "value": 100.0224013243518,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2024-09",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4456,7 +4456,7 @@
     "value": 100.3556759655645,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2024-10",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4494,7 +4494,7 @@
     "value": 100.4836294524206,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2024-11",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4532,7 +4532,7 @@
     "value": 100.7719169853196,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2024-12",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4570,7 +4570,7 @@
     "value": 101.7606910347796,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2025-01",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4608,7 +4608,7 @@
     "value": 102.1054562560054,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2025-02",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4646,7 +4646,7 @@
     "value": 102.0824159102041,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2025-03",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4684,7 +4684,7 @@
     "value": 102.151239382923,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2025-04",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4722,7 +4722,7 @@
     "value": 102.3146951306302,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2025-05",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4760,7 +4760,7 @@
     "value": 102.8050623737519,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2025-06",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4798,7 +4798,7 @@
     "value": 102.91690051692,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2025-07",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4836,7 +4836,7 @@
     "value": 102.9685181214591,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2025-08",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4874,7 +4874,7 @@
     "value": 103.4072677600416,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2025-09",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4912,7 +4912,7 @@
     "value": 103.6137381781981,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2025-10",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4950,7 +4950,7 @@
     "value": 104.08,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.047729+00:00",
     "source_record_id": "cpi_headline:2025-11",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -4988,7 +4988,7 @@
     "value": 104.28,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.048730+00:00",
     "source_record_id": "cpi_headline:2025-12",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -5026,7 +5026,7 @@
     "value": 104.33,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.048730+00:00",
     "source_record_id": "cpi_headline:2026-01",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -5064,7 +5064,7 @@
     "value": 105.52,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.048730+00:00",
     "source_record_id": "cpi_headline:2026-02",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -5102,7 +5102,7 @@
     "value": 106.83,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.048730+00:00",
     "source_record_id": "cpi_headline:2026-03",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -5140,7 +5140,7 @@
     "value": 107.73,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.048730+00:00",
     "source_record_id": "cpi_headline:2026-04",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -5178,7 +5178,7 @@
     "value": 108.04,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.048730+00:00",
     "source_record_id": "cpi_headline:2026-05",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -5216,7 +5216,7 @@
     "value": 107.63,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.048730+00:00",
     "source_record_id": "cpi_headline:2026-06",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",
@@ -5254,7 +5254,7 @@
     "value": 107.5,
     "unit": "index",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:21:44.009925+00:00",
+    "ingested_at": "2026-10-03T18:44:23.048730+00:00",
     "source_record_id": "cpi_headline:2026-07",
     "raw_payload": {
       "STRUCTURE[;]": "dataflow",

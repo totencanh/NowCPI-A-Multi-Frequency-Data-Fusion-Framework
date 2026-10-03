@@ -10,7 +10,7 @@
     "value": 24000,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.277568+00:00",
+    "ingested_at": "2026-10-03T18:40:03.360418+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8599",
     "raw_payload": {
       "id": 8599,
@@ -36,7 +36,7 @@
     "value": 24000,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.277568+00:00",
+    "ingested_at": "2026-10-03T18:40:03.360418+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8605",
     "raw_payload": {
       "id": 8605,
@@ -62,7 +62,7 @@
     "value": 24000,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.277568+00:00",
+    "ingested_at": "2026-10-03T18:40:03.360418+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8611",
     "raw_payload": {
       "id": 8611,
@@ -88,7 +88,7 @@
     "value": 24570,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.277568+00:00",
+    "ingested_at": "2026-10-03T18:40:03.360418+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8617",
     "raw_payload": {
       "id": 8617,
@@ -114,7 +114,7 @@
     "value": 24570,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.277568+00:00",
+    "ingested_at": "2026-10-03T18:40:03.361434+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8623",
     "raw_payload": {
       "id": 8623,
@@ -140,7 +140,7 @@
     "value": 24570,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.278578+00:00",
+    "ingested_at": "2026-10-03T18:40:03.361434+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8629",
     "raw_payload": {
       "id": 8629,
@@ -166,7 +166,7 @@
     "value": 24570,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.278578+00:00",
+    "ingested_at": "2026-10-03T18:40:03.361434+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8635",
     "raw_payload": {
       "id": 8635,
@@ -192,7 +192,7 @@
     "value": 24570,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.278578+00:00",
+    "ingested_at": "2026-10-03T18:40:03.361434+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8641",
     "raw_payload": {
       "id": 8641,
@@ -218,7 +218,7 @@
     "value": 24570,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.278578+00:00",
+    "ingested_at": "2026-10-03T18:40:03.361434+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8647",
     "raw_payload": {
       "id": 8647,
@@ -244,7 +244,7 @@
     "value": 24570,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.278578+00:00",
+    "ingested_at": "2026-10-03T18:40:03.361434+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8653",
     "raw_payload": {
       "id": 8653,
@@ -270,7 +270,7 @@
     "value": 25530,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.278578+00:00",
+    "ingested_at": "2026-10-03T18:40:03.361434+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8659",
     "raw_payload": {
       "id": 8659,
@@ -296,7 +296,7 @@
     "value": 25530,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.278578+00:00",
+    "ingested_at": "2026-10-03T18:40:03.361434+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8665",
     "raw_payload": {
       "id": 8665,
@@ -322,7 +322,7 @@
     "value": 25530,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.278578+00:00",
+    "ingested_at": "2026-10-03T18:40:03.361434+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8671",
     "raw_payload": {
       "id": 8671,
@@ -348,7 +348,7 @@
     "value": 25530,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.278578+00:00",
+    "ingested_at": "2026-10-03T18:40:03.361434+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8677",
     "raw_payload": {
       "id": 8677,
@@ -374,7 +374,7 @@
     "value": 25530,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.278578+00:00",
+    "ingested_at": "2026-10-03T18:40:03.362430+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8683",
     "raw_payload": {
       "id": 8683,
@@ -400,7 +400,7 @@
     "value": 25530,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.278578+00:00",
+    "ingested_at": "2026-10-03T18:40:03.362430+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8689",
     "raw_payload": {
       "id": 8689,
@@ -426,7 +426,7 @@
     "value": 25530,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.278578+00:00",
+    "ingested_at": "2026-10-03T18:40:03.362430+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8695",
     "raw_payload": {
       "id": 8695,
@@ -452,7 +452,7 @@
     "value": 26830,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.278578+00:00",
+    "ingested_at": "2026-10-03T18:40:03.362430+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8701",
     "raw_payload": {
       "id": 8701,
@@ -478,7 +478,7 @@
     "value": 26830,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.278578+00:00",
+    "ingested_at": "2026-10-03T18:40:03.362430+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8707",
     "raw_payload": {
       "id": 8707,
@@ -504,7 +504,7 @@
     "value": 26830,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.362430+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8713",
     "raw_payload": {
       "id": 8713,
@@ -530,7 +530,7 @@
     "value": 26830,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.362430+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8719",
     "raw_payload": {
       "id": 8719,
@@ -556,7 +556,7 @@
     "value": 26830,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.362430+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8725",
     "raw_payload": {
       "id": 8725,
@@ -582,7 +582,7 @@
     "value": 26830,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.362430+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8731",
     "raw_payload": {
       "id": 8731,
@@ -608,7 +608,7 @@
     "value": 26830,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.362430+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8737",
     "raw_payload": {
       "id": 8737,
@@ -634,7 +634,7 @@
     "value": 28080,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.362430+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8743",
     "raw_payload": {
       "id": 8743,
@@ -660,7 +660,7 @@
     "value": 28080,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.363431+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8749",
     "raw_payload": {
       "id": 8749,
@@ -686,7 +686,7 @@
     "value": 28080,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.363431+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8755",
     "raw_payload": {
       "id": 8755,
@@ -712,7 +712,7 @@
     "value": 28080,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.363431+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8761",
     "raw_payload": {
       "id": 8761,
@@ -738,7 +738,7 @@
     "value": 28080,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.363431+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8767",
     "raw_payload": {
       "id": 8767,
@@ -764,7 +764,7 @@
     "value": 28080,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.363431+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8773",
     "raw_payload": {
       "id": 8773,
@@ -790,7 +790,7 @@
     "value": 28080,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.363431+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8779",
     "raw_payload": {
       "id": 8779,
@@ -816,7 +816,7 @@
     "value": 28180,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.363431+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8785",
     "raw_payload": {
       "id": 8785,
@@ -842,7 +842,7 @@
     "value": 28180,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.363431+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8791",
     "raw_payload": {
       "id": 8791,
@@ -868,7 +868,7 @@
     "value": 28180,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.363431+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8797",
     "raw_payload": {
       "id": 8797,
@@ -894,7 +894,7 @@
     "value": 28180,
     "unit": "VND/liter",
     "release_ts": null,
-    "ingested_at": "2026-10-03T18:22:38.279579+00:00",
+    "ingested_at": "2026-10-03T18:40:03.363431+00:00",
     "source_record_id": "vn_fuel_e10_ron95:8803",
     "raw_payload": {
       "id": 8803,

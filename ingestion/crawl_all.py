@@ -1,14 +1,3 @@
-"""
-run_all.py - Chạy hàng loạt các script Python trong folder và toàn bộ folder con.
-
-Cách dùng:
-    python run_all.py                      # chạy mọi *.py từ thư mục chứa file này
-    python run_all.py --root ./etl         # chỉ quét trong ./etl
-    python run_all.py --pattern "main.py"  # chỉ chạy các file tên main.py
-    python run_all.py --stop-on-error      # dừng ngay khi có script lỗi
-    python run_all.py --timeout 600        # mỗi script tối đa 600 giây
-    python run_all.py --dry-run            # chỉ liệt kê, không chạy
-"""
 import argparse
 import fnmatch
 import subprocess

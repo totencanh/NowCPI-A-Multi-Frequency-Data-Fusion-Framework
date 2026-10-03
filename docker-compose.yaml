@@ -59,6 +59,20 @@ services:
       retries: 10
       start_period: 30s
     restart: unless-stopped
+  producer:
+    build:
+      context: ./infra/kafka
+    container_name: nowcpi-kafka-producer
+    environment:
+      KAFKA_BROKER: kafka:9092
+    volumes:
+      - ./data/raw:/app/input
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - nowcpi_network
+    restart: unless-stopped
 
   # Object storage for Bronze/Silver/Gold lakehouse data.
   minio:
