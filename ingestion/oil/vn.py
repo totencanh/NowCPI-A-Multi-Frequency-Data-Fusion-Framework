@@ -10,7 +10,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from ingestion.common import RAW_DATA_DIR, make_event, read_event_batches, write_events
+from ingestion.common import RAW_DATA_DIR, make_event, write_events
 
 
 # ============================================================
@@ -19,13 +19,19 @@ from ingestion.common import RAW_DATA_DIR, make_event, read_event_batches, write
 
 BASE_URL = "https://giaxanghomnay.com/api/pvdate"
 
-START_DATE = date(2026, 1, 1)
+START_DATE = date(2026, 9, 1)
 END_DATE = date.today()
+
+TARGET_PRODUCTS = {
+    "Xăng RON 95 Mức 5",       # tên cũ (trước khi chuyển sang E10)
+    "Xăng E10 RON 95 Mức 5",   # tên mới
+}
+TARGET_PRODUCT = "Xăng RON 95 Mức 5 / E10 RON 95 Mức 5"
 
 OUTPUT_FILE = RAW_DATA_DIR / "vn_fuel_e10_ron95.json"
 
 # Để thấp nhưng không spam server
-REQUEST_DELAY = 0.5
+REQUEST_DELAY = 0.3
 
 # Retry khi lỗi mạng/server
 MAX_RETRIES = 3
@@ -88,7 +94,7 @@ def fetch_date(date_str):
 
 def extract_target_product(data, date_str):
     """
-    Lấy toàn bộ bản ghi sản phẩm của đúng ngày, không lọc riêng E10.
+    Chỉ lấy TARGET_PRODUCT.
     """
 
     rows = []
@@ -106,23 +112,19 @@ def extract_target_product(data, date_str):
             if not isinstance(item, dict):
                 continue
 
-            # The API returns current and previous-day groups in one response.
-            # Keep only the record whose source date matches the requested day.
-            item_date = str(item.get("date") or "")[:10]
-            if item_date and item_date != date_str:
+            if item.get("title") not in TARGET_PRODUCTS:
                 continue
 
-            # Keep complete source product rows (including both zone prices).
-            # The API's separate reference-price groups are derived subsets.
-            if not (
-                item.get("id") is not None
-                or "zone1_price" in item
-                or "zone2_price" in item
-            ):
+            # Bỏ nhóm "reference" (không có zone1_price)
+            if "zone1_price" not in item:
                 continue
 
-            # Keep the complete source object for the selected product only.
-            rows.append({**item, "source_date": date_str})
+            # Một response chứa nhiều ngày, nên lấy ngày thật từ item
+            rows.append({
+                **item,
+                "source_date": str(item.get("date", date_str))[:10],
+                "price": item["zone1_price"],
+            })
 
     return rows
 
@@ -133,32 +135,26 @@ def extract_target_product(data, date_str):
 
 def load_existing_data():
     """
-    Load legacy JSON and all timestamped batches to resume; supports legacy CSV.
+    Load JSON hiện có để resume; hỗ trợ đọc CSV cũ nếu còn.
     """
 
-    existing_events = read_event_batches(OUTPUT_FILE.name)
-    # Ignore the previous-day reference rows that older collector versions
-    # accidentally labeled with the requested day.
-    existing_events = [
-        event
-        for event in existing_events
-        if not isinstance(event.get("raw_payload"), dict)
-        or not event["raw_payload"].get("date")
-        or str(event["raw_payload"]["date"])[:10]
-        == str(event.get("observation_period") or "")[:10]
-    ]
-    if existing_events:
-        df = pd.DataFrame(existing_events)
-        print(f"Existing data: {len(df):,} records")
-        return df
-
     if OUTPUT_FILE.exists():
+
         try:
+
             df = pd.read_json(OUTPUT_FILE, orient="records")
-            print(f"Existing data: {len(df):,} records")
+
+            print(
+                f"Existing data: {len(df):,} records"
+            )
+
             return df
+
         except Exception as e:
-            print(f"[WARNING] Cannot read existing JSON: {e}")
+
+            print(
+                f"[WARNING] Cannot read existing JSON: {e}"
+            )
 
     legacy_csv = OUTPUT_FILE.with_suffix(".csv")
     if legacy_csv.exists():
@@ -186,11 +182,7 @@ def main():
 
     if not existing_df.empty:
         date_column = "observation_period" if "observation_period" in existing_df.columns else "source_date"
-        if "series_id" in existing_df.columns:
-            complete_records = existing_df[existing_df["series_id"] == "vn_fuel_price"]
-            completed_dates = set(complete_records[date_column].astype(str))
-        else:
-            completed_dates = set()
+        completed_dates = set(existing_df[date_column].astype(str))
 
     else:
 
@@ -215,7 +207,7 @@ def main():
     print("GIAXANGHOMNAY COLLECTOR")
     print("=" * 70)
 
-    print("Products: all source fuel records for each date")
+    print(f"Product : {TARGET_PRODUCT}")
     print(f"Start   : {START_DATE}")
     print(f"End     : {END_DATE}")
     print(f"Days    : {total_days}")
@@ -284,7 +276,7 @@ def main():
 
             print(
                 f"[NO DATA] "
-                f"No source fuel records for {date_str}"
+                f"{TARGET_PRODUCT}"
             )
 
         # ----------------------------------------------------
@@ -312,33 +304,25 @@ def main():
         source_id = record.get("id") or record.get("date") or period
         events.append(make_event(
             source="giaxanghomnay",
-            series_id="vn_fuel_price",
+            series_id="vn_fuel_e10_ron95",
             observation_period=period,
             frequency="daily",
-            value=pd.to_numeric(
-                record.get("price")
-                if record.get("price") is not None
-                else record.get("zone1_price"),
-                errors="coerce",
-            ),
+            value=pd.to_numeric(record.get("price"), errors="coerce"),
             unit="VND/liter",
-            source_record_id=f"vn_fuel_price:{source_id}",
+            source_record_id=f"vn_fuel_e10_ron95:{source_id}",
             raw_payload=record,
         ))
     for row in new_rows:
         period = str(row.get("source_date"))
-        source_id = row.get("id") or f"{row.get('title') or 'fuel'}:{row.get('date') or period}"
+        source_id = row.get("id") or row.get("date") or period
         events.append(make_event(
             source="giaxanghomnay",
-            series_id="vn_fuel_price",
+            series_id="vn_fuel_e10_ron95",
             observation_period=period,
             frequency="daily",
-            value=pd.to_numeric(
-                row.get("price") if row.get("price") is not None else row.get("zone1_price"),
-                errors="coerce",
-            ),
+            value=pd.to_numeric(row.get("price"), errors="coerce"),
             unit="VND/liter",
-            source_record_id=f"vn_fuel_price:{source_id}",
+            source_record_id=f"vn_fuel_e10_ron95:{source_id}",
             raw_payload=row,
         ))
 
@@ -376,10 +360,9 @@ def main():
         f"{skipped:,}"
     )
 
-    if output_path:
-        print(f"\nJSON batch: {output_path}")
-    else:
-        print("\nKhông có event mới hoặc thay đổi; không tạo file batch.")
+    print(
+        f"\nJSON: {output_path}"
+    )
 
     print("\nLatest data:")
 
