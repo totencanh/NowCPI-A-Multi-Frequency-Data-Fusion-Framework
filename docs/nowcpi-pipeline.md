@@ -1,18 +1,29 @@
-# NowCPI pipeline: CPI Bronze
+# NowCPI pipeline: JSON → Kafka → Spark Bronze
 
-## Current flow
+## Scheduled streaming flow
 
-The current Bronze jobs are batch loads from `data/raw/`; they do not consume
-Kafka yet. The CPI job processes headline CPI, CPI components, and PPI/IIP into
-separate Delta tables. The market job processes Brent, USD/VND, and domestic
-fuel into separate tables. Both jobs read the retained flat JSON baseline plus
-timestamped batches, keep the newest version of each `event_id`, preserve
-`raw_payload`, add Bronze metadata, and upsert into Delta on MinIO. News remains
-unimplemented because its crawler and raw input are empty.
+```text
+Airflow collectors (daily 08:00 Vietnam time)
+    → append immutable event batches to data/raw
+    → publisher sends new batches to nowcpi.* Kafka topics
+    → spark-bronze-streaming consumes every 10 seconds
+    → Delta table bronze.kafka_events on MinIO
+```
+
+The publisher preserves each event envelope and uses its stable `event_id` as
+the Kafka key. It tracks batch hashes in `workspace/kafka-publisher/`, so an
+unchanged batch is not republished on the next daily run. Spark uses a durable
+checkpoint in `workspace/checkpoints/bronze-kafka-events/`; its Delta merge is
+safe to replay. Each Bronze row keeps the event JSON, common event fields, and
+Kafka topic/partition/offset metadata.
+
+The older `processing/spark/bronze/cpi.py` and `market.py` jobs still read JSON
+directly for manual development/backfills; Airflow no longer invokes them.
+Silver remains a later step, and news is omitted because its collector is empty.
 
 ## Start services
 
-Run from the `NowCPI` directory:
+Run from this project's directory:
 
 ```powershell
 # Only do this if .env does not exist yet; edit the placeholder secrets first.
@@ -22,44 +33,37 @@ docker compose up -d --build
 docker compose ps
 ```
 
-Wait until MariaDB, MinIO, Kafka, Hive Metastore, Spark, and Trino are running.
-The first build downloads the pinned Spark connector JARs.
+Wait until Kafka, MinIO, Hive Metastore, Spark master/worker, and
+`spark-bronze-streaming` are running. Compose creates the six source topics
+before the streaming consumer starts. Airflow must also be started with its
+profile enabled for daily source collection and publication.
 
-## Run CPI and market Bronze
+## Start Airflow scheduling
 
 ```powershell
-docker compose exec spark-master /opt/bitnami/spark/bin/spark-submit `
-  --master spark://spark-master:7077 `
-  /opt/spark/app/spark/bronze/cpi.py
-
-docker compose exec spark-master /opt/bitnami/spark/bin/spark-submit `
-  --master spark://spark-master:7077 `
-  /opt/spark/app/spark/bronze/market.py
+docker compose --profile airflow up -d --build airflow-init airflow-webserver airflow-scheduler
 ```
 
-The Spark image and local Python requirements both use Spark 3.5.0 and Delta
-3.0.0. MinIO and MariaDB credentials are loaded from the local `.env` file;
-`.env` and raw JSON files are excluded by `.gitignore`.
+The DAG collects sources at 08:00 Vietnam time, then publishes new JSON batches
+to Kafka. The streaming Spark service consumes continuously once the Compose
+stack is up. Use Airflow's **Trigger DAG** action to run collection now instead
+of waiting for the schedule.
 
 ## Check the table
 
 Open Trino at `http://localhost:8080`, or run:
 
 ```powershell
-docker compose exec trino trino --execute "SELECT observation_period, value, unit FROM delta.bronze.cpi ORDER BY observation_period DESC LIMIT 10"
+docker compose exec trino trino --execute "SELECT kafka_topic, observation_period, series_id, value FROM delta.bronze.kafka_events ORDER BY bronze_ingested_at DESC LIMIT 20"
 ```
 
-The Delta transaction log is at `lakehouse/bronze/cpi/_delta_log` in MinIO.
-Repeated runs update matching `event_id` rows and insert new observations.
-Tables are registered as `bronze.cpi`, `bronze.cpi_components`,
-`bronze.ppi_iip`, `bronze.brent_oil`, `bronze.usd_vnd`, and `bronze.vn_fuel`.
+Check `docker compose logs -f spark-bronze-streaming` for consumer progress and
+`docker compose logs airflow-scheduler` for scheduled collector/publisher tasks.
 
 ## Next stages
 
 `processing/spark/silver/` and the dbt SQL models are still empty scaffolds.
-Implement Silver validation first, then staging/intermediate/mart models. The
-Kafka connector is installed, but collectors have not been wired to publish
-events and Spark has not yet been configured as a streaming consumer.
+Implement Silver validation next, then staging/intermediate/mart models.
 
 The dbt project and Trino profile are configured. Run `dbt run` only after the
 SQL model files are implemented; the current empty SQL placeholders are not

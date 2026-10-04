@@ -1,30 +1,31 @@
 # NowCPI architecture
 
-## Current implementation
+## Implemented ingestion and Bronze flow
 
 ```text
 Source collectors
-  └─ JSON snapshots in data/raw
-       └─ Spark batch: processing/spark/bronze/cpi.py
-            └─ Delta Bronze table in MinIO: lakehouse/bronze/cpi
-                 ├─ Hive Metastore: table metadata
-                 └─ Trino: SQL access through the delta catalog
+  └─ Immutable JSON event batches in data/raw
+       └─ Airflow daily publisher (new batches only)
+            └─ Kafka topics: nowcpi.*
+                 └─ Spark Structured Streaming
+                      └─ Delta Bronze: bronze.kafka_events in MinIO
+                           ├─ Hive Metastore: table metadata
+                           └─ Trino: SQL access through the delta catalog
 ```
 
-Docker Compose currently provides Kafka, MinIO, MariaDB, Hive Metastore,
-Spark master/worker, and Trino. Spark's custom image includes the Kafka
-connector, Delta Lake, and Hadoop S3A libraries.
+The Bronze streaming consumer records the original event JSON, parsed common
+event fields, Kafka topic/partition/offset, and Bronze ingestion time. Stable
+`event_id` keys make retries and publisher replays idempotent. The existing
+`cpi.py` and `market.py` Spark jobs remain available for direct JSON backfills;
+they are not part of the scheduled path.
 
 ## Planned stages
 
-- Publish asynchronous source events to Kafka and consume them with Spark
-  Structured Streaming. The current CPI Bronze job is still a JSON batch job.
-- Implement Bronze processors for market and news data.
 - Implement Silver normalization and validation.
 - Add dbt SQL models for staging, intermediate features, and marts.
-- Add forecasting/NLP jobs and a Superset service after the feature tables
-  exist.
+- Add news collection and NLP, forecasting jobs, and a Superset service after
+  the feature tables exist. The news collector is currently empty.
 
-The architecture diagram in this document distinguishes running components
-from planned work so the project is not presented as real-time before the
-streaming source path is implemented.
+Airflow schedules source collection and Kafka publication daily at 08:00
+Vietnam time. Spark Structured Streaming runs as a separate long-running
+Compose service and continuously consumes the topics into Bronze.

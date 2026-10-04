@@ -66,7 +66,15 @@ export HADOOP_CLIENT_OPTS="$HADOOP_CLIENT_OPTS -Xmx1G $SERVICE_OPTS \
   -Dfs.s3a.change.detection.source=none"
 
 if [[ "${SKIP_SCHEMA_INIT}" == "false" ]]; then
-  initialize_hive
+  # Compose restarts must not rerun initSchema against a populated database.
+  # `-info` succeeds when the Metastore schema is already initialized; a fresh
+  # MariaDB database still falls through to the normal schema initialization.
+  if "$HIVE_HOME/bin/schematool" -dbType "$DB_DRIVER" -info > /tmp/hive-schema-info.log 2>&1; then
+    cat /tmp/hive-schema-info.log
+    echo "Hive Metastore schema already exists; skipping initialization."
+  else
+    initialize_hive
+  fi
 fi
 
 export METASTORE_PORT=${METASTORE_PORT:-9083}

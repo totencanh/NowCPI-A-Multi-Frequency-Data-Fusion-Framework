@@ -6,6 +6,6 @@ for the warehouse location. Credentials are supplied through the root `.env`
 file. A new metadata database is used to avoid downgrading the old Hive 4 schema.
 
 The service exposes its Thrift endpoint on port `9083`. Spark registers the
-Bronze CPI Delta table in the `bronze` database so that Trino can query it via
-the `delta` catalog. The previous Hive 4-backed MariaDB volume is retained and
-is not deleted by this configuration change.
+Kafka Bronze Delta table in the `bronze` database so that Trino can query it
+via the `delta` catalog. The previous Hive 4-backed MariaDB volume is retained
+and is not deleted by this configuration change.

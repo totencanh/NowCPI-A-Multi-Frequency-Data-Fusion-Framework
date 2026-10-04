@@ -9,6 +9,6 @@ mounted from `conf/`. The web UI and SQL endpoint are available at
 `http://localhost:8080`.
 
 Tables become visible to Trino after Spark registers them in Hive Metastore.
-The CPI Bronze job registers `delta.bronze.cpi` at
-`s3a://lakehouse/bronze/cpi`. Silver, intermediate, and mart models are not
-implemented yet.
+The Kafka streaming Bronze consumer registers `delta.bronze.kafka_events` in
+MinIO. The file-based CPI and market jobs remain available for development and
+backfills. Silver, intermediate, and mart models are not implemented yet.

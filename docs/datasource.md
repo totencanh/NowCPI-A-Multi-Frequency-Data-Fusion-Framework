@@ -6,7 +6,9 @@ named after the file stem, for example
 `data/raw/brent_oil_daily/batch_<UTC timestamp>.json`. A batch contains only
 new or revised events; unchanged observations are not copied into every run.
 Runs with no new or revised events do not create a file.
-Collectors have not yet been connected to Kafka.
+Airflow runs the collectors daily and publishes newly created batches to their
+`nowcpi.*` Kafka topics. The Kafka publisher preserves each event envelope and
+uses a persistent batch-hash manifest to avoid replaying unchanged files.
 
 | File | Source | Series | Frequency / scope |
 |---|---|---|---|

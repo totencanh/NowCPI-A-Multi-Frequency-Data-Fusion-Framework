@@ -1,22 +1,18 @@
 # NowCPI Airflow
 
-The DAG `nowcpi_dbt_pipeline` follows the project's dbt layers:
+The DAG `nowcpi_daily_ingestion` runs every day at 08:00 Vietnam time:
 
-1. Install dbt packages.
-2. Build staging models.
-3. Build intermediate macro and market features.
-4. Build CPI feature and nowcasting marts.
+1. Run the CPI, CPI components, PPI/IIP, Brent, USD/VND, and Vietnam fuel collectors.
+2. Publish new JSON batches to their `nowcpi.*` Kafka topics.
 
-It is manually triggered (`schedule=None`) because CPI, market, and news sources
-arrive at different frequencies and the ingestion cadence has not been finalized.
-The DAG starts at dbt: source collection, Kafka consumption, and Spark Bronze/Silver
-processing are not orchestrated by this DAG yet. The dbt SQL files are currently
-scaffolds, so the transformation tasks become runnable after those models are filled
-in and their source tables are available in Trino.
+The `spark-bronze-streaming` Compose service runs continuously, consumes those
+topics, and upserts source events into `delta.bronze.kafka_events`. Airflow does
+not start or stop this Spark service. The old `nowcpi_dbt_pipeline` DAG remains a
+separate manual workflow; its dbt models are still scaffolds. Silver is not yet
+part of the pipeline, and the news collector is currently empty.
 
-The image uses the Airflow/Cosmos and dbt version split from the reference
-Data-lakehouse Airflow image, with NowCPI's own dbt project mounted into it. Start
-the stack from the NowCPI project root with:
+The image includes the source collector and Kafka publisher dependencies. Start
+the stack from this project root with:
 
 ```powershell
 docker compose --profile airflow up -d --build

@@ -1,43 +1,16 @@
-"""Daily NowCPI source collection and Bronze ingestion."""
+"""Daily NowCPI source collection and Kafka publication."""
 
 from datetime import timedelta
 
 import pendulum
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-from airflow.operators.python import PythonOperator
-
-
-def run_spark_bronze(script_name: str) -> None:
-    """Run a Bronze Spark job inside the existing Spark master container."""
-    import docker
-
-    client = docker.from_env()
-    try:
-        spark_master = client.containers.get("nowcpi-spark-master")
-        command = [
-            "/opt/bitnami/spark/bin/spark-submit",
-            "--master",
-            "spark://spark-master:7077",
-            f"/opt/spark/app/spark/bronze/{script_name}",
-        ]
-        result = spark_master.exec_run(command, stdout=True, stderr=True)
-        output = result.output
-        if isinstance(output, bytes):
-            output = output.decode("utf-8", errors="replace")
-        print(output)
-        if result.exit_code != 0:
-            raise RuntimeError(
-                f"Spark Bronze job {script_name} failed "
-                f"with exit code {result.exit_code}:\n{output}"
-            )
-    finally:
-        client.close()
+from airflow.utils.trigger_rule import TriggerRule
 
 
 with DAG(
     dag_id="nowcpi_daily_ingestion",
-    description="Collect daily source batches and upsert them into Bronze",
+    description="Collect source batches and publish new events to Kafka; Spark continuously consumes them into Bronze",
     schedule="0 8 * * *",
     start_date=pendulum.datetime(2026, 1, 1, tz="Asia/Ho_Chi_Minh"),
     catchup=False,
@@ -75,16 +48,24 @@ with DAG(
         bash_command="python -u /opt/airflow/ingestion/usd/usd_vnd.py",
     )
 
-    bronze_cpi = PythonOperator(
-        task_id="bronze_cpi",
-        python_callable=run_spark_bronze,
-        op_kwargs={"script_name": "cpi.py"},
-    )
-    bronze_market = PythonOperator(
-        task_id="bronze_market",
-        python_callable=run_spark_bronze,
-        op_kwargs={"script_name": "market.py"},
+    publish_to_kafka = BashOperator(
+        task_id="publish_to_kafka",
+        bash_command="python -u /opt/airflow/kafka/producer.py",
+        env={
+            "KAFKA_BROKER": "kafka:9092",
+            "RAW_DATA_DIR": "/opt/airflow/data/raw",
+            "KAFKA_PUBLISHED_STATE": "/opt/airflow/kafka-state/published_batches.json",
+        },
+        append_env=True,
+        # Publish any batches produced by successful collectors even if a different source failed.
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
-    [collect_cpi, collect_cpi_components, collect_ppi_iip] >> bronze_cpi
-    [collect_brent, collect_vn_fuel, collect_usd_vnd] >> bronze_market
+    [
+        collect_cpi,
+        collect_cpi_components,
+        collect_ppi_iip,
+        collect_brent,
+        collect_vn_fuel,
+        collect_usd_vnd,
+    ] >> publish_to_kafka

@@ -18,7 +18,7 @@ from ingestion.common import RAW_DATA_DIR, make_event, write_events
 
 BASE_URL = "https://giaxanghomnay.com/api/pvdate"
 
-START_DATE = date(2026, 9, 1)
+START_DATE = date(2023, 1, 1)
 END_DATE = date.today()
 
 TARGET_PRODUCTS = {
@@ -30,7 +30,7 @@ TARGET_PRODUCT = "Xăng RON 95 Mức 5 / E10 RON 95 Mức 5"
 OUTPUT_FILE = RAW_DATA_DIR / "vn_fuel_e10_ron95.json"
 
 # Để thấp nhưng không spam server
-REQUEST_DELAY = 0.3
+REQUEST_DELAY = 1
 
 # Retry khi lỗi mạng/server
 MAX_RETRIES = 3

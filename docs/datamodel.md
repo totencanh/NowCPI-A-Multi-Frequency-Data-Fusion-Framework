@@ -20,10 +20,13 @@ Each collector wraps one source observation in a common event envelope:
 - **Raw files:** The initial JSON files remain in `data/raw/`; each subsequent
   run writes a timestamped batch containing only new or revised events under
   `data/raw/<source-file-stem>/`.
-- **Bronze:** Spark preserves every event field and `raw_payload`, adds
-  `bronze_ingested_at`, `bronze_source_file`, and `bronze_batch_id`, then
-  merges on `event_id` into source-specific Delta tables under
-  `s3a://lakehouse/bronze/`.
+- **Bronze:** The Kafka stream consumer stores the original `event_json`, parsed
+  common envelope fields, `raw_payload_json`, Kafka topic/partition/offset, and
+  `bronze_ingested_at` in `bronze.kafka_events`. It merges by stable `event_id`
+  (falling back to Kafka position for malformed IDs) under
+  `s3a://<MINIO_BUCKET>/bronze/kafka_events`.
+- **Batch backfills:** `processing/spark/bronze/cpi.py` and `market.py` remain
+  available to load JSON directly into source-specific Bronze Delta tables.
 - **Silver:** planned; will validate types, normalize period/frequency fields,
   and apply series-specific quality rules.
 - **Gold:** planned through dbt; will expose aligned macro/market features and

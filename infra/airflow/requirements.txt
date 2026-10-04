@@ -5,4 +5,4 @@ python-dotenv
 requests==2.32.3
 pandas==2.1.4
 yfinance==0.2.54
-docker==7.1.0
+confluent-kafka==2.3.0

@@ -23,16 +23,18 @@ x-airflow-common: &airflow-common
     - ./infra/dbt:/opt/airflow/dbt
     - ./ingestion:/opt/airflow/ingestion:ro
     - ./data/raw:/opt/airflow/data/raw
-    - /var/run/docker.sock:/var/run/docker.sock
+    - ./infra/kafka:/opt/airflow/kafka:ro
+    - ./workspace/kafka-publisher:/opt/airflow/kafka-state
   depends_on:
     airflow-db:
       condition: service_healthy
+    kafka-init:
+      condition: service_completed_successfully
   networks:
     - nowcpi_network
 
 services:
-  # External API collectors run on the host for now and publish to this broker.
-  # Host clients use localhost:9094; containers on this network use kafka:9092.
+  # The broker receives source event envelopes from the daily publisher.
   kafka:
     image: bitnamilegacy/kafka:latest
     container_name: nowcpi-kafka
@@ -59,20 +61,21 @@ services:
       retries: 10
       start_period: 30s
     restart: unless-stopped
-  producer:
-    build:
-      context: ./infra/kafka
-    container_name: nowcpi-kafka-producer
-    environment:
-      KAFKA_BROKER: kafka:9092
-    volumes:
-      - ./data/raw:/app/input
+  kafka-init:
+    image: bitnamilegacy/kafka:latest
+    container_name: nowcpi-kafka-init
+    entrypoint: ["/bin/bash", "-ec"]
+    command:
+      - |
+        for topic in nowcpi.cpi nowcpi.cpi_components nowcpi.ppi_iip nowcpi.brent_oil nowcpi.usd_vnd nowcpi.vn_fuel; do
+          /opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic "$$topic" --partitions 1 --replication-factor 1
+        done
     depends_on:
       kafka:
         condition: service_healthy
     networks:
       - nowcpi_network
-    restart: unless-stopped
+    restart: "no"
 
   # Object storage for Bronze/Silver/Gold lakehouse data.
   minio:
@@ -170,6 +173,12 @@ services:
         condition: service_completed_successfully
     ports:
       - "9083:9083"
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/9083'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
     networks:
       - nowcpi_network
     restart: unless-stopped
@@ -184,19 +193,25 @@ services:
       MINIO_ENDPOINT: ${MINIO_ENDPOINT:-http://minio:9000}
     ports:
       - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/v1/info >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
     volumes:
       - ./infra/trino/conf:/etc/trino:ro
       - trino_data:/var/trino/data
     depends_on:
       hive-metastore:
-        condition: service_started
+        condition: service_healthy
       minio-init:
         condition: service_completed_successfully
     networks:
       - nowcpi_network
     restart: unless-stopped
 
-  # Spark reads raw files from the project and writes Delta tables to MinIO.
+  # Spark batch jobs remain available for development and backfills.
   spark-master:
     build:
       context: ./infra/spark
@@ -225,7 +240,7 @@ services:
       minio-init:
         condition: service_completed_successfully
       hive-metastore:
-        condition: service_started
+        condition: service_healthy
     networks:
       - nowcpi_network
     restart: unless-stopped
@@ -258,6 +273,55 @@ services:
       - ./data/raw:/opt/spark/data/raw:ro
     networks:
       - nowcpi_network
+
+  # Long-running Structured Streaming consumer: Kafka -> Delta Bronze.
+  spark-bronze-streaming:
+    build:
+      context: ./infra/spark
+    container_name: nowcpi-spark-bronze-streaming
+    command:
+      - /opt/bitnami/spark/bin/spark-submit
+      - --master
+      - spark://spark-master:7077
+      - --conf
+      - spark.driver.host=spark-bronze-streaming
+      - --conf
+      - spark.driver.bindAddress=0.0.0.0
+      - --conf
+      - spark.driver.port=7078
+      - --conf
+      - spark.blockManager.port=7079
+      - --conf
+      - spark.jars.ivy=/tmp/spark-ivy
+      - /opt/spark/app/spark/bronze/kafka_stream.py
+    environment:
+      AWS_REGION: us-east-1
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT:-http://minio:9000}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: ${MINIO_BUCKET:-nowcpi}
+      KAFKA_BROKER: kafka:9092
+      SPARK_DRIVER_HOST: spark-bronze-streaming
+    volumes:
+      - ./workspace:/opt/spark/work-dir
+      - ./processing:/opt/spark/app:ro
+    depends_on:
+      kafka-init:
+        condition: service_completed_successfully
+      spark-master:
+        condition: service_started
+      spark-worker:
+        condition: service_started
+      minio-init:
+        condition: service_completed_successfully
+      hive-metastore:
+        condition: service_healthy
+    networks:
+      - nowcpi_network
+    restart: unless-stopped
 
   airflow-db:
     image: postgres:15
