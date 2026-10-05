@@ -16,4 +16,9 @@ USER root
 RUN python -m venv /opt/dbt_venv && chown -R airflow:root /opt/dbt_venv
 USER airflow
 COPY requirements-dbt.txt /tmp/dbt-requirements.txt
-RUN VIRTUAL_ENV=/opt/dbt_venv uv pip install --no-cache -r /tmp/dbt-requirements.txt
+RUN for attempt in 1 2 3; do \
+      VIRTUAL_ENV=/opt/dbt_venv uv pip install --no-cache -r /tmp/dbt-requirements.txt && exit 0; \
+      echo "dbt dependency install attempt ${attempt} failed; retrying after a short delay"; \
+      sleep 5; \
+    done; \
+    exit 1

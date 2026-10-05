@@ -1,4 +1,4 @@
-name: nowcpi
+name: nowcpi-multi
 
 x-airflow-common: &airflow-common
   build:
@@ -37,7 +37,7 @@ services:
   # The broker receives source event envelopes from the daily publisher.
   kafka:
     image: bitnamilegacy/kafka:latest
-    container_name: nowcpi-kafka
+    container_name: nowcpi-multi-kafka
     ports:
       - "9094:9094"
     environment:
@@ -63,7 +63,7 @@ services:
     restart: unless-stopped
   kafka-init:
     image: bitnamilegacy/kafka:latest
-    container_name: nowcpi-kafka-init
+    container_name: nowcpi-multi-kafka-init
     entrypoint: ["/bin/bash", "-ec"]
     command:
       - |
@@ -79,8 +79,11 @@ services:
 
   # Object storage for Bronze/Silver/Gold lakehouse data.
   minio:
-    image: quay.io/minio/minio:latest
-    container_name: nowcpi-minio
+    image: nowcpi-minio-community:RELEASE.2025-10-15T17-29-55Z
+    build:
+      context: ./infra/minio
+      dockerfile: Dockerfile.server
+    container_name: nowcpi-multi-minio
     command: server /data --console-address ":9001"
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-nowcpi}
@@ -100,8 +103,11 @@ services:
     restart: unless-stopped
 
   minio-init:
-    image: quay.io/minio/mc:latest
-    container_name: nowcpi-minio-init
+    image: nowcpi-mc-community:RELEASE.2025-08-13T08-35-41Z
+    build:
+      context: ./infra/minio
+      dockerfile: Dockerfile.mc
+    container_name: nowcpi-multi-minio-init
     depends_on:
       minio:
         condition: service_healthy
@@ -115,7 +121,7 @@ services:
 
   mariadb:
     image: mariadb:10.5.16
-    container_name: nowcpi-mariadb
+    container_name: nowcpi-multi-mariadb
     environment:
       MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MARIADB_DATABASE}
@@ -135,7 +141,7 @@ services:
   # Fresh Hive 3 metadata database; the previous Hive 4 database is preserved.
   mariadb-hms:
     image: mariadb:10.5.16
-    container_name: nowcpi-mariadb-hms
+    container_name: nowcpi-multi-mariadb-hms
     environment:
       MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
       MYSQL_DATABASE: nowcpi_hive_metastore
@@ -155,7 +161,7 @@ services:
   hive-metastore:
     build:
       context: ./infra/hive-metastore
-    container_name: nowcpi-hive-metastore
+    container_name: nowcpi-multi-hive-metastore
     environment:
       METASTORE_DB_HOSTNAME: mariadb-hms
       DB_DRIVER: mysql
@@ -186,7 +192,7 @@ services:
   trino:
     build:
       context: ./infra/trino
-    container_name: nowcpi-trino
+    container_name: nowcpi-multi-trino
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
@@ -215,7 +221,7 @@ services:
   spark-master:
     build:
       context: ./infra/spark
-    container_name: nowcpi-spark-master
+    container_name: nowcpi-multi-spark-master
     environment:
       SPARK_MODE: master
       SPARK_MASTER_HOST: spark-master
@@ -248,7 +254,7 @@ services:
   spark-worker:
     build:
       context: ./infra/spark
-    container_name: nowcpi-spark-worker
+    container_name: nowcpi-multi-spark-worker
     environment:
       SPARK_MODE: worker
       SPARK_MASTER_URL: spark://spark-master:7077
@@ -278,7 +284,7 @@ services:
   spark-bronze-streaming:
     build:
       context: ./infra/spark
-    container_name: nowcpi-spark-bronze-streaming
+    container_name: nowcpi-multi-spark-bronze-streaming
     command:
       - /opt/bitnami/spark/bin/spark-submit
       - --master
@@ -305,6 +311,7 @@ services:
       MINIO_BUCKET: ${MINIO_BUCKET:-nowcpi}
       KAFKA_BROKER: kafka:9092
       SPARK_DRIVER_HOST: spark-bronze-streaming
+      BRONZE_KAFKA_CHECKPOINT: /opt/spark/work-dir/checkpoints/bronze-kafka-events-v2
     volumes:
       - ./workspace:/opt/spark/work-dir
       - ./processing:/opt/spark/app:ro
@@ -325,7 +332,7 @@ services:
 
   airflow-db:
     image: postgres:15
-    container_name: nowcpi-airflow-db
+    container_name: nowcpi-multi-airflow-db
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
@@ -344,7 +351,7 @@ services:
 
   airflow-init:
     <<: *airflow-common
-    container_name: nowcpi-airflow-init
+    container_name: nowcpi-multi-airflow-init
     entrypoint: /bin/bash
     command:
       - -c
@@ -360,7 +367,7 @@ services:
 
   airflow-scheduler:
     <<: *airflow-common
-    container_name: nowcpi-airflow-scheduler
+    container_name: nowcpi-multi-airflow-scheduler
     command: scheduler
     depends_on:
       airflow-db:
@@ -372,7 +379,7 @@ services:
 
   airflow-webserver:
     <<: *airflow-common
-    container_name: nowcpi-airflow
+    container_name: nowcpi-multi-airflow
     command: webserver
     ports:
       - "8085:8080"

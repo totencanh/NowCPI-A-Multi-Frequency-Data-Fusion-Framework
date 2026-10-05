@@ -1,21 +1,59 @@
-# Local credentials and captured source data
+# ==============================
+# Local credentials & secrets
+# ==============================
 .env
+.env.*
+!.env.example
+
+# ==============================
+# Raw / captured source data
+# ==============================
 data/raw/*.json
 data/raw/source_payloads/
 
-# Python and Spark artifacts
+# ==============================
+# Python
+# ==============================
 __pycache__/
 *.py[cod]
 .pytest_cache/
+*.egg-info/
+
+# ==============================
+# Spark
+# ==============================
 spark-warehouse/
 metastore_db/
 
-# dbt and notebook artifacts
+# ==============================
+# dbt
+# ==============================
 infra/dbt/target/
 infra/dbt/logs/
+
+# ==============================
+# Jupyter Notebook
+# ==============================
 **/.ipynb_checkpoints/
 
+# ==============================
+# Airflow
+# ==============================
+infra/airflow/logs/
+
+# ==============================
 # Local runtime state
+# ==============================
 workspace/*
 !workspace/.gitkeep
+
+# ==============================
+# Logs
+# ==============================
 *.log
+
+# ==============================
+# OS
+# ==============================
+.DS_Store
+Thumbs.db

@@ -112,22 +112,27 @@ def upsert_bronze_batch(spark: SparkSession, batch_df, batch_id: int, output_pat
         .filter(F.col("_row_number") == 1)
         .drop("_row_number")
     )
-    batch.createOrReplaceTempView("nowcpi_kafka_bronze_batch")
-
     delta_log = spark._jvm.org.apache.hadoop.fs.Path(
         f"{output_path.rstrip('/')}/_delta_log"
     )
     filesystem = delta_log.getFileSystem(spark._jsc.hadoopConfiguration())
     if filesystem.exists(delta_log):
-        spark.sql(
-            f"""
-            MERGE INTO delta.`{output_path}` AS target
-            USING nowcpi_kafka_bronze_batch AS incoming
-            ON target.bronze_key = incoming.bronze_key
-            WHEN MATCHED THEN UPDATE SET *
-            WHEN NOT MATCHED THEN INSERT *
-            """
-        )
+        # Use a global temporary view because foreachBatch callbacks can resolve
+        # SQL in a different session scope from a regular temporary view.
+        view_name = "nowcpi_kafka_bronze_batch"
+        batch.createOrReplaceGlobalTempView(view_name)
+        try:
+            spark.sql(
+                f"""
+                MERGE INTO delta.`{output_path}` AS target
+                USING global_temp.{view_name} AS incoming
+                ON target.bronze_key = incoming.bronze_key
+                WHEN MATCHED THEN UPDATE SET *
+                WHEN NOT MATCHED THEN INSERT *
+                """
+            )
+        finally:
+            spark.catalog.dropGlobalTempView(view_name)
     else:
         batch.write.format("delta").mode("overwrite").save(output_path)
 
