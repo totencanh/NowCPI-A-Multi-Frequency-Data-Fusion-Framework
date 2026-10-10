@@ -4,7 +4,12 @@ select
     observation_date,
     frequency,
     value,
-    unit
+    unit,
+    source,
+    source_record_id,
+    source_release_ts,
+    source_ingested_at,
+    available_at
 from {{ source('silver', 'iip_observations') }}
 where series_id = 'iip_growth'
   and frequency = 'annual'

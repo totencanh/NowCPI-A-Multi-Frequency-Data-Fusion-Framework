@@ -9,7 +9,12 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from ingestion.common import RAW_DATA_DIR, make_event, write_events
+from ingestion.common import (
+    RAW_DATA_DIR,
+    make_event,
+    read_event_batches,
+    write_events,
+)
 
 
 # ============================================================
@@ -28,6 +33,8 @@ TARGET_PRODUCTS = {
 TARGET_PRODUCT = "Xăng RON 95 Mức 5 / E10 RON 95 Mức 5"
 
 OUTPUT_FILE = RAW_DATA_DIR / "vn_fuel_e10_ron95.json"
+CHECKPOINT_FILE = RAW_DATA_DIR / ".vn_fuel_e10_ron95_checked_dates"
+RECENT_RECHECK_DAYS = 7
 
 # Để thấp nhưng không spam server
 REQUEST_DELAY = 1
@@ -134,8 +141,14 @@ def extract_target_product(data, date_str):
 
 def load_existing_data():
     """
-    Load JSON hiện có để resume; hỗ trợ đọc CSV cũ nếu còn.
+    Load legacy JSON/CSV and all immutable batch files for this source.
     """
+
+    batch_events = read_event_batches(OUTPUT_FILE.name)
+    if batch_events:
+        df = pd.DataFrame(batch_events)
+        print(f"Existing batch data: {len(df):,} events")
+        return df
 
     if OUTPUT_FILE.exists():
 
@@ -167,6 +180,32 @@ def load_existing_data():
     return pd.DataFrame()
 
 
+def load_checked_dates():
+    """Load API dates already checked, including dates where the API had no data."""
+    if not CHECKPOINT_FILE.exists():
+        return set()
+    try:
+        return {
+            line.strip()
+            for line in CHECKPOINT_FILE.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        }
+    except OSError as e:
+        print(f"[WARNING] Cannot read date checkpoint: {e}")
+        return set()
+
+
+def save_checked_dates(checked_dates):
+    """Persist the small date-only checkpoint atomically after a successful API call."""
+    CHECKPOINT_FILE.parent.mkdir(parents=True, exist_ok=True)
+    temporary_file = CHECKPOINT_FILE.with_suffix(".tmp")
+    temporary_file.write_text(
+        "\n".join(sorted(checked_dates)) + "\n",
+        encoding="utf-8",
+    )
+    temporary_file.replace(CHECKPOINT_FILE)
+
+
 # ============================================================
 # MAIN
 # ============================================================
@@ -181,11 +220,17 @@ def main():
 
     if not existing_df.empty:
         date_column = "observation_period" if "observation_period" in existing_df.columns else "source_date"
-        completed_dates = set(existing_df[date_column].astype(str))
+        completed_dates = {
+            str(value)[:10]
+            for value in existing_df[date_column].dropna()
+        }
 
     else:
 
         completed_dates = set()
+
+    checked_dates = load_checked_dates() | completed_dates
+    recheck_from = END_DATE - timedelta(days=RECENT_RECHECK_DAYS - 1)
 
     # --------------------------------------------------------
     # Statistics
@@ -231,6 +276,13 @@ def main():
 
             continue
 
+        # A successful API response with no matching product is still a checked
+        # date. Revisit only the recent window in case the source publishes late.
+        if date_str in checked_dates and current_date < recheck_from:
+            skipped += 1
+            current_date += timedelta(days=1)
+            continue
+
         processed += 1
 
         print(
@@ -252,6 +304,9 @@ def main():
             current_date += timedelta(days=1)
 
             continue
+
+        checked_dates.add(date_str)
+        save_checked_dates(checked_dates)
 
         # ----------------------------------------------------
         # Extract target product
@@ -357,6 +412,11 @@ def main():
     print(
         f"Skipped dates : "
         f"{skipped:,}"
+    )
+
+    print(
+        f"Checked dates : {len(checked_dates):,} "
+        f"(recent {RECENT_RECHECK_DAYS}-day window is rechecked)"
     )
 
     print(

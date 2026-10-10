@@ -1,4 +1,5 @@
 apache-airflow==2.9.2
+typing_extensions>=4.15.0,<5
 apache-airflow-providers-trino
 astronomer-cosmos
 python-dotenv

@@ -32,6 +32,9 @@ REQUIRED_BRONZE_COLUMNS = {
 }
 
 SILVER_COLUMNS = [
+    "event_id", "source", "source_record_id", "source_release_ts",
+    "source_ingested_at", "available_at", "bronze_ingested_at",
+    "kafka_topic", "kafka_partition", "kafka_offset", "kafka_timestamp",
     "series_id", "country", "observation_date", "frequency", "value", "unit",
 ]
 SILVER_BUSINESS_KEY = ["series_id", "country", "observation_date", "unit"]
@@ -180,6 +183,8 @@ def normalize_bronze_events(events: DataFrame, topic: str) -> DataFrame:
         F.trim(F.col("event_id")).alias("event_id"),
         schema_version.alias("schema_version"),
         F.lower(F.trim(F.col("source"))).alias("source"),
+        F.trim(F.col("source_record_id")).alias("source_record_id"),
+        F.try_to_timestamp(F.col("release_ts")).alias("source_release_ts"),
         normalized_series.alias("series_id"),
         F.upper(F.trim(F.col("country"))).alias("country"),
         obs_date.alias("observation_date"),
@@ -189,7 +194,19 @@ def normalize_bronze_events(events: DataFrame, topic: str) -> DataFrame:
         F.try_to_timestamp(F.col("ingested_at")).alias("source_ingested_at"),
         F.col("bronze_ingested_at").cast("timestamp").alias("bronze_ingested_at"),
         F.col("kafka_timestamp").cast("timestamp").alias("kafka_timestamp"),
+        F.col("kafka_topic").alias("kafka_topic"),
+        F.col("kafka_partition").cast("int").alias("kafka_partition"),
         F.col("kafka_offset").cast("long").alias("kafka_offset"),
+    )
+
+    normalized = normalized.withColumn(
+        "available_at",
+        F.coalesce(
+            F.col("source_release_ts"),
+            F.col("kafka_timestamp"),
+            F.col("bronze_ingested_at"),
+            F.col("source_ingested_at"),
+        ),
     )
 
     topic_series = {
@@ -213,6 +230,7 @@ def normalize_bronze_events(events: DataFrame, topic: str) -> DataFrame:
     )
     positive_series = _is_positive_series()
     metadata_issues = [
+        F.when(F.col("event_id").isNull() | (F.col("event_id") == ""), "missing_event_id"),
         F.when(F.col("schema_version").isNull() | (F.col("schema_version") != 1), "unsupported_schema_version"),
         F.when(F.col("source").isNull() | (F.col("source") == ""), "missing_source"),
         F.when(F.col("series_id").isNull() | (F.col("series_id") == ""), "missing_series_id"),
@@ -356,6 +374,40 @@ def _save_silver_checkpoint(
         spark.catalog.dropTempView(view)
 
 
+def _upsert_silver_rejections(
+    spark: SparkSession, frame: DataFrame, table_name: str, path: str
+) -> int:
+    """Persist invalid/out-of-scope events for inspection instead of losing them."""
+    frame = frame.dropDuplicates(["kafka_topic", "kafka_partition", "kafka_offset"])
+    count = frame.count()
+    if count == 0:
+        return 0
+
+    escaped_path = _quote_sql_path(path)
+    if not _delta_exists(spark, path):
+        frame.write.format("delta").mode("overwrite").save(path)
+    else:
+        view = "silver_rejected_" + re.sub(r"\W+", "_", table_name)
+        frame.createOrReplaceTempView(view)
+        try:
+            spark.sql(
+                f"""MERGE INTO delta.`{escaped_path}` AS target
+                    USING `{view}` AS incoming
+                    ON target.kafka_topic = incoming.kafka_topic
+                       AND target.kafka_partition = incoming.kafka_partition
+                       AND target.kafka_offset = incoming.kafka_offset
+                    WHEN MATCHED THEN UPDATE SET *
+                    WHEN NOT MATCHED THEN INSERT *"""
+            )
+        finally:
+            spark.catalog.dropTempView(view)
+    spark.sql(
+        f"CREATE TABLE IF NOT EXISTS silver.{table_name} "
+        f"USING DELTA LOCATION '{escaped_path}'"
+    )
+    return count
+
+
 def _prune_silver_date_range(spark: SparkSession, path: str) -> None:
     """Keep only observations from 2025-01-01 through the current date."""
     if not _delta_exists(spark, path):
@@ -393,6 +445,8 @@ def process_topic(
 ) -> tuple[int, int]:
     """Normalize valid in-scope events and merge them into one compact table."""
     good_path = f"s3a://{bucket}/silver/{table_name}"
+    rejected_table = f"{table_name}_rejected"
+    rejected_path = f"s3a://{bucket}/silver/{rejected_table}"
     _prune_silver_date_range(spark, good_path)
 
     topic_events = bronze.filter(F.col("kafka_topic") == topic)
@@ -447,58 +501,6 @@ def process_topic(
         .drop("_business_row")
     )
 
-    # Fill missing/non-numeric measurements from the average of the same
-    # series, country, frequency, and unit. Use existing Silver observations
-    # as well as valid observations in this batch so incremental runs have a
-    # useful baseline. Identifiers, dates, frequency, and unit are never guessed.
-    eligible_for_average = (
-        (F.col("_metadata_rejection_reason") == "")
-        & F.col("observation_date").between(
-            F.lit(MIN_OBSERVATION_DATE).cast("date"), F.current_date()
-        )
-        & F.col("value").isNotNull()
-        & ~F.isnan("value")
-        & (F.abs(F.col("value")) != F.lit(float("inf")))
-        & (~_is_positive_series() | (F.col("value") > 0))
-    )
-    existing_columns = []
-    if _delta_exists(spark, good_path):
-        existing = spark.read.format("delta").load(good_path)
-        existing_columns = existing.columns
-        if set(SILVER_COLUMNS).issubset(existing_columns):
-            reference = existing.select(*SILVER_COLUMNS).unionByName(
-                normalized.filter(eligible_for_average).select(*SILVER_COLUMNS)
-            )
-        else:
-            reference = normalized.filter(eligible_for_average).select(*SILVER_COLUMNS)
-    else:
-        reference = normalized.filter(eligible_for_average).select(*SILVER_COLUMNS)
-    averages = reference.groupBy("series_id", "country", "frequency", "unit").agg(
-        F.avg("value").alias("_series_average")
-    )
-    incoming_for_imputation = normalized.alias("incoming")
-    average_values = averages.alias("averages")
-    imputation_condition = (
-        (F.col("incoming.series_id") == F.col("averages.series_id"))
-        & (F.col("incoming.country") == F.col("averages.country"))
-        & (F.col("incoming.frequency") == F.col("averages.frequency"))
-        & (F.col("incoming.unit") == F.col("averages.unit"))
-    )
-    normalized = (
-        incoming_for_imputation.join(average_values, imputation_condition, "left")
-        .select(
-            *[F.col(f"incoming.{column}").alias(column) for column in normalized.columns],
-            F.col("averages._series_average").alias("_series_average"),
-        )
-        .withColumn(
-            "value",
-            F.when(
-                F.col("value").isNull() | F.isnan("value"),
-                F.col("_series_average"),
-            ).otherwise(F.col("value")),
-        )
-        .drop("_series_average")
-    )
     numeric_invalid = (
         F.col("value").isNull()
         | F.isnan("value")
@@ -524,8 +526,22 @@ def process_topic(
         F.col("observation_date").isNotNull() & ~in_scope
     )
     out_of_scope_count = out_of_scope.count()
+    rejected = (
+        normalized.filter(
+            (F.col("rejection_reason") != "")
+            | (F.col("observation_date").isNotNull() & ~in_scope)
+        )
+        .withColumn(
+            "rejection_reason",
+            F.concat_ws(
+                ";",
+                F.col("rejection_reason"),
+                F.when(~in_scope, "observation_out_of_scope"),
+            ),
+        )
+        .select(*SILVER_COLUMNS, "rejection_reason")
+    )
     normalized = normalized.filter(in_scope)
-
     valid = normalized.filter(F.col("rejection_reason") == "").select(*SILVER_COLUMNS)
     rejected_counts = (
         normalized.filter(F.col("rejection_reason") != "")
@@ -543,11 +559,15 @@ def process_topic(
     good_count = upsert_silver_observations(
         spark, valid, f"silver.{table_name}", good_path, rebuild=rebuild
     )
+    persisted_rejections = _upsert_silver_rejections(
+        spark, rejected, rejected_table, rejected_path
+    )
     _prune_silver_date_range(spark, good_path)
     _save_silver_checkpoint(spark, source, bucket, topic)
     print(
         f"{topic}: upserted {good_count} valid observation(s); "
-        f"skipped {rejected_count} invalid and {out_of_scope_count} out-of-scope event(s).",
+        f"persisted {persisted_rejections} rejected event(s); "
+        f"{rejected_count} invalid and {out_of_scope_count} out-of-scope.",
         flush=True,
     )
     return good_count, rejected_count + out_of_scope_count

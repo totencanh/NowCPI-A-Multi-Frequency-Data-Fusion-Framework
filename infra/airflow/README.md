@@ -1,6 +1,6 @@
 # NowCPI Airflow
 
-The DAG `nowcpi_daily_ingestion` runs every day at 08:00 Vietnam time:
+The DAG `nowcpi_daily_pipeline` runs every day at 08:00 Vietnam time:
 
 1. Run the CPI, CPI components, IIP, Brent, USD/VND, and Vietnam fuel collectors.
 2. Publish new JSON batches to their `nowcpi.*` Kafka topics.

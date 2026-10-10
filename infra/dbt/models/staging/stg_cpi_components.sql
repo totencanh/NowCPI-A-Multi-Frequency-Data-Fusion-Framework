@@ -19,6 +19,11 @@ select
     observation_date,
     frequency,
     value as component_index,
-    unit
+    unit,
+    source,
+    source_record_id,
+    source_release_ts,
+    source_ingested_at,
+    available_at
 from {{ source('silver', 'cpi_component_observations') }}
 where frequency = 'monthly'

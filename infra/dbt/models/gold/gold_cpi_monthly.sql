@@ -3,14 +3,16 @@ with cpi_observations as (
         country,
         series_id,
         cast(date_trunc('month', observation_date) as date) as month_start,
-        cpi_index
+        cpi_index,
+        available_at
     from {{ ref('stg_cpi') }}
     union all
     select
         country,
         series_id,
         cast(date_trunc('month', observation_date) as date) as month_start,
-        component_index as cpi_index
+        component_index as cpi_index,
+        available_at
     from {{ ref('stg_cpi_components') }}
 ), cpi_with_changes as (
     select
@@ -18,6 +20,7 @@ with cpi_observations as (
         current.series_id,
         current.month_start,
         current.cpi_index,
+        current.available_at,
         100.0 * (current.cpi_index - previous.cpi_index)
             / nullif(previous.cpi_index, 0) as mom_percent,
         100.0 * (current.cpi_index - prior_year.cpi_index)
@@ -35,6 +38,7 @@ with cpi_observations as (
 select
     month_start,
     country,
+    max(available_at) as cpi_available_at,
     max(case when series_id = 'cpi_headline' then cpi_index end) as cpi_headline,
     max(case when series_id = 'cpi_headline' then mom_percent end) as cpi_headline_mom_percent,
     max(case when series_id = 'cpi_headline' then yoy_percent end) as cpi_headline_yoy_percent,

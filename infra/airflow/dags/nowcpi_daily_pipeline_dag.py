@@ -1,4 +1,4 @@
-"""Daily NowCPI source collection and Kafka publication."""
+"""Daily NowCPI pipeline from source collection through dbt marts."""
 
 from datetime import timedelta
 
@@ -34,8 +34,8 @@ def spark_submit_command(application: str, driver_port: int) -> str:
 
 
 with DAG(
-    dag_id="nowcpi_daily_ingestion",
-    description="Collect data, publish Kafka events, wait for Bronze, then refresh Silver.",
+    dag_id="nowcpi_daily_pipeline",
+    description="Collect data, publish Kafka events, process Bronze and Silver, then build dbt marts.",
     schedule="0 8 * * *",
     start_date=pendulum.datetime(2026, 1, 1, tz="Asia/Ho_Chi_Minh"),
     catchup=False,

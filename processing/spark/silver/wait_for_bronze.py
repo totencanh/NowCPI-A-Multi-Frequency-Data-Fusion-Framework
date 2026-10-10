@@ -7,6 +7,7 @@ import time
 import uuid
 
 from confluent_kafka import Consumer, TopicPartition
+from pyspark.errors import AnalysisException
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
@@ -38,12 +39,20 @@ def bronze_has_offsets(spark: SparkSession, bucket: str, targets) -> bool:
         return not targets
 
     expected = set(TOPIC_TABLES)
+    try:
+        bronze = spark.read.format("delta").load(path)
+    except AnalysisException as exc:
+        # The streaming writer can create _delta_log before committing its
+        # first transaction. Treat that short startup window as not caught up
+        # so the barrier keeps polling instead of failing the DAG immediately.
+        if "DELTA_TABLE_NOT_FOUND" in str(exc):
+            return False
+        raise
+
     actual = {
         (row.kafka_topic, row.kafka_partition): row.max_offset
         for row in (
-            spark.read.format("delta")
-            .load(path)
-            .filter(F.col("kafka_topic").isin(*expected))
+            bronze.filter(F.col("kafka_topic").isin(*expected))
             .groupBy("kafka_topic", "kafka_partition")
             .max("kafka_offset")
             .withColumnRenamed("max(kafka_offset)", "max_offset")

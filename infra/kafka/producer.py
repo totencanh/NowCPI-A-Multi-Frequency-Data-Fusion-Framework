@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from confluent_kafka import Producer
+from confluent_kafka import Consumer, Producer, TopicPartition
 
 
 SOURCE_TOPICS = {
@@ -150,6 +150,46 @@ def publish_batch(
     return len(events)
 
 
+def topics_without_retained_messages(broker: str, topics: set[str]) -> set[str]:
+    """Find empty topics so a reset Kafka broker can recover from raw batches.
+
+    The local published-batch manifest survives Kafka volume resets. Without
+    this check, it can incorrectly suppress replay into a newly empty broker.
+    """
+    consumer = Consumer(
+        {
+            "bootstrap.servers": broker,
+            "group.id": "nowcpi-publisher-topic-probe",
+            "enable.auto.commit": False,
+            "auto.offset.reset": "earliest",
+        }
+    )
+    empty: set[str] = set()
+    try:
+        metadata = consumer.list_topics(timeout=15)
+        for topic in topics:
+            topic_metadata = metadata.topics.get(topic)
+            if topic_metadata is None or topic_metadata.error is not None:
+                empty.add(topic)
+                continue
+
+            has_retained_messages = False
+            for partition_id, partition_metadata in topic_metadata.partitions.items():
+                if partition_metadata.error is not None:
+                    continue
+                low, high = consumer.get_watermark_offsets(
+                    TopicPartition(topic, partition_id), timeout=15, cached=False
+                )
+                if high > low:
+                    has_retained_messages = True
+                    break
+            if not has_retained_messages:
+                empty.add(topic)
+    finally:
+        consumer.close()
+    return empty
+
+
 def main() -> None:
     args = parse_args()
     state = load_state()
@@ -166,6 +206,15 @@ def main() -> None:
     total_events = 0
     published_batches = 0
     batches = discover_batches(args.source)
+    empty_topics = topics_without_retained_messages(
+        BROKER, {topic for _, topic in batches}
+    )
+    if empty_topics:
+        print(
+            "Detected empty Kafka topic(s); replaying their JSON batches: "
+            + ", ".join(sorted(empty_topics)),
+            flush=True,
+        )
     if args.force_replay:
         source_label = args.source or "all sources"
         print(f"Force replay enabled for {source_label}.", flush=True)
@@ -173,7 +222,11 @@ def main() -> None:
     for path, topic in batches:
         relative_path = path.relative_to(RAW_DATA_DIR).as_posix()
         checksum = sha256_file(path)
-        if not args.force_replay and state.get(relative_path, {}).get("sha256") == checksum:
+        if (
+            not args.force_replay
+            and topic not in empty_topics
+            and state.get(relative_path, {}).get("sha256") == checksum
+        ):
             continue
 
         count = publish_batch(producer, path, topic)
