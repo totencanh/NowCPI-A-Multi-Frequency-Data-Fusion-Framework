@@ -11,7 +11,6 @@ if str(PROJECT_ROOT) not in sys.path:
 from ingestion.common import first_available, make_event, write_events
 
 INDICATORS = {
-    "PPI": "FP.PPI.TOTL",
     "IIP_Growth": "NV.IND.TOTL.KD.ZG",
 }
 
@@ -53,7 +52,7 @@ if __name__ == "__main__":
     df = fetch_worldbank()
 
     print("=" * 60)
-    print("WORLD BANK - VIETNAM PPI / IIP")
+    print("WORLD BANK - VIETNAM IIP GROWTH")
     print("=" * 60)
 
     print("\n--- Latest observations ---")
@@ -62,8 +61,7 @@ if __name__ == "__main__":
     events = []
     for row in df.to_dict(orient="records"):
         code = first_available(row.get("collector_indicator_code"), default="unknown")
-        indicator_name = str(first_available(row.get("collector_indicator"), default="indicator")).lower()
-        series_id = "iip_growth" if indicator_name == "iip_growth" else "ppi"
+        series_id = "iip_growth"
         period = first_available(row.get("date"))
         events.append(make_event(
             source="world_bank",
@@ -71,15 +69,12 @@ if __name__ == "__main__":
             observation_period=period,
             frequency="annual",
             value=row.get("value"),
-            unit=first_available(
-                row.get("unit"),
-                default="percent" if series_id == "iip_growth" else "index",
-            ),
+            unit=first_available(row.get("unit"), default="percent"),
             source_record_id=f"{code}:{period}",
             raw_payload=row,
         ))
 
-    output_path = write_events("worldbank_ppi_iip_vietnam.json", events)
+    output_path = write_events("worldbank_iip_vietnam.json", events)
 
     if output_path:
         print(f"\nĐã lưu {len(events)} event vào: {output_path}")

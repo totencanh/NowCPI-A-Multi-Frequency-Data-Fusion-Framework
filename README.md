@@ -7,7 +7,7 @@ NowCPI is a real-time inflation nowcasting framework for Vietnam. It combines CP
 ## Architecture
 
 ```text
-IMF / CPI components / PPI-IIP / Oil / USD-VND / News
+IMF / CPI components / IIP growth / Oil / USD-VND / News
                          │
               Source-specific ingestion
                          │
@@ -40,7 +40,7 @@ Sources arrive at different frequencies and times. The pipeline retains each obs
 ```text
 NowCPI/
 ├── docs/                       # Architecture, data sources, data model, pipeline notes
-├── ingestion/                  # Collectors for CPI, components, oil, FX, PPI/IIP, and news
+├── ingestion/                  # Collectors for CPI, components, oil, FX, IIP, and news
 ├── data/raw/                   # Raw JSON source data
 ├── processing/spark/
 │   ├── bronze/                 # Ingest source records into the lakehouse

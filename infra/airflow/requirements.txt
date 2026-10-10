@@ -6,3 +6,4 @@ requests==2.32.3
 pandas==2.1.4
 yfinance==0.2.54
 confluent-kafka==2.3.0
+pyspark==3.5.0

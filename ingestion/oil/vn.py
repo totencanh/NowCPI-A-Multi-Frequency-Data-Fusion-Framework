@@ -18,7 +18,7 @@ from ingestion.common import RAW_DATA_DIR, make_event, write_events
 
 BASE_URL = "https://giaxanghomnay.com/api/pvdate"
 
-START_DATE = date(2023, 1, 1)
+START_DATE = date(2025, 1, 1)
 END_DATE = date.today()
 
 TARGET_PRODUCTS = {

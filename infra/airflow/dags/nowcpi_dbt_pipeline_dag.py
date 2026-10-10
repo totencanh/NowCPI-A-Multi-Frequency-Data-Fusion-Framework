@@ -1,8 +1,7 @@
-"""NowCPI dbt transformations: staging -> intermediate -> mart.
+"""NowCPI dbt transformations: staging -> subject-specific Gold tables.
 
-This DAG is manually triggered while source cadence and the Spark Silver layer
-are being finalized. It transforms tables already registered in Trino; it does
-not fetch source data or run Spark jobs.
+This DAG is manually triggered after Silver refreshes. It transforms tables
+already registered in Trino; it does not fetch source data or run Spark jobs.
 """
 
 from datetime import datetime
@@ -36,7 +35,7 @@ execution_config = ExecutionConfig(
 
 with DAG(
     dag_id="nowcpi_dbt_pipeline",
-    description="Transform available NowCPI lakehouse tables through dbt layers",
+    description="Build subject-specific dashboard tables in the NowCPI Gold layer",
     schedule=None,
     start_date=datetime(2026, 1, 1),
     catchup=False,
@@ -49,6 +48,8 @@ with DAG(
     dbt_deps = BashOperator(
         task_id="dbt_deps",
         bash_command=f"cd {DBT_PROJECT_PATH} && {DBT_EXECUTABLE} deps",
+        env={"PYTHONPATH": ""},
+        append_env=True,
     )
 
     staging = DbtTaskGroup(
@@ -56,6 +57,7 @@ with DAG(
         project_config=project_config,
         profile_config=profile_config,
         execution_config=execution_config,
+        operator_args={"env": {"PYTHONPATH": ""}},
         render_config=RenderConfig(
             load_method=LoadMode.DBT_LS,
             test_behavior=TestBehavior.AFTER_EACH,
@@ -63,28 +65,28 @@ with DAG(
         ),
     )
 
-    intermediate = DbtTaskGroup(
-        group_id="intermediate",
+    gold = DbtTaskGroup(
+        group_id="gold",
         project_config=project_config,
         profile_config=profile_config,
         execution_config=execution_config,
+        operator_args={"env": {"PYTHONPATH": ""}},
         render_config=RenderConfig(
             load_method=LoadMode.DBT_LS,
             test_behavior=TestBehavior.AFTER_EACH,
-            select=["path:models/intermediate"],
+            select=["path:models/gold"],
         ),
     )
 
-    mart = DbtTaskGroup(
-        group_id="mart",
-        project_config=project_config,
-        profile_config=profile_config,
-        execution_config=execution_config,
-        render_config=RenderConfig(
-            load_method=LoadMode.DBT_LS,
-            test_behavior=TestBehavior.AFTER_EACH,
-            select=["path:models/mart"],
+    drop_legacy_gold = BashOperator(
+        task_id="drop_legacy_gold_tables",
+        bash_command=(
+            f"env -u PYTHONPATH {DBT_EXECUTABLE} run-operation "
+            "drop_legacy_gold_tables "
+            f"--project-dir {DBT_PROJECT_PATH} --profiles-dir {DBT_PROJECT_PATH}"
         ),
+        env={"PYTHONPATH": ""},
+        append_env=True,
     )
 
-    start >> dbt_deps >> staging >> intermediate >> mart >> end
+    start >> dbt_deps >> staging >> drop_legacy_gold >> gold >> end

@@ -17,9 +17,7 @@ models:
     staging:
       +schema: staging
       +materialized: view
-    intermediate:
-      +schema: intermediate
+    gold:
+      +schema: gold
       +materialized: table
-    mart:
-      +schema: mart
-      +materialized: table
+      +on_table_exists: drop

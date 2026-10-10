@@ -66,6 +66,10 @@ def upsert_bronze_batch(spark: SparkSession, batch_df, batch_id: int, output_pat
     events = (
         decoded
         .withColumn("event_id", F.get_json_object("event_json", "$.event_id"))
+        .withColumn(
+            "schema_version",
+            F.expr("try_cast(get_json_object(event_json, '$.schema_version') AS INT)"),
+        )
         .withColumn("source", F.get_json_object("event_json", "$.source"))
         .withColumn("series_id", F.get_json_object("event_json", "$.series_id"))
         .withColumn("country", F.get_json_object("event_json", "$.country"))
@@ -161,6 +165,7 @@ def main() -> None:
     spark = (
         SparkSession.builder.appName("NowCPI-Bronze-Kafka-Streaming")
         .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
+        .config("spark.databricks.delta.schema.autoMerge.enabled", "true")
         .config(
             "spark.sql.catalog.spark_catalog",
             "org.apache.spark.sql.delta.catalog.DeltaCatalog",

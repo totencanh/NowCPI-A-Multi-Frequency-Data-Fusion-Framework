@@ -1,0 +1,71 @@
+[
+  {
+    "schema_version": 1,
+    "event_id": "65861f6188e0c225f5339c7017c0de8ca5f49af6e6e077e485ee963debe5c804",
+    "source": "yahoo_finance",
+    "series_id": "brent_front_month",
+    "country": "VNM",
+    "observation_period": "2026-10-05T00:00:00",
+    "frequency": "daily",
+    "value": 100.31999969482422,
+    "unit": "USD/barrel",
+    "release_ts": null,
+    "ingested_at": "2026-10-07T07:15:52.364128+00:00",
+    "source_record_id": "brent_front_month:2026-10-05T00:00:00",
+    "raw_payload": {
+      "Date": "2026-10-05T00:00:00",
+      "Adj Close": 100.31999969482422,
+      "Close": 100.31999969482422,
+      "High": 103.55000305175781,
+      "Low": 99.76000213623047,
+      "Open": 103.01000213623047,
+      "Volume": 39826
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "288b859ef75c4fb4b18344eb95c5a8ec69ac5883cc897f121c5fd34ec0340f64",
+    "source": "yahoo_finance",
+    "series_id": "brent_front_month",
+    "country": "VNM",
+    "observation_period": "2026-10-06T00:00:00",
+    "frequency": "daily",
+    "value": 100.58000183105469,
+    "unit": "USD/barrel",
+    "release_ts": null,
+    "ingested_at": "2026-10-07T07:15:52.364157+00:00",
+    "source_record_id": "brent_front_month:2026-10-06T00:00:00",
+    "raw_payload": {
+      "Date": "2026-10-06T00:00:00",
+      "Adj Close": 100.58000183105469,
+      "Close": 100.58000183105469,
+      "High": 101.30000305175781,
+      "Low": 97.08000183105469,
+      "Open": 100.26000213623047,
+      "Volume": 39826
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "5b9b5649a118b8822925e4c7b5088a6e70da5f8a7c97ad1061cd51bce4338b25",
+    "source": "yahoo_finance",
+    "series_id": "brent_front_month",
+    "country": "VNM",
+    "observation_period": "2026-10-07T00:00:00",
+    "frequency": "daily",
+    "value": 101.2699966430664,
+    "unit": "USD/barrel",
+    "release_ts": null,
+    "ingested_at": "2026-10-07T07:15:52.364171+00:00",
+    "source_record_id": "brent_front_month:2026-10-07T00:00:00",
+    "raw_payload": {
+      "Date": "2026-10-07T00:00:00",
+      "Adj Close": 101.2699966430664,
+      "Close": 101.2699966430664,
+      "High": 101.87999725341797,
+      "Low": 100.94999694824219,
+      "Open": 100.97000122070312,
+      "Volume": 2971
+    }
+  }
+]

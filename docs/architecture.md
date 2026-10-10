@@ -19,10 +19,13 @@ event fields, Kafka topic/partition/offset, and Bronze ingestion time. Stable
 `cpi.py` and `market.py` Spark jobs remain available for direct JSON backfills;
 they are not part of the scheduled path.
 
-## Planned stages
+## Silver and Gold
 
-- Implement Silver normalization and validation.
-- Add dbt SQL models for staging, intermediate features, and marts.
+- Spark Silver normalizes and validates observations from Bronze, writes
+  compact Delta tables with no persisted source/event IDs. Invalid events are
+  logged and skipped; only dates from 2025 onward are retained. PPI is removed.
+- dbt builds conformed Gold dimensions and facts, then publishes pivoted
+  analytical marts for OLAP at documented monthly and annual grains.
 - Add news collection and NLP, forecasting jobs, and a Superset service after
   the feature tables exist. The news collector is currently empty.
 

@@ -19,7 +19,8 @@ Kafka topic/partition/offset metadata.
 
 The older `processing/spark/bronze/cpi.py` and `market.py` jobs still read JSON
 directly for manual development/backfills; Airflow no longer invokes them.
-Silver remains a later step, and news is omitted because its collector is empty.
+Airflow runs the Spark Silver jobs after Bronze catches up. News is omitted
+because its collector is empty.
 
 ## Start services
 
@@ -62,9 +63,10 @@ Check `docker compose logs -f spark-bronze-streaming` for consumer progress and
 
 ## Next stages
 
-`processing/spark/silver/` and the dbt SQL models are still empty scaffolds.
-Implement Silver validation next, then staging/intermediate/mart models.
+`processing/spark/silver/` contains the Bronze-to-Silver normalization jobs.
+After Silver succeeds, the daily ingestion DAG runs dbt staging and then builds
+the conformed Gold dimensions and fact tables. The `nowcpi_dbt_pipeline` DAG is
+available for a standalone manual rebuild.
 
-The dbt project and Trino profile are configured. Run `dbt run` only after the
-SQL model files are implemented; the current empty SQL placeholders are not
-runnable models.
+The dbt project and Trino profile are configured. Gold models are in
+`infra/dbt/models/gold/`.

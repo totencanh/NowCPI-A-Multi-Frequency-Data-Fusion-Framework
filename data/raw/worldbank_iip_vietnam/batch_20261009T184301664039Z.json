@@ -1,0 +1,2114 @@
+[
+  {
+    "schema_version": 1,
+    "event_id": "8fb75d7edde9ee809d76fe501e4c7ba71e8db3fdf9e863bbd206a8f7c3b4b0c2",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1960",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.646978+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1960",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1960",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "0f84ab64ffa765969ac48e490c1f903a0405302abdfd130fec7565d1dd75bef5",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1961",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647014+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1961",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1961",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "40b66fa4fbb9b6ea75b50ecc40549852683bb730e6e1cf83b262f29320773882",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1962",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647029+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1962",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1962",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "ff7daff3ccf1490c7a44ce1f7071ddfdf7e334a08602c968fcc5dac97b14d0de",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1963",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647096+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1963",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1963",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "2dd2818f52946ed9ced0f4a26cf616cd198b30e08ec57bedd029cdd5fd39994e",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1964",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647112+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1964",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1964",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "c89bf2a4cd49a28babe9e8e29286a2567180953f2ba6d0994178bb08c791f260",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1965",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647126+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1965",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1965",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "c5db596b38058d6cb03a3952af8bd25ddc722cd2345d10ff0c0cbbe600de4508",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1966",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647139+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1966",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1966",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "9d42061d0da9143b52452c876d109d1bcbd41c4ce748434fc25dedb6698ac352",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1967",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647157+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1967",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1967",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "7b00df1c3f2a8786705629b6e6d19984014741093ffa22cada20b1b2956f1731",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1968",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647171+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1968",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1968",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "edd0106577a1852575999c84334990fa890e7af8fc856a97c283ff91d720df9e",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1969",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647185+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1969",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1969",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "97b82cede15b6da4a8a5503db126aae0560beb65de1532694748e24227eb5f5a",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1970",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647202+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1970",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1970",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "b8482c9f4bc62111106df10a7104c2898acf20bc0db47e51e2708c6bc2e78ec9",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1971",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647215+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1971",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1971",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "edbd539990d677a03643c8b4a58c327bd788613d58354eaff386b3f5acf52fc3",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1972",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647228+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1972",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1972",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "ca02d7c6c989646e4c893415298c64d5d501bf11003cdeaf6d01bd55d280a056",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1973",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647240+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1973",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1973",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "d44bb18435bf54505cf5c1cbcb392b946c42671dd9a21ade11a26ef7b0d958ba",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1974",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647253+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1974",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1974",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "234df76a56344da89f052abf2aa1ee3672b3140b34cb8deb255f61f085a3c181",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1975",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647266+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1975",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1975",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "ddfb50caa00d8e5729a9ce9956e456849cf439da389dbc04d8b9578e4153585a",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1976",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647278+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1976",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1976",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "c4fe181256c52d5427109da1b92cdffc8fa889b083d7e6f9e9ca7ae904132797",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1977",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647291+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1977",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1977",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "4a008dd4ed6db32a6f2e018ff61369293f4fd800a7c7190b2e8f604be6c54dc2",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1978",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647303+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1978",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1978",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "0b7b608bdf02edef0a0877605bcd311f83a0cd008d715c35deddb8fc883d8e31",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1979",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647316+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1979",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1979",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "d2d2a658db4a5d6320947bcb87f1cb73802e37fa3329860ec8986e5ef224e703",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1980",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647377+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1980",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1980",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "3b4bed940b247a670a08d630d86bcee0472fad0872582371cdd13786223414a3",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1981",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647391+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1981",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1981",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "5d4f08412629cceb29cd3d43eff1f080870c7dfbd2e1dbcb8adda5d2266aee0d",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1982",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647406+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1982",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1982",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "62a66585dbd641ac69a21fc4e83082a0bb8cc7a1f0e3a7caaa851487d40ed598",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1983",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647420+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1983",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1983",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "8e57fe4932e1502b3f244e55f510cba60933481eed34510942bb9ad01510f09a",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1984",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647432+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1984",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1984",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "7863cdd1128451d50972e9f5532b1e6640325e8cfef6476c761080b972730626",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1985",
+    "frequency": "annual",
+    "value": null,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647445+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1985",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1985",
+      "value": null,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "80be5a52b68840f8d115c82beec53afdf5a613a5ac1cb6442bc80715437d4959",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1986",
+    "frequency": "annual",
+    "value": 10.941045687236,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647459+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1986",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1986",
+      "value": 10.941045687236,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "8575847ba31a96f85776768b020056a20c98f4b35c63d283fa41dde076b4dc2c",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1987",
+    "frequency": "annual",
+    "value": 8.46196269335657,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647473+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1987",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1987",
+      "value": 8.46196269335657,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "a3110a1e7991bb3896036d44dba33da83a38fe78514eb555bbb626deb118821f",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1988",
+    "frequency": "annual",
+    "value": 4.9965329183232,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647492+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1988",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1988",
+      "value": 4.9965329183232,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "5e73d95cc13fa2b19dc1930230e2700725ea72b1b05b7ad9ff06c102ffca92cf",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1989",
+    "frequency": "annual",
+    "value": -2.59078047968546,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647522+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1989",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1989",
+      "value": -2.59078047968546,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "f83d936ecea17b79f414658a5a18b976da3758307e201476443f2fbb5419a71e",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1990",
+    "frequency": "annual",
+    "value": 2.26566012839673,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647559+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1990",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1990",
+      "value": 2.26566012839673,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "4aeefbd02a378fde37e738b26eced8e72b2f8133b4efb13abcc4a27c48b5507c",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1991",
+    "frequency": "annual",
+    "value": 7.71199078725995,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647589+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1991",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1991",
+      "value": 7.71199078725995,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "66dce70d91e958c3e3d60a871d92f61db57197421637d2166e07ec57f3430788",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1992",
+    "frequency": "annual",
+    "value": 12.7881906334883,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647659+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1992",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1992",
+      "value": 12.7881906334883,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "e30394234b32b7d31514bee82e117e679e2074b3b7238f46f2eae5b2afe60245",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1993",
+    "frequency": "annual",
+    "value": 12.6242019206347,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647703+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1993",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1993",
+      "value": 12.6242019206347,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "47e779520a0a1b2a046e5719f811943bee9be02f68b1136645ea6e45deb76f2a",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1994",
+    "frequency": "annual",
+    "value": 13.3893656591289,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647793+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1994",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1994",
+      "value": 13.3893656591289,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "f7be0a4ae1009b3d340a5e9c596d1bb439c98386d4ca05214378d3f023b299c5",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1995",
+    "frequency": "annual",
+    "value": 13.601084104565,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647829+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1995",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1995",
+      "value": 13.601084104565,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "e5ce2705d5215f879e544ac9a22253c2a0f41b4e5ee1635824d5bf118c2c2e95",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1996",
+    "frequency": "annual",
+    "value": 14.4594312309823,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647860+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1996",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1996",
+      "value": 14.4594312309823,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "e9df57504df5f822e0065eff5a8d5af9097098c8422b89b49d7f59d06351090b",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1997",
+    "frequency": "annual",
+    "value": 12.6208711696363,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647890+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1997",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1997",
+      "value": 12.6208711696363,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "b2ad98fbd51b157a2511c80ac2fb1b1bf832274032d044ee56fffad3525f6673",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1998",
+    "frequency": "annual",
+    "value": 8.33399094697016,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647920+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1998",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1998",
+      "value": 8.33399094697016,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "89bcb05fd1d07ef3fce3971cb91225fbbfac86c55b3855d8089768509cd102c0",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "1999",
+    "frequency": "annual",
+    "value": 7.68431156660631,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647950+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:1999",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "1999",
+      "value": 7.68431156660631,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "f712cc7fffae7fd996919150188687fa7867862aa6801cae3612c7999c459392",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2000",
+    "frequency": "annual",
+    "value": 10.0696263908142,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.647983+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2000",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2000",
+      "value": 10.0696263908142,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "ea506850a48f97818cfa1afe5006a94763ab43ce65de76104ec415160ef1241f",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2001",
+    "frequency": "annual",
+    "value": 8.56956647045686,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648015+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2001",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2001",
+      "value": 8.56956647045686,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "6ab39cdd4b9abd35297b100e724740176114bd67291d404e7dd2d365d934cf23",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2002",
+    "frequency": "annual",
+    "value": 7.24183948228023,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648049+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2002",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2002",
+      "value": 7.24183948228023,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "3fd5a94c82864873f0126b76b1a6615907a610d393d6034f32bf88b036f84e66",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2003",
+    "frequency": "annual",
+    "value": 9.38022080256542,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648078+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2003",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2003",
+      "value": 9.38022080256542,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "086fa9dab5bff57c30336042091079335930c1c83bf8b9a45e5abe3aa54b2c40",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2004",
+    "frequency": "annual",
+    "value": 9.9272130343424,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648108+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2004",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2004",
+      "value": 9.9272130343424,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "3f5656d35409606af2b3992d4dccbbb2bbc02e6c871e37b10266dae793125d22",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2005",
+    "frequency": "annual",
+    "value": 8.41942796097111,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648138+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2005",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2005",
+      "value": 8.41942796097111,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "260105bc22c3642f46c4783f2471ac7f9d94d06cb36b33b3bb72040fb182e04d",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2006",
+    "frequency": "annual",
+    "value": 7.28981562909181,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648173+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2006",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2006",
+      "value": 7.28981562909181,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "af141ef5a59dd82d0717ee655c160dd818f7ff5192f4688266616c7368999d16",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2007",
+    "frequency": "annual",
+    "value": 7.36419372055086,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648204+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2007",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2007",
+      "value": 7.36419372055086,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "6dea7e9b19fca77bf4e9f7a8c87133c73ed60c2c0a31c9f387b13cf8d9f16683",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2008",
+    "frequency": "annual",
+    "value": 4.13333925927901,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648234+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2008",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2008",
+      "value": 4.13333925927901,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "b930ce0ceebc581aa001476eca7bd2a1e97b439456f915e3fe86158e7fb5ec89",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2009",
+    "frequency": "annual",
+    "value": 5.97580435297486,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648265+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2009",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2009",
+      "value": 5.97580435297486,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "5e026f6ef4aff024d2adac3ace5e3b78c1985358a9abd85e4aa38ffd59207192",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2010",
+    "frequency": "annual",
+    "value": -9.923181155088,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648297+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2010",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2010",
+      "value": -9.923181155088,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "fa44edf2c6ed1bbce1d47cce87baed521d220d0521fe057e32006bb90871e7e2",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2011",
+    "frequency": "annual",
+    "value": 7.34752635637473,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648329+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2011",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2011",
+      "value": 7.34752635637473,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "2f7bba03dfed19bd0b86e7bf4498dd2329f1631cb6197da58e2490b961d57107",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2012",
+    "frequency": "annual",
+    "value": 7.16789501248851,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648359+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2012",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2012",
+      "value": 7.16789501248851,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "ee75e8fe8bdde38e4aeade5cbdda805eb310c9b246e21227147a0a67c66068d3",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2013",
+    "frequency": "annual",
+    "value": 5.12330892127126,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648389+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2013",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2013",
+      "value": 5.12330892127126,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "b7a72fb2d061db7ab5caf5b90ffa9254cdb098ffe279c9439f6d57d4cb9131b2",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2014",
+    "frequency": "annual",
+    "value": 6.23908505458006,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648420+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2014",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2014",
+      "value": 6.23908505458006,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "5a205d420b67380652d5691d0b360f4a10f4da1aa877ef63650bb925d99c27c7",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2015",
+    "frequency": "annual",
+    "value": 9.19315527733437,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648450+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2015",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2015",
+      "value": 9.19315527733437,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "7e917009fac53fca7f2f70cc30681c359492c021774049d4c3ea4ec972abc0b1",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2016",
+    "frequency": "annual",
+    "value": 7.82565785936875,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648480+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2016",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2016",
+      "value": 7.82565785936875,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "e29f6ad013ccced0bff584c8ceefdc1a588666430214b004ebb324650cbf8494",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2017",
+    "frequency": "annual",
+    "value": 8.28460517461811,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648563+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2017",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2017",
+      "value": 8.28460517461811,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "8e45afe2e6ecdbd2db75da73ad0b8153f688c14b65891aaa21235a6f2acbc0ab",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2018",
+    "frequency": "annual",
+    "value": 8.98843276330533,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648599+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2018",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2018",
+      "value": 8.98843276330533,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "8a67d52c5cf14024d9eb5f7707be0bca4a299389fcba853667a6e618fc6ebb40",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2019",
+    "frequency": "annual",
+    "value": 8.20936731693142,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648634+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2019",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2019",
+      "value": 8.20936731693142,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "e690712d798e3e0826132cd83df56a66276cbb0f9a3c35d54c4797c99ff7cc84",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2020",
+    "frequency": "annual",
+    "value": 4.37905342327632,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648670+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2020",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2020",
+      "value": 4.37905342327632,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "94baa0a74a517cb2a6dc053728dd0a85cdade35d6c2db14b99ed4a0d164cff30",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2021",
+    "frequency": "annual",
+    "value": 3.20685187051204,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648703+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2021",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2021",
+      "value": 3.20685187051204,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "a5fae3690c24aa31a0185e41db8e62713ab69a5d2989004e663b3598fe951975",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2022",
+    "frequency": "annual",
+    "value": 8.17971694506856,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648734+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2022",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2022",
+      "value": 8.17971694506856,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "3ff21d0a9ba3b3054eefde033522db372d51a38dd18303dcfe4a61ca1031fe8e",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2023",
+    "frequency": "annual",
+    "value": 3.62174883986941,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648766+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2023",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2023",
+      "value": 3.62174883986941,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "f53c77e5920cb0ee9846ccbe1ae4a5da37cf0984ee3a9a5547dcba071d42da17",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2024",
+    "frequency": "annual",
+    "value": 8.02122079785499,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648795+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2024",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2024",
+      "value": 8.02122079785499,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "4ae2613497df020cd3176d8a3f2290afc4036c1ffe460b277fc100e69119f0d9",
+    "source": "world_bank",
+    "series_id": "iip_growth",
+    "country": "VNM",
+    "observation_period": "2025",
+    "frequency": "annual",
+    "value": 8.94571141518811,
+    "unit": "percent",
+    "release_ts": null,
+    "ingested_at": "2026-10-09T18:43:01.648825+00:00",
+    "source_record_id": "NV.IND.TOTL.KD.ZG:2025",
+    "raw_payload": {
+      "indicator": {
+        "id": "NV.IND.TOTL.KD.ZG",
+        "value": "Industry (including construction), value added (annual % growth)"
+      },
+      "country": {
+        "id": "VN",
+        "value": "Viet Nam"
+      },
+      "countryiso3code": "VNM",
+      "date": "2025",
+      "value": 8.94571141518811,
+      "unit": "",
+      "obs_status": "",
+      "decimal": 1,
+      "collector_indicator": "IIP_Growth",
+      "collector_indicator_code": "NV.IND.TOTL.KD.ZG"
+    }
+  }
+]

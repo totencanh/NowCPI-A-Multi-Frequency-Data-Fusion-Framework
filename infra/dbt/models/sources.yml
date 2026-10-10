@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: silver
+    description: Curated observations produced by the Spark Silver jobs.
+    database: delta
+    schema: silver
+    tables:
+      - name: cpi_observations
+      - name: cpi_component_observations
+      - name: iip_observations
+      - name: brent_oil_observations
+      - name: usd_vnd_observations
+      - name: vn_fuel_observations

@@ -17,6 +17,14 @@ x-airflow-common: &airflow-common
     TRINO_HOST: trino
     TRINO_PORT: "8080"
     TRINO_USER: nowcpi
+    SPARK_HOME: /home/airflow/.local/lib/python3.11/site-packages/pyspark
+    PYTHONPATH: /opt/spark/app:/home/airflow/.local/lib/python3.11/site-packages
+    MINIO_ENDPOINT: ${MINIO_ENDPOINT:-http://minio:9000}
+    MINIO_ROOT_USER: ${MINIO_ROOT_USER:-nowcpi}
+    MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-nowcpi-local-password}
+    MINIO_BUCKET: ${MINIO_BUCKET:-nowcpi}
+    BRONZE_WAIT_TIMEOUT_SECONDS: "1800"
+    BRONZE_WAIT_POLL_SECONDS: "10"
   volumes:
     - ./infra/airflow/dags:/opt/airflow/dags
     - ./infra/airflow/logs:/opt/airflow/logs
@@ -25,6 +33,7 @@ x-airflow-common: &airflow-common
     - ./data/raw:/opt/airflow/data/raw
     - ./infra/kafka:/opt/airflow/kafka:ro
     - ./workspace/kafka-publisher:/opt/airflow/kafka-state
+    - ./processing:/opt/spark/app:ro
   depends_on:
     airflow-db:
       condition: service_healthy
@@ -290,6 +299,10 @@ services:
       - --master
       - spark://spark-master:7077
       - --conf
+      - spark.cores.max=1
+      - --conf
+      - spark.executor.cores=1
+      - --conf
       - spark.driver.host=spark-bronze-streaming
       - --conf
       - spark.driver.bindAddress=0.0.0.0
@@ -311,7 +324,7 @@ services:
       MINIO_BUCKET: ${MINIO_BUCKET:-nowcpi}
       KAFKA_BROKER: kafka:9092
       SPARK_DRIVER_HOST: spark-bronze-streaming
-      BRONZE_KAFKA_CHECKPOINT: /opt/spark/work-dir/checkpoints/bronze-kafka-events-v2
+      BRONZE_KAFKA_CHECKPOINT: /opt/spark/work-dir/checkpoints/bronze-kafka-events-v3
     volumes:
       - ./workspace:/opt/spark/work-dir
       - ./processing:/opt/spark/app:ro

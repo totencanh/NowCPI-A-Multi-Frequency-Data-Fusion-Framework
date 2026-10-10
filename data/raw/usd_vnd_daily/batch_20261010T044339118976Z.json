@@ -1,0 +1,48 @@
+[
+  {
+    "schema_version": 1,
+    "event_id": "b3f083fadc0786fd5efa2e04a8606c601dcd3bf1805430e09aa4d275c2588585",
+    "source": "yahoo_finance",
+    "series_id": "usd_vnd",
+    "country": "VNM",
+    "observation_period": "2026-10-09",
+    "frequency": "daily",
+    "value": 25889.0,
+    "unit": "VND/USD",
+    "release_ts": null,
+    "ingested_at": "2026-10-10T04:43:39.027366+00:00",
+    "source_record_id": "usd_vnd:2026-10-09",
+    "raw_payload": {
+      "Date": "2026-10-09T00:00:00.000",
+      "Adj Close": 25889.0,
+      "Close": 25889.0,
+      "High": 25889.0,
+      "Low": 25804.0,
+      "Open": 25889.0,
+      "Volume": 0
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "cf1d5231e4e24753bc81e37730c86151c5502209db405b9836d50fa93d4f4aab",
+    "source": "yahoo_finance",
+    "series_id": "usd_vnd",
+    "country": "VNM",
+    "observation_period": "2026-10-10",
+    "frequency": "daily",
+    "value": 25879.0,
+    "unit": "VND/USD",
+    "release_ts": null,
+    "ingested_at": "2026-10-10T04:43:39.027378+00:00",
+    "source_record_id": "usd_vnd:2026-10-10",
+    "raw_payload": {
+      "Date": "2026-10-10T00:00:00.000",
+      "Adj Close": 25879.0,
+      "Close": 25879.0,
+      "High": 25879.0,
+      "Low": 25879.0,
+      "Open": 25879.0,
+      "Volume": 0
+    }
+  }
+]

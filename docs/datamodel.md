@@ -27,10 +27,18 @@ Each collector wraps one source observation in a common event envelope:
   `s3a://<MINIO_BUCKET>/bronze/kafka_events`.
 - **Batch backfills:** `processing/spark/bronze/cpi.py` and `market.py` remain
   available to load JSON directly into source-specific Bronze Delta tables.
-- **Silver:** planned; will validate types, normalize period/frequency fields,
-  and apply series-specific quality rules.
-- **Gold:** planned through dbt; will expose aligned macro/market features and
-  nowcasting input tables.
+- **Silver:** Spark validates the event contract, normalizes observation dates,
+  frequencies, values, units, and fuel product identity, then writes compact
+  Delta tables with only series, country, date, frequency, value, and unit.
+  Invalid events are logged and skipped; no quarantine tables are stored.
+  Only observation dates from 2025-01-01 through the current Vietnam date are
+  retained. PPI is excluded; annual IIP growth remains. Silver does not pivot
+  or aggregate indicators; Bronze retains source IDs, payloads, and Kafka
+  lineage.
+- **Gold:** dbt publishes compact analytical facts and conformed dimensions,
+  then pivots measures into subject-specific marts for OLAP. CPI/monthly market
+  measures remain monthly; annual IIP remains annual and is not
+  interpolated into monthly data.
 
 Do not combine observations at different frequencies before a temporal
 alignment policy is defined. The current annual World Bank industrial value

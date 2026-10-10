@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import os
@@ -16,7 +17,7 @@ from confluent_kafka import Producer
 SOURCE_TOPICS = {
     "imf_cpi_vietnam": "nowcpi.cpi",
     "imf_cpi_components_vietnam": "nowcpi.cpi_components",
-    "worldbank_ppi_iip_vietnam": "nowcpi.ppi_iip",
+    "worldbank_iip_vietnam": "nowcpi.ppi_iip",
     "brent_oil_daily": "nowcpi.brent_oil",
     "usd_vnd_daily": "nowcpi.usd_vnd",
     "vn_fuel_e10_ron95": "nowcpi.vn_fuel",
@@ -27,6 +28,21 @@ STATE_FILE = Path(
     os.getenv("KAFKA_PUBLISHED_STATE", "/app/state/published_batches.json")
 )
 BROKER = os.getenv("KAFKA_BROKER", "kafka:9092")
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--source",
+        choices=sorted(SOURCE_TOPICS),
+        help="Publish batches for one source only.",
+    )
+    parser.add_argument(
+        "--force-replay",
+        action="store_true",
+        help="Republish selected batches even when their checksum is in the state file.",
+    )
+    return parser.parse_args()
 
 
 def sha256_file(path: Path) -> str:
@@ -60,10 +76,12 @@ def save_state(state: dict[str, dict[str, str]]) -> None:
     temporary_path.replace(STATE_FILE)
 
 
-def discover_batches() -> list[tuple[Path, str]]:
+def discover_batches(source_filter: str | None = None) -> list[tuple[Path, str]]:
     """Find JSON snapshots/batches only for the known NowCPI source folders."""
     batches: list[tuple[Path, str]] = []
     for source_name, topic in SOURCE_TOPICS.items():
+        if source_filter and source_name != source_filter:
+            continue
         source_dir = RAW_DATA_DIR / source_name
         if source_dir.is_dir():
             batches.extend(
@@ -133,6 +151,7 @@ def publish_batch(
 
 
 def main() -> None:
+    args = parse_args()
     state = load_state()
     producer = Producer(
         {
@@ -146,10 +165,15 @@ def main() -> None:
 
     total_events = 0
     published_batches = 0
-    for path, topic in discover_batches():
+    batches = discover_batches(args.source)
+    if args.force_replay:
+        source_label = args.source or "all sources"
+        print(f"Force replay enabled for {source_label}.", flush=True)
+
+    for path, topic in batches:
         relative_path = path.relative_to(RAW_DATA_DIR).as_posix()
         checksum = sha256_file(path)
-        if state.get(relative_path, {}).get("sha256") == checksum:
+        if not args.force_replay and state.get(relative_path, {}).get("sha256") == checksum:
             continue
 
         count = publish_batch(producer, path, topic)
@@ -164,7 +188,10 @@ def main() -> None:
         print(f"Published {count} event(s) from {relative_path} to {topic}", flush=True)
 
     if published_batches == 0:
-        print("No new or changed JSON batches to publish.", flush=True)
+        if args.force_replay:
+            print("No JSON batches found for the selected source.", flush=True)
+        else:
+            print("No new or changed JSON batches to publish.", flush=True)
     else:
         print(
             f"Published {total_events} event(s) from {published_batches} batch file(s).",
