@@ -1,0 +1,4 @@
+model,evaluated_months,MAE_pp,RMSE_pp,MAPE_pct,Directional_Accuracy_pct,MAE_Improvement_pct
+naive,9,0.414,0.5091,136.0716,88.8889,0.0
+ar1_linear,9,0.4575,0.6627,113.3713,77.7778,-10.5191
+ar1_ridge,9,0.4329,0.5671,117.1112,77.7778,-4.5741

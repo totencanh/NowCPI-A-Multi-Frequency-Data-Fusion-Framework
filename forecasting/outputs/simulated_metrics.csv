@@ -1,0 +1,7 @@
+model,evaluated_months,mae_pp,rmse_pp,mape_pct_excluding_abs_actual_le_0_1pp,mape_included_months,directional_accuracy_pct,mae_improvement_vs_naive_pct,mae_degradation_vs_full_pct
+naive,9,0.414,0.5091,115.4845,8,88.8889,0.0,-23.7395
+ridge_cpi_only,9,0.4493,0.6038,91.8115,8,66.6667,-8.5418,-17.2254
+ridge_full,9,0.5428,0.6783,120.4012,8,66.6667,-31.1295,0.0
+loss_brent,9,0.5123,0.7167,107.123,8,66.6667,-23.7619,-5.6186
+loss_fx,9,0.5448,0.6903,119.7829,8,66.6667,-31.6074,0.3644
+loss_fuel,9,0.4882,0.5964,111.6658,8,77.7778,-17.932,-10.0644
