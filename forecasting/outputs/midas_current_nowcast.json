@@ -1,0 +1,23 @@
+{
+  "target_month": "2026-10",
+  "cutoff_at_utc": "2026-10-16T19:29:15.523680+00:00",
+  "processing_started_at_utc": "2026-10-16T19:29:15.523680+00:00",
+  "training_months": 18,
+  "latest_actual_cpi_month": "2026-07",
+  "cpi_only_ridge_nowcast_mom_percent": null,
+  "midas_ridge_nowcast_mom_percent": 0.7821974432447076,
+  "ar_midas_ridge_nowcast_mom_percent": null,
+  "midas_status": "ok",
+  "method": "ridge U-MIDAS: 12 weekly Brent log returns; optional CPI-lag AR-MIDAS",
+  "evaluation_note": "Historical scores use month-end calendar cutoffs, not archived real-time vintages.",
+  "availability_policy": "Each source is filtered independently by its own available_at/label_available_at timestamp; inputs arriving after cutoff are excluded.",
+  "brent_observations_available_at_cutoff": 451,
+  "brent_latest_observation_date": "2026-10-16",
+  "brent_latest_available_at_utc": "2026-10-16T19:12:26.155000+00:00",
+  "cpi_lag_month": "2026-09",
+  "cpi_lag_available_at_utc": null,
+  "cpi_lag_status": "previous month's CPI MoM is not present or not yet released by the cutoff",
+  "midas_training_months": 17,
+  "processing_completed_at_utc": "2026-10-16T19:29:15.997216+00:00",
+  "processing_duration_seconds": 0.473
+}

@@ -1,0 +1,140 @@
+[
+  {
+    "schema_version": 1,
+    "event_id": "8a7d1704be0d785b99cf78ae6af08654369fb4fc20a46552b711a31075d1215d",
+    "source": "yahoo_finance",
+    "series_id": "brent_front_month",
+    "country": "VNM",
+    "observation_period": "2026-10-09T00:00:00",
+    "frequency": "daily",
+    "value": 104.72000122070312,
+    "unit": "USD/barrel",
+    "release_ts": null,
+    "ingested_at": "2026-10-16T19:12:11.580757+00:00",
+    "source_record_id": "brent_front_month:2026-10-09T00:00:00",
+    "raw_payload": {
+      "Date": "2026-10-09T00:00:00",
+      "Adj Close": 104.72000122070312,
+      "Close": 104.72000122070312,
+      "High": 105.06999969482422,
+      "Low": 102.38999938964844,
+      "Open": 103.9000015258789,
+      "Volume": 28889
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "66f88974e9a21582535d2607a4ba8915ad64343b659e58bcce450eb5b59d23ec",
+    "source": "yahoo_finance",
+    "series_id": "brent_front_month",
+    "country": "VNM",
+    "observation_period": "2026-10-12T00:00:00",
+    "frequency": "daily",
+    "value": 106.6500015258789,
+    "unit": "USD/barrel",
+    "release_ts": null,
+    "ingested_at": "2026-10-16T19:12:11.580823+00:00",
+    "source_record_id": "brent_front_month:2026-10-12T00:00:00",
+    "raw_payload": {
+      "Date": "2026-10-12T00:00:00",
+      "Adj Close": 106.6500015258789,
+      "Close": 106.6500015258789,
+      "High": 107.30000305175781,
+      "Low": 102.3499984741211,
+      "Open": 104.63999938964844,
+      "Volume": 34229
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "64919d8e2766cce39de8687f0c46357f1d74b59da5a24ce41469375f2176199f",
+    "source": "yahoo_finance",
+    "series_id": "brent_front_month",
+    "country": "VNM",
+    "observation_period": "2026-10-13T00:00:00",
+    "frequency": "daily",
+    "value": 105.69000244140625,
+    "unit": "USD/barrel",
+    "release_ts": null,
+    "ingested_at": "2026-10-16T19:12:11.580859+00:00",
+    "source_record_id": "brent_front_month:2026-10-13T00:00:00",
+    "raw_payload": {
+      "Date": "2026-10-13T00:00:00",
+      "Adj Close": 105.69000244140625,
+      "Close": 105.69000244140625,
+      "High": 106.7300033569336,
+      "Low": 104.36000061035156,
+      "Open": 106.08999633789062,
+      "Volume": 37813
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "16ce93bb2c449b9b077ced7dcf9e4a9cf445c3a1fa0d58a136147f2d14121275",
+    "source": "yahoo_finance",
+    "series_id": "brent_front_month",
+    "country": "VNM",
+    "observation_period": "2026-10-14T00:00:00",
+    "frequency": "daily",
+    "value": 106.05999755859375,
+    "unit": "USD/barrel",
+    "release_ts": null,
+    "ingested_at": "2026-10-16T19:12:11.580884+00:00",
+    "source_record_id": "brent_front_month:2026-10-14T00:00:00",
+    "raw_payload": {
+      "Date": "2026-10-14T00:00:00",
+      "Adj Close": 106.05999755859375,
+      "Close": 106.05999755859375,
+      "High": 107.12999725341797,
+      "Low": 105.2300033569336,
+      "Open": 106.2699966430664,
+      "Volume": 38456
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "c0f53c52ea3692d2dba39940469df321f5af1d784a2d23c4c9cab1e262c85691",
+    "source": "yahoo_finance",
+    "series_id": "brent_front_month",
+    "country": "VNM",
+    "observation_period": "2026-10-15T00:00:00",
+    "frequency": "daily",
+    "value": 105.91999816894531,
+    "unit": "USD/barrel",
+    "release_ts": null,
+    "ingested_at": "2026-10-16T19:12:11.580908+00:00",
+    "source_record_id": "brent_front_month:2026-10-15T00:00:00",
+    "raw_payload": {
+      "Date": "2026-10-15T00:00:00",
+      "Adj Close": 105.91999816894531,
+      "Close": 105.91999816894531,
+      "High": 106.38999938964844,
+      "Low": 103.37999725341797,
+      "Open": 105.94999694824219,
+      "Volume": 38456
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "8ccda46380169f2192576e588ce762179d8995fe544c6cd1077dcec07680612f",
+    "source": "yahoo_finance",
+    "series_id": "brent_front_month",
+    "country": "VNM",
+    "observation_period": "2026-10-16T00:00:00",
+    "frequency": "daily",
+    "value": 109.56999969482422,
+    "unit": "USD/barrel",
+    "release_ts": null,
+    "ingested_at": "2026-10-16T19:12:11.580933+00:00",
+    "source_record_id": "brent_front_month:2026-10-16T00:00:00",
+    "raw_payload": {
+      "Date": "2026-10-16T00:00:00",
+      "Adj Close": 109.56999969482422,
+      "Close": 109.56999969482422,
+      "High": 110.0,
+      "Low": 104.91999816894531,
+      "Open": 105.9000015258789,
+      "Volume": 35584
+    }
+  }
+]

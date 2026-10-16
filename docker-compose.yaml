@@ -27,12 +27,15 @@ x-airflow-common: &airflow-common
     BRONZE_WAIT_POLL_SECONDS: "10"
   volumes:
     - ./infra/airflow/dags:/opt/airflow/dags
+    - ./infra/airflow/scripts:/opt/airflow/scripts:ro
     - ./infra/airflow/logs:/opt/airflow/logs
     - ./infra/dbt:/opt/airflow/dbt
     - ./ingestion:/opt/airflow/ingestion:ro
     - ./data/raw:/opt/airflow/data/raw
     - ./infra/kafka:/opt/airflow/kafka:ro
     - ./workspace/kafka-publisher:/opt/airflow/kafka-state
+    - ./workspace/pipeline-audit:/opt/airflow/audit
+    - ./forecasting:/opt/airflow/forecasting
     - ./processing:/opt/spark/app:ro
   depends_on:
     airflow-db:
@@ -78,6 +81,7 @@ services:
       - |
         for topic in nowcpi.cpi nowcpi.cpi_components nowcpi.ppi_iip nowcpi.brent_oil nowcpi.usd_vnd nowcpi.vn_fuel; do
           /opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic "$$topic" --partitions 1 --replication-factor 1
+          /opt/bitnami/kafka/bin/kafka-configs.sh --bootstrap-server kafka:9092 --entity-type topics --entity-name "$$topic" --alter --add-config retention.ms=2592000000
         done
     depends_on:
       kafka:
@@ -393,7 +397,11 @@ services:
   airflow-webserver:
     <<: *airflow-common
     container_name: nowcpi-multi-airflow
-    command: webserver
+    # Remove Gunicorn's stale PID lock left behind by interrupted container stops.
+    command:
+      - bash
+      - -c
+      - rm -f /opt/airflow/airflow-webserver.pid && exec airflow webserver
     ports:
       - "8085:8080"
     depends_on:

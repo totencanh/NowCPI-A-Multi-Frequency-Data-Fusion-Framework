@@ -38,7 +38,7 @@ with cpi_observations as (
 select
     month_start,
     country,
-    max(available_at) as cpi_available_at,
+    max(case when series_id = 'cpi_headline' then available_at end) as cpi_available_at,
     max(case when series_id = 'cpi_headline' then cpi_index end) as cpi_headline,
     max(case when series_id = 'cpi_headline' then mom_percent end) as cpi_headline_mom_percent,
     max(case when series_id = 'cpi_headline' then yoy_percent end) as cpi_headline_yoy_percent,

@@ -1,8 +1,8 @@
 # NowCPI Gold dashboard tables
 
 Gold contains stable subject-specific tables for dashboards and a monthly,
-multi-source feature table for CPI nowcasting. The subject tables keep their
-own natural grain; the nowcasting table aligns predictors to each CPI target month.
+multi-source feature table for CPI analysis. The subject tables keep their own
+natural grain; the feature table aligns data to each CPI target month.
 
 | Table | Grain | Contents |
 | --- | --- | --- |
@@ -13,6 +13,9 @@ own natural grain; the nowcasting table aligns predictors to each CPI target mon
 | `gold_iip_annual` | Country and year | Annual IIP growth |
 | `gold_nowcasting_features` | Country and target month | Lagged CPI, target-month market-to-date averages available by `feature_cutoff_at`, counts, and prior-year IIP; contains no target labels |
 | `gold_nowcasting_labels` | Country and CPI target month | Observed headline CPI index, MoM, YoY, and when the label became available; join to features only for training/evaluation |
+| `gold_powerbi_monthly_overview` | Country and month | CPI headline and monthly Brent, USD/VND, RON95, and E10 summaries with source counts/freshness |
+| `gold_powerbi_cpi_components` | Country, component, and month | CPI component index and exact calendar MoM/YoY changes |
+| `gold_powerbi_market_daily` | Country, indicator, and day | Long-form daily Brent, USD/VND, and fuel observations with units |
 
 `gold_nowcasting_features` creates monthly target rows from January 2025 through
 the current month. Historical rows use month-end as the feature cutoff; the
@@ -30,11 +33,18 @@ long-form table with an explicit `fuel_type`. The nowcasting feature table
 aggregates target-month daily market observations only when their observation
 date is in that month and their `available_at` is no later than the cutoff.
 Lagged CPI and prior-year IIP are subject to the same availability cutoff.
+The current MIDAS script directly reads CPI labels and Brent Gold history
+through Trino; it does not consume every column in the feature table.
 
 ## dbt layout
 
 - `models/staging`: source-oriented typed views over Silver.
-- `models/gold`: the dashboard tables and the nowcasting feature table above.
+- `models/gold`: subject, dashboard, and nowcasting tables.
+
+The Power BI models are reporting datasets. Their existence does not mean that
+all available sources are predictors in the active Brent U-MIDAS model. See
+`analytics/powerbi/README.md` for the Trino connection and suggested report
+pages.
 
 The `nowcpi_daily_pipeline` Airflow DAG runs staging and then Gold after Silver
 completes. Trigger `nowcpi_dbt_pipeline` for a standalone manual rebuild, or run

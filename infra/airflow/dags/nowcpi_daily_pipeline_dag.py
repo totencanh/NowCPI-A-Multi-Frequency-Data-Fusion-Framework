@@ -33,6 +33,17 @@ def spark_submit_command(application: str, driver_port: int) -> str:
 """.strip()
 
 
+def audited_collector_command(source: str, collector: str) -> str:
+    """Run a source collector and persist one audit row, including no-change runs."""
+    return (
+        "python -u /opt/airflow/scripts/source_check_audit.py "
+        f"--source {source} "
+        "--raw-data-dir /opt/airflow/data/raw "
+        "--audit-file /opt/airflow/audit/source_checks.jsonl "
+        f"--collector /opt/airflow/ingestion/{collector}"
+    )
+
+
 with DAG(
     dag_id="nowcpi_daily_pipeline",
     description="Collect data, publish Kafka events, process Bronze and Silver, then build dbt marts.",
@@ -50,27 +61,37 @@ with DAG(
     # Source collectors are independent and can run at the same time.
     collect_cpi = BashOperator(
         task_id="collect_cpi",
-        bash_command="python -u /opt/airflow/ingestion/cpi/cpi.py",
+        bash_command=audited_collector_command("imf_cpi_vietnam", "cpi/cpi.py"),
     )
     collect_cpi_components = BashOperator(
         task_id="collect_cpi_components",
-        bash_command="python -u /opt/airflow/ingestion/cpi_components/cpi_components.py",
+        bash_command=audited_collector_command(
+            "imf_cpi_components_vietnam", "cpi_components/cpi_components.py"
+        ),
     )
     collect_iip = BashOperator(
         task_id="collect_iip",
-        bash_command="python -u /opt/airflow/ingestion/ppi_iip/ppi_iip.py",
+        bash_command=audited_collector_command(
+            "worldbank_iip_vietnam", "ppi_iip/ppi_iip.py"
+        ),
     )
     collect_brent = BashOperator(
         task_id="collect_brent",
-        bash_command="python -u /opt/airflow/ingestion/oil/brent.py",
+        bash_command=audited_collector_command(
+            "brent_oil_daily", "oil/brent.py"
+        ),
     )
     collect_vn_fuel = BashOperator(
         task_id="collect_vn_fuel",
-        bash_command="python -u /opt/airflow/ingestion/oil/vn.py",
+        bash_command=audited_collector_command(
+            "vn_fuel_e10_ron95", "oil/vn.py"
+        ),
     )
     collect_usd_vnd = BashOperator(
         task_id="collect_usd_vnd",
-        bash_command="python -u /opt/airflow/ingestion/usd/usd_vnd.py",
+        bash_command=audited_collector_command(
+            "usd_vnd_daily", "usd/usd_vnd.py"
+        ),
     )
 
     publish_to_kafka = BashOperator(
@@ -118,6 +139,12 @@ with DAG(
             "--select path:models/gold"
         ),
     )
+    midas_nowcast = BashOperator(
+        task_id="midas_inflation_nowcast",
+        bash_command="python -u /opt/airflow/forecasting/midas_nowcast.py",
+        env={"TRINO_HOST": "trino", "TRINO_PORT": "8080", "TRINO_USER": "nowcpi"},
+        append_env=True,
+    )
 
     [
         collect_cpi,
@@ -128,4 +155,4 @@ with DAG(
         collect_usd_vnd,
     ] >> publish_to_kafka
     publish_to_kafka >> wait_for_bronze >> silver_cpi >> silver_market
-    silver_market >> dbt_staging >> dbt_gold
+    silver_market >> dbt_staging >> dbt_gold >> midas_nowcast

@@ -22,13 +22,12 @@ Each collector wraps one source observation in a common event envelope:
   `data/raw/<source-file-stem>/`.
 - **Bronze:** The Kafka stream consumer stores the original `event_json`, parsed
   common envelope fields, `raw_payload_json`, Kafka topic/partition/offset, and
-  `bronze_ingested_at` in `bronze.kafka_events`. Silver preserves source,
-  event, Kafka offset, release, ingestion, and derived `available_at` metadata;
+  `bronze_ingested_at` in `bronze.kafka_events` at
+  `s3a://<MINIO_BUCKET>/bronze/kafka_events`. Silver preserves source, event,
+  Kafka offset, release, ingestion, and derived `available_at` metadata;
   invalid/out-of-scope records are written to matching `silver.*_rejected`
   Delta tables instead of being imputed. It merges observations by the stable
   series/country/date/unit business key.
-  (falling back to Kafka position for malformed IDs) under
-  `s3a://<MINIO_BUCKET>/bronze/kafka_events`.
 - **Batch backfills:** `processing/spark/bronze/cpi.py` and `market.py` remain
   available to load JSON directly into source-specific Bronze Delta tables.
 - **Silver:** Spark validates the event contract, normalizes observation dates,
@@ -45,7 +44,15 @@ Each collector wraps one source observation in a common event envelope:
   target-month market-to-date observations and applies an `available_at`
   cutoff to market data and lagged CPI/IIP inputs. CPI labels are kept out of
   model features. Annual IIP remains annual and is not interpolated into
-  monthly data.
+  monthly data. Additional Power BI models expose a monthly multi-source
+  overview, long-form monthly CPI components with exact prior-month/prior-year
+  comparisons, and long-form daily market values. These reporting models do not
+  imply that all sources are predictors in the current forecast.
+
+The current forecasting script reads the monthly CPI labels and daily Brent
+Gold tables through Trino. It predicts headline CPI MoM using 12 weekly Brent
+log returns in a Ridge U-MIDAS model. USD/VND, fuel, CPI components, and annual
+IIP are currently dashboard/analysis inputs, not active MIDAS predictors.
 
 Do not combine observations at different frequencies before a temporal
 alignment policy is defined. The current annual World Bank industrial value

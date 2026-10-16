@@ -19,6 +19,17 @@ collector is currently empty. The daily DAG runs the dbt staging and Gold tasks
 after Silver. The `nowcpi_dbt_pipeline` DAG is also available for a standalone
 manual rebuild of those dbt models.
 
+Each source collector is wrapped by `infra/airflow/scripts/source_check_audit.py`.
+Every attempt appends one JSON line to
+`workspace/pipeline-audit/source_checks.jsonl`, including successful checks
+with no changed records and failed checks. Records include check start/end and
+duration, status, newly written batch/record counts, the number of unique
+records already stored, and the latest observation period and release timestamp
+in the raw archive.
+`latest_stored_observation_period` describes the data vintage; it is not the
+time the source was last checked. Source checks without a changed batch still
+appear in the audit file.
+
 After changing the Spark or Airflow image, rebuild the Airflow services and
 restart the Bronze consumer so both pick up the Silver runtime and Bronze
 schema update:
