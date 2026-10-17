@@ -328,7 +328,9 @@ services:
       MINIO_BUCKET: ${MINIO_BUCKET:-nowcpi}
       KAFKA_BROKER: kafka:9092
       SPARK_DRIVER_HOST: spark-bronze-streaming
-      BRONZE_KAFKA_CHECKPOINT: /opt/spark/work-dir/checkpoints/bronze-kafka-events-v3
+      # New checkpoint replays retained Kafka offsets into the offset-keyed,
+      # append-only Bronze receipt table and envelope quarantine.
+      BRONZE_KAFKA_CHECKPOINT: /opt/spark/work-dir/checkpoints/bronze-kafka-events-v4
     volumes:
       - ./workspace:/opt/spark/work-dir
       - ./processing:/opt/spark/app:ro

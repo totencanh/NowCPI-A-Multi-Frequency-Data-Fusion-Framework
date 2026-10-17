@@ -6,12 +6,19 @@ import argparse
 import fcntl
 import json
 import os
+import re
 import subprocess
 import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+SOURCE_FAILURE_PATTERNS = (
+    re.compile(r"failed download", re.IGNORECASE),
+    re.compile(r"yfratelimiterror", re.IGNORECASE),
+    re.compile(r"too many requests", re.IGNORECASE),
+)
 
 
 def utc_now() -> datetime:
@@ -118,12 +125,25 @@ def main() -> int:
         flush=True,
     )
     try:
-        result = subprocess.run(command, check=False)
-        exit_code = result.returncode
+        process = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1,
+        )
+        warnings: list[str] = []
+        assert process.stdout is not None
+        for output_line in process.stdout:
+            print(output_line, end="", flush=True)
+            if any(pattern.search(output_line) for pattern in SOURCE_FAILURE_PATTERNS):
+                warnings.append(output_line.strip())
+        exit_code = process.wait()
         error = None
     except OSError as exc:
         exit_code = 127
         error = str(exc)
+        warnings = []
         print(f"Collector could not start: {error}", file=sys.stderr, flush=True)
 
     completed_at = utc_now()
@@ -149,12 +169,18 @@ def main() -> int:
     ) = summarize_source(after_paths)
     record = {
         "source": args.source,
+        "dag_id": os.getenv("AIRFLOW_CTX_DAG_ID"),
+        "dag_run_id": os.getenv("AIRFLOW_CTX_DAG_RUN_ID"),
+        "task_id": os.getenv("AIRFLOW_CTX_TASK_ID"),
         "check_started_at": isoformat(started_at),
         "check_completed_at": isoformat(completed_at),
         "check_duration_seconds": collector_duration,
-        "status": "success" if exit_code == 0 else "failed",
+        "status": (
+            "failed" if exit_code != 0 else "degraded" if warnings else "success"
+        ),
         "collector_exit_code": exit_code,
         "error": error,
+        "warnings": warnings,
         "batch_files_written": len(changed_paths),
         "changed_records_written": len(changed_events),
         "stored_unique_records": stored_event_count,

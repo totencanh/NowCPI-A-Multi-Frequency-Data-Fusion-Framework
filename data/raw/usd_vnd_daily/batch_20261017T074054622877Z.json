@@ -1,0 +1,140 @@
+[
+  {
+    "schema_version": 1,
+    "event_id": "6d9fb163ebaa0a20839f9cd0acf3e4332216e8e694eebf8a8c6860c69848eb81",
+    "source": "yahoo_finance",
+    "series_id": "usd_vnd",
+    "country": "VNM",
+    "observation_period": "2026-10-12",
+    "frequency": "daily",
+    "value": 25889.0,
+    "unit": "VND/USD",
+    "release_ts": null,
+    "ingested_at": "2026-10-17T07:40:54.481795+00:00",
+    "source_record_id": "usd_vnd:2026-10-12",
+    "raw_payload": {
+      "Date": "2026-10-12T00:00:00.000",
+      "Adj Close": 25889.0,
+      "Close": 25889.0,
+      "High": 25934.0,
+      "Low": 25809.0,
+      "Open": 25879.0,
+      "Volume": 0
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "4f94c07c17475c035184fb45f0377abf908d00b4caac9d3a4904b4b97ff482e1",
+    "source": "yahoo_finance",
+    "series_id": "usd_vnd",
+    "country": "VNM",
+    "observation_period": "2026-10-13",
+    "frequency": "daily",
+    "value": 25934.0,
+    "unit": "VND/USD",
+    "release_ts": null,
+    "ingested_at": "2026-10-17T07:40:54.481815+00:00",
+    "source_record_id": "usd_vnd:2026-10-13",
+    "raw_payload": {
+      "Date": "2026-10-13T00:00:00.000",
+      "Adj Close": 25934.0,
+      "Close": 25934.0,
+      "High": 25935.0,
+      "Low": 25850.0,
+      "Open": 25934.0,
+      "Volume": 0
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "2e1986f914071d63a0450973733627e339831f0cdfe021526bc16a4ba61a83ac",
+    "source": "yahoo_finance",
+    "series_id": "usd_vnd",
+    "country": "VNM",
+    "observation_period": "2026-10-14",
+    "frequency": "daily",
+    "value": 25913.0,
+    "unit": "VND/USD",
+    "release_ts": null,
+    "ingested_at": "2026-10-17T07:40:54.481822+00:00",
+    "source_record_id": "usd_vnd:2026-10-14",
+    "raw_payload": {
+      "Date": "2026-10-14T00:00:00.000",
+      "Adj Close": 25913.0,
+      "Close": 25913.0,
+      "High": 25920.0,
+      "Low": 25849.0,
+      "Open": 25913.0,
+      "Volume": 0
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "3b63295912e8afe6d2443c0bdc93f200420c7dbe5c14a6c1489bf4d45f5c414d",
+    "source": "yahoo_finance",
+    "series_id": "usd_vnd",
+    "country": "VNM",
+    "observation_period": "2026-10-15",
+    "frequency": "daily",
+    "value": 25894.0,
+    "unit": "VND/USD",
+    "release_ts": null,
+    "ingested_at": "2026-10-17T07:40:54.481829+00:00",
+    "source_record_id": "usd_vnd:2026-10-15",
+    "raw_payload": {
+      "Date": "2026-10-15T00:00:00.000",
+      "Adj Close": 25894.0,
+      "Close": 25894.0,
+      "High": 25899.0,
+      "Low": 25835.0,
+      "Open": 25894.0,
+      "Volume": 0
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "2575b54c1b79cf23b09037cd7dc446dd795b2ce61d1f5a5d7c0a9e75601a56d9",
+    "source": "yahoo_finance",
+    "series_id": "usd_vnd",
+    "country": "VNM",
+    "observation_period": "2026-10-16",
+    "frequency": "daily",
+    "value": 25872.0,
+    "unit": "VND/USD",
+    "release_ts": null,
+    "ingested_at": "2026-10-17T07:40:54.481835+00:00",
+    "source_record_id": "usd_vnd:2026-10-16",
+    "raw_payload": {
+      "Date": "2026-10-16T00:00:00.000",
+      "Adj Close": 25872.0,
+      "Close": 25872.0,
+      "High": 25890.0,
+      "Low": 25858.0,
+      "Open": 25872.0,
+      "Volume": 0
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "019aa8837f1ed6b10bf86660b924317cc43294ecb83558f65f54c1968c24434f",
+    "source": "yahoo_finance",
+    "series_id": "usd_vnd",
+    "country": "VNM",
+    "observation_period": "2026-10-17",
+    "frequency": "daily",
+    "value": 25889.0,
+    "unit": "VND/USD",
+    "release_ts": null,
+    "ingested_at": "2026-10-17T07:40:54.481842+00:00",
+    "source_record_id": "usd_vnd:2026-10-17",
+    "raw_payload": {
+      "Date": "2026-10-17T00:00:00.000",
+      "Adj Close": 25889.0,
+      "Close": 25889.0,
+      "High": 25889.0,
+      "Low": 25872.0,
+      "Open": 25872.0,
+      "Volume": 0
+    }
+  }
+]

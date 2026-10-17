@@ -1,9 +1,11 @@
-"""Run a Vietnam CPI nowcast using a regularized U-MIDAS oil block.
+"""Run a one-month-ahead Vietnam CPI forecast using mixed-frequency MIDAS.
 
 The model follows the mixed-frequency setup in ``midas_capstone``: monthly CPI
 is predicted using a lagged monthly CPI value and native-frequency oil
 observations. Daily Brent prices are converted to weekly log returns, and the
-latest 12 weekly returns enter as separate regressors (U-MIDAS).
+latest 12 target-aligned weekly returns enter as separate regressors (U-MIDAS).
+The target is always the month after the latest released CPI month, matching
+the one-step-ahead design in ``midas_capstone``.
 
 Historical evaluation uses calendar month-end information sets, not archived
 real-time data vintages. It is therefore a pseudo-out-of-sample diagnostic,
@@ -40,8 +42,13 @@ def read_table(connection, table: str) -> pd.DataFrame:
     return pd.DataFrame(cursor.fetchall(), columns=columns)
 
 
-def brent_known_as_of(brent: pd.DataFrame, cutoff: pd.Timestamp) -> pd.DataFrame:
-    """Keep only Brent observations whose source availability is at/before cutoff."""
+def brent_known_as_of(
+    brent: pd.DataFrame,
+    availability_cutoff: pd.Timestamp,
+    observation_cutoff: pd.Timestamp | None = None,
+) -> pd.DataFrame:
+    """Bound observation dates separately from the run-time availability cutoff."""
+    observation_cutoff = observation_cutoff or availability_cutoff
     frame = brent.copy()
     frame["observation_date"] = pd.to_datetime(
         frame["observation_date"], errors="coerce"
@@ -49,21 +56,24 @@ def brent_known_as_of(brent: pd.DataFrame, cutoff: pd.Timestamp) -> pd.DataFrame
     frame["value"] = pd.to_numeric(frame["brent_usd_per_barrel"], errors="coerce")
     frame = frame.dropna(subset=["observation_date", "value"])
     frame = frame.loc[
-        (frame["observation_date"] <= cutoff.tz_localize(None)) & (frame["value"] > 0)
-    ]
-    frame = frame.loc[
-        (frame["observation_date"] <= cutoff.tz_localize(None)) & (frame["value"] > 0)
+        (frame["observation_date"] <= observation_cutoff.tz_localize(None))
+        & (frame["value"] > 0)
     ]
     if "available_at" not in frame:
         return frame.iloc[0:0]
     available = pd.to_datetime(frame["available_at"], errors="coerce", utc=True)
-    frame = frame.loc[available.notna() & (available <= as_utc(cutoff))].copy()
+    frame = frame.loc[
+        available.notna() & (available <= as_utc(availability_cutoff))
+    ].copy()
     frame["available_at"] = available.loc[frame.index]
     return frame
 
 
 def weekly_returns(
-    brent: pd.DataFrame, cutoff: pd.Timestamp, respect_available_at: bool
+    brent: pd.DataFrame,
+    cutoff: pd.Timestamp,
+    respect_available_at: bool,
+    available_at_cutoff: pd.Timestamp | None = None,
 ) -> pd.Series:
     """Weekly mean Brent log returns, restricted to observations known by cutoff."""
     frame = brent.copy()
@@ -76,7 +86,11 @@ def weekly_returns(
         (frame["observation_date"] <= cutoff.tz_localize(None)) & (frame["value"] > 0)
     ]
     if respect_available_at:
-        frame = brent_known_as_of(frame, cutoff)
+        frame = brent_known_as_of(
+            frame,
+            available_at_cutoff or cutoff,
+            observation_cutoff=cutoff,
+        )
     if frame.empty:
         return pd.Series(dtype=float)
 
@@ -279,9 +293,26 @@ def main() -> None:
     metrics.to_csv(OUTPUT_DIR / "midas_backtest_metrics.csv", index=False)
 
     now = data_cutoff
-    current_month = now.tz_localize(None).to_period("M").to_timestamp()
-    current_weekly = weekly_returns(brent, now, respect_available_at=True)
-    current_brent = brent_known_as_of(brent, now)
+    calendar_current_month = now.tz_localize(None).to_period("M").to_timestamp()
+    latest_actual_month = labels["target_month"].max()
+    current_month = latest_actual_month + pd.DateOffset(months=1)
+    target_month_end = (
+        current_month
+        + pd.offsets.MonthEnd(0)
+        + pd.Timedelta(hours=23, minutes=59, seconds=59)
+    ).tz_localize("UTC")
+    target_observation_cutoff = min(now, target_month_end)
+    current_weekly = weekly_returns(
+        brent,
+        target_observation_cutoff,
+        respect_available_at=True,
+        available_at_cutoff=now,
+    )
+    current_brent = brent_known_as_of(
+        brent,
+        availability_cutoff=now,
+        observation_cutoff=target_observation_cutoff,
+    )
     current = pd.DataFrame(
         [make_row(current_month, labels, current_weekly, now, require_released_lag=True)]
     )
@@ -290,22 +321,39 @@ def main() -> None:
     train = history.dropna(subset=["actual_cpi_mom_percent"])
     cpi_train = train.dropna(subset=["cpi_mom_lag_1"])
     midas_train = train.dropna(subset=lag_columns)
-    latest_actual_month = labels["target_month"].max()
     current_result = {
         "target_month": current_month.strftime("%Y-%m"),
+        "target_month_basis": "one_month_after_latest_actual_cpi",
+        "target_is_current_calendar_month": bool(
+            current_month == calendar_current_month
+        ),
+        "latest_actual_cpi_age_months_at_run": int(
+            (calendar_current_month.year - latest_actual_month.year) * 12
+            + calendar_current_month.month
+            - latest_actual_month.month
+        ),
         "cutoff_at_utc": now.isoformat(),
+        "target_observation_cutoff_at_utc": target_observation_cutoff.isoformat(),
         "processing_started_at_utc": processing_started_at.isoformat(),
         "training_months": len(train),
         "latest_actual_cpi_month": latest_actual_month.strftime("%Y-%m"),
         "cpi_only_ridge_nowcast_mom_percent": None,
-        "midas_ridge_nowcast_mom_percent": None,
+        "u_midas_brent_only_diagnostic_mom_percent": None,
         "ar_midas_ridge_nowcast_mom_percent": None,
+        "nowcast_mom_percent": None,
+        "nowcast_model": None,
         "midas_status": "insufficient labeled CPI training months",
-        "method": "ridge U-MIDAS: 12 weekly Brent log returns; optional CPI-lag AR-MIDAS",
+        "method": (
+            "One-step-ahead CPI target after latest actual CPI month; "
+            "AR-MIDAS uses the latest actual monthly CPI lag and 12 weekly "
+            "Brent log returns when available."
+        ),
         "evaluation_note": "Historical scores use month-end calendar cutoffs, not archived real-time vintages.",
         "availability_policy": (
-            "Each source is filtered independently by its own available_at/"
-            "label_available_at timestamp; inputs arriving after cutoff are excluded."
+            "CPI labels must be available by the run cutoff. Brent observations "
+            "are restricted to the target month and must be available by the "
+            "run cutoff. Archived historical release vintages are unavailable, "
+            "so a past target month is a delayed estimate, not a real-time vintage."
         ),
         "brent_observations_available_at_cutoff": int(len(current_brent)),
         "brent_latest_observation_date": (
@@ -336,11 +384,10 @@ def main() -> None:
             "previous month's CPI MoM is not present or not yet released by the cutoff"
         )
     if current[lag_columns].notna().all(axis=None) and len(midas_train) >= MIN_TRAIN:
-        current_result["midas_ridge_nowcast_mom_percent"] = fit_predict(
+        current_result["u_midas_brent_only_diagnostic_mom_percent"] = fit_predict(
             midas_train, current, lag_columns
         )
         current_result["midas_training_months"] = len(midas_train)
-        current_result["midas_status"] = "ok"
     ar_midas_train = midas_train.dropna(subset=["cpi_mom_lag_1"])
     if (
         current[lag_columns].notna().all(axis=None)
@@ -350,8 +397,24 @@ def main() -> None:
         current_result["ar_midas_ridge_nowcast_mom_percent"] = fit_predict(
             ar_midas_train, current, ar_midas_predictors
         )
-    if len(train) >= MIN_TRAIN and current_result["midas_status"] != "ok":
-        current_result["midas_status"] = "insufficient complete Brent lag history"
+    if current_result["ar_midas_ridge_nowcast_mom_percent"] is not None:
+        current_result["nowcast_mom_percent"] = current_result[
+            "ar_midas_ridge_nowcast_mom_percent"
+        ]
+        current_result["nowcast_model"] = "ar_midas_ridge"
+        current_result["midas_status"] = "ok"
+    elif current_result["cpi_only_ridge_nowcast_mom_percent"] is not None:
+        current_result["nowcast_mom_percent"] = current_result[
+            "cpi_only_ridge_nowcast_mom_percent"
+        ]
+        current_result["nowcast_model"] = "cpi_only_ridge"
+        current_result["midas_status"] = (
+            "Brent mixed-frequency features unavailable; used latest-CPI baseline"
+        )
+    elif len(train) >= MIN_TRAIN:
+        current_result["midas_status"] = (
+            "no forecast: latest CPI lag or complete target-aligned Brent lags unavailable"
+        )
     processing_completed_at = pd.Timestamp.now(tz="UTC")
     current_result["processing_completed_at_utc"] = processing_completed_at.isoformat()
     current_result["processing_duration_seconds"] = round(

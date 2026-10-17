@@ -62,36 +62,42 @@ with DAG(
     collect_cpi = BashOperator(
         task_id="collect_cpi",
         bash_command=audited_collector_command("imf_cpi_vietnam", "cpi/cpi.py"),
+        execution_timeout=timedelta(minutes=20),
     )
     collect_cpi_components = BashOperator(
         task_id="collect_cpi_components",
         bash_command=audited_collector_command(
             "imf_cpi_components_vietnam", "cpi_components/cpi_components.py"
         ),
+        execution_timeout=timedelta(minutes=20),
     )
     collect_iip = BashOperator(
         task_id="collect_iip",
         bash_command=audited_collector_command(
             "worldbank_iip_vietnam", "ppi_iip/ppi_iip.py"
         ),
+        execution_timeout=timedelta(minutes=20),
     )
     collect_brent = BashOperator(
         task_id="collect_brent",
         bash_command=audited_collector_command(
             "brent_oil_daily", "oil/brent.py"
         ),
+        execution_timeout=timedelta(minutes=20),
     )
     collect_vn_fuel = BashOperator(
         task_id="collect_vn_fuel",
         bash_command=audited_collector_command(
             "vn_fuel_e10_ron95", "oil/vn.py"
         ),
+        execution_timeout=timedelta(minutes=20),
     )
     collect_usd_vnd = BashOperator(
         task_id="collect_usd_vnd",
         bash_command=audited_collector_command(
             "usd_vnd_daily", "usd/usd_vnd.py"
         ),
+        execution_timeout=timedelta(minutes=20),
     )
 
     publish_to_kafka = BashOperator(
@@ -103,6 +109,7 @@ with DAG(
             "KAFKA_PUBLISHED_STATE": "/opt/airflow/kafka-state/published_batches.json",
         },
         append_env=True,
+        execution_timeout=timedelta(minutes=20),
         # Publish any batches produced by successful collectors even if a different source failed.
         trigger_rule=TriggerRule.ALL_DONE,
     )
@@ -115,10 +122,16 @@ with DAG(
     silver_cpi = BashOperator(
         task_id="silver_cpi_sources",
         bash_command=spark_submit_command("cpi", 17180),
+        env={"SILVER_DEFER_MIGRATION_REBUILD": "1"},
+        append_env=True,
+        execution_timeout=timedelta(minutes=45),
     )
     silver_market = BashOperator(
         task_id="silver_market_sources",
         bash_command=spark_submit_command("market", 17182),
+        env={"SILVER_DEFER_MIGRATION_REBUILD": "1"},
+        append_env=True,
+        execution_timeout=timedelta(minutes=45),
     )
     dbt_staging = BashOperator(
         task_id="dbt_staging",
@@ -127,6 +140,7 @@ with DAG(
             "--project-dir /opt/airflow/dbt --profiles-dir /opt/airflow/dbt "
             "--select path:models/staging"
         ),
+        execution_timeout=timedelta(minutes=20),
     )
     dbt_gold = BashOperator(
         task_id="dbt_gold",
@@ -138,12 +152,14 @@ with DAG(
             "--project-dir /opt/airflow/dbt --profiles-dir /opt/airflow/dbt "
             "--select path:models/gold"
         ),
+        execution_timeout=timedelta(minutes=30),
     )
     midas_nowcast = BashOperator(
         task_id="midas_inflation_nowcast",
         bash_command="python -u /opt/airflow/forecasting/midas_nowcast.py",
         env={"TRINO_HOST": "trino", "TRINO_PORT": "8080", "TRINO_USER": "nowcpi"},
         append_env=True,
+        execution_timeout=timedelta(minutes=30),
     )
 
     [
@@ -154,5 +170,6 @@ with DAG(
         collect_vn_fuel,
         collect_usd_vnd,
     ] >> publish_to_kafka
-    publish_to_kafka >> wait_for_bronze >> silver_cpi >> silver_market
+    publish_to_kafka >> wait_for_bronze
+    wait_for_bronze >> silver_cpi >> silver_market
     silver_market >> dbt_staging >> dbt_gold >> midas_nowcast

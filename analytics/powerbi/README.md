@@ -22,7 +22,7 @@ Delta files directly.
 | `gold_powerbi_cpi_components` | Country-component-month | Component MoM/YoY bar charts, component index trends, component slicer |
 | `gold_powerbi_market_daily` | Country-indicator-day | Daily Brent, exchange-rate, RON95 and E10 trends with indicator and date slicers |
 | `gold_iip_annual` | Country-year | Annual IIP growth trend and comparison with annual CPI summaries |
-| `gold_nowcasting_features` | Country-target month | Available-at-cutoff model features and source freshness |
+| `gold_nowcasting_features` | Country-target month | Latest prior CPI and its age, market/IIP inputs, and source coverage percentage |
 
 The monthly overview uses a union of observed month-country keys and left joins
 each source independently. Missing source values stay null, which lets visuals

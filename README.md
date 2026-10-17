@@ -1,8 +1,8 @@
 # NowCPI
 
-**NowCPI: A Streaming Lakehouse for Asynchronous Multi-Frequency CPI Nowcasting in Vietnam: A U-MIDAS Application with Weekly Brent and Monthly CPI**
+**NowCPI: A Streaming Lakehouse for Asynchronous Multi-Frequency CPI Nowcasting in Vietnam: An AR-MIDAS Application with Weekly Brent and Monthly CPI**
 
-NowCPI is a research prototype for daily CPI nowcasting in Vietnam. Its streaming lakehouse ingests asynchronous source observations and retains their observation and availability times. The current forecast model predicts **monthly headline CPI MoM** using a Ridge-regularized U-MIDAS model with 12 weekly Brent log returns. CPI is the monthly target; Brent is the high-frequency predictor block.
+NowCPI is a research prototype for daily CPI nowcasting in Vietnam. Its streaming lakehouse ingests asynchronous source observations and retains their observation and availability times. The current forecast model predicts **monthly headline CPI MoM** with AR-MIDAS Ridge, combining the latest available monthly CPI lag with up to 12 weekly Brent log returns. The target month is one month after the latest actual CPI month, not automatically the computer's current month.
 
 USD/VND, domestic fuel prices, CPI components, and annual industrial activity are retained for dashboard analysis and can be evaluated as future model inputs. They are not currently predictors in the MIDAS nowcast. News collection and NLP are not implemented. Because source collection and forecasting are scheduled daily, the project demonstrates a daily nowcasting workflow over a streaming lakehouse, not continuous live forecasts.
 
@@ -75,6 +75,15 @@ NowCPI/
 5. dbt builds staging views and Gold subject, reporting, and model tables through Trino.
 6. The current MIDAS model reads CPI labels and Brent history from Gold through Trino and writes its nowcast and evaluation metrics under `forecasting/outputs/`.
 7. Airflow schedules daily collection, processing, Gold transformations, and nowcasting. Power BI can query Gold through Trino; Power BI is not a Compose service. News NLP remains outside the implemented pipeline.
+
+The latest verified full DAG run (`manual__2026-10-17T08:47:02+00:00`)
+completed successfully. CPI was available through July 2026, so the model
+estimated **August 2026 CPI MoM at 0.181355%**. This is a delayed one-step
+estimate, not an October nowcast; source release vintages are not archived.
+See `forecasting/README.md` for the cutoff and model details. The separate
+`nowcpi_full_history_rebuild` DAG is manually triggered for intentional
+historical rebuilds or Silver migrations; it does not automatically run after
+a daily pipeline failure.
 
 ## Main technologies
 

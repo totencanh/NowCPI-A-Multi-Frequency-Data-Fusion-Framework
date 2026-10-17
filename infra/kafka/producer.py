@@ -7,7 +7,7 @@ import hashlib
 import json
 import os
 import tempfile
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -106,6 +106,53 @@ def read_events(path: Path) -> list[dict[str, Any]]:
     return events
 
 
+def enrich_event(event: dict[str, Any]) -> dict[str, Any]:
+    """Add stable transport metadata without changing the raw JSON archive."""
+    enriched = dict(event)
+    period = str(event.get("observation_period") or "").strip()
+    try:
+        if len(period) == 4 and period.isdigit():
+            event_date = date(int(period), 1, 1)
+        elif len(period) == 7 and period[4] == "-":
+            event_date = date.fromisoformat(f"{period}-01")
+        else:
+            event_date = date.fromisoformat(period[:10])
+        enriched.setdefault(
+            "event_time",
+            datetime(event_date.year, event_date.month, event_date.day, tzinfo=timezone.utc)
+            .isoformat()
+            .replace("+00:00", "Z"),
+        )
+    except (TypeError, ValueError):
+        enriched.setdefault("event_time", None)
+
+    business_key_fields = {
+        "source": event.get("source"),
+        "country": event.get("country"),
+        "series_id": event.get("series_id"),
+        "frequency": event.get("frequency"),
+        "observation_period": event.get("observation_period"),
+        "unit": event.get("unit"),
+    }
+    enriched.setdefault(
+        "business_key",
+        json.dumps(business_key_fields, ensure_ascii=False, sort_keys=True, separators=(",", ":")),
+    )
+
+    # Exclude the transport/check timestamp so identical observations hash the
+    # same even when a collector revisits an unchanged source record.
+    payload_for_hash = {key: value for key, value in event.items() if key != "ingested_at"}
+    canonical_payload = json.dumps(
+        payload_for_hash,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    enriched.setdefault("payload_hash", hashlib.sha256(canonical_payload).hexdigest())
+    return enriched
+
+
 def publish_batch(
     producer: Producer,
     path: Path,
@@ -123,9 +170,10 @@ def publish_batch(
         if not event_id:
             raise ValueError(f"Missing stable event_id in {path}")
 
-        # Send the source event envelope unchanged; event_id is also the Kafka key.
+        # Enrich only the Kafka copy; the immutable raw batch remains untouched.
+        kafka_event = enrich_event(event)
         value = json.dumps(
-            event,
+            kafka_event,
             ensure_ascii=False,
             separators=(",", ":"),
             allow_nan=False,

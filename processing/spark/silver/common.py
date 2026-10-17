@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import os
 import re
+import uuid
 from collections.abc import Iterable
+from datetime import datetime, timezone
 
 from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
@@ -33,12 +35,13 @@ REQUIRED_BRONZE_COLUMNS = {
 
 SILVER_COLUMNS = [
     "event_id", "source", "source_record_id", "source_release_ts",
+    "source_event_time", "business_key", "payload_hash",
     "source_ingested_at", "available_at", "bronze_ingested_at",
     "kafka_topic", "kafka_partition", "kafka_offset", "kafka_timestamp",
     "series_id", "country", "observation_date", "frequency", "value", "unit",
 ]
-SILVER_BUSINESS_KEY = ["series_id", "country", "observation_date", "unit"]
-MIN_OBSERVATION_DATE = "2025-01-01"
+SILVER_BUSINESS_KEY = ["series_id", "country", "frequency", "observation_date", "unit"]
+SILVER_TRANSFORM_VERSION = 4
 
 OBSOLETE_SILVER_TABLES = [
     "cpi_observations_quarantine",
@@ -191,6 +194,25 @@ def normalize_bronze_events(events: DataFrame, topic: str) -> DataFrame:
         freq.alias("frequency"),
         raw_value.alias("value"),
         _canonical_unit(normalized_series, F.col("unit")).alias("unit"),
+        F.try_to_timestamp(_optional_col(events, "event_time").cast("string"))
+        .alias("source_event_time"),
+        F.coalesce(
+            F.trim(_optional_col(events, "business_key")),
+            F.to_json(
+                F.struct(
+                    F.lower(F.trim(F.col("source"))).alias("source"),
+                    F.upper(F.trim(F.col("country"))).alias("country"),
+                    normalized_series.alias("series_id"),
+                    freq.alias("frequency"),
+                    obs_date.cast("string").alias("observation_period"),
+                    _canonical_unit(normalized_series, F.col("unit")).alias("unit"),
+                )
+            ),
+        ).alias("business_key"),
+        F.coalesce(
+            F.trim(_optional_col(events, "payload_hash")),
+            F.sha2(_optional_col(events, "event_json"), 256),
+        ).alias("payload_hash"),
         F.try_to_timestamp(F.col("ingested_at")).alias("source_ingested_at"),
         F.col("bronze_ingested_at").cast("timestamp").alias("bronze_ingested_at"),
         F.col("kafka_timestamp").cast("timestamp").alias("kafka_timestamp"),
@@ -310,6 +332,91 @@ def _silver_offsets_path(bucket: str) -> str:
     return f"s3a://{bucket}/silver/_checkpoints/kafka_offsets"
 
 
+def _silver_transform_versions_path(bucket: str) -> str:
+    return f"s3a://{bucket}/silver/_checkpoints/transform_versions"
+
+
+def _silver_policy_requires_rebuild(
+    spark: SparkSession, bucket: str, topic: str
+) -> bool:
+    """Reconcile old checkpoints once when Silver inclusion rules change."""
+    path = _silver_transform_versions_path(bucket)
+    if not _delta_exists(spark, path):
+        return True
+    version = (
+        spark.read.format("delta").load(path)
+        .filter(F.col("kafka_topic") == topic)
+        .select("transform_version")
+        .first()
+    )
+    return version is None or version["transform_version"] != SILVER_TRANSFORM_VERSION
+
+
+def _save_silver_transform_version(
+    spark: SparkSession, bucket: str, topic: str
+) -> None:
+    path = _silver_transform_versions_path(bucket)
+    version = spark.createDataFrame(
+        [(topic, SILVER_TRANSFORM_VERSION)],
+        "kafka_topic STRING, transform_version INT",
+    )
+    escaped_path = _quote_sql_path(path)
+    if not _delta_exists(spark, path):
+        version.write.format("delta").mode("overwrite").save(path)
+        return
+    view = "silver_transform_version_update"
+    version.createOrReplaceTempView(view)
+    try:
+        spark.sql(
+            f"""MERGE INTO delta.`{escaped_path}` AS target
+                USING `{view}` AS incoming
+                ON target.kafka_topic = incoming.kafka_topic
+                WHEN MATCHED THEN UPDATE SET transform_version = incoming.transform_version
+                WHEN NOT MATCHED THEN INSERT *"""
+        )
+    finally:
+        spark.catalog.dropTempView(view)
+
+
+def _write_silver_run_audit(
+    spark: SparkSession,
+    bucket: str,
+    topic: str,
+    input_events: int,
+    accepted_events: int,
+    rejected_events: int,
+    stage_started_at: datetime,
+) -> None:
+    """Record per-topic Silver processing lineage and commit timing."""
+    path = f"s3a://{bucket}/silver/_lineage/stage_runs"
+    run_id = os.getenv("AIRFLOW_CTX_DAG_RUN_ID", "manual")
+    task_id = os.getenv("AIRFLOW_CTX_TASK_ID", "spark_silver")
+    audit = spark.createDataFrame(
+        [
+            (
+                str(uuid.uuid4()),
+                "silver",
+                topic,
+                run_id,
+                task_id,
+                input_events,
+                accepted_events,
+                rejected_events,
+                stage_started_at,
+            )
+        ],
+        "audit_id STRING, stage STRING, kafka_topic STRING, run_id STRING, "
+        "task_id STRING, input_events LONG, accepted_events LONG, rejected_events LONG, "
+        "stage_started_at TIMESTAMP",
+    )
+    audit = audit.withColumn("stage_committed_at", F.current_timestamp())
+    audit.write.format("delta").mode("append").save(path)
+    spark.sql(
+        "CREATE TABLE IF NOT EXISTS silver.stage_run_audit "
+        f"USING DELTA LOCATION '{_quote_sql_path(path)}'"
+    )
+
+
 def _after_silver_checkpoint(
     spark: SparkSession, source: DataFrame, bucket: str, topic: str
 ) -> DataFrame:
@@ -351,41 +458,47 @@ def _save_silver_checkpoint(
         source.groupBy("kafka_topic", "kafka_partition")
         .agg(F.max(F.col("kafka_offset").cast("long")).alias("kafka_offset"))
     )
-    if offsets.limit(1).count() == 0:
-        return
-
-    view = "silver_offset_batch"
-    offsets.createOrReplaceTempView(view)
-    escaped_path = _quote_sql_path(path)
-    try:
-        if _delta_exists(spark, path):
-            spark.sql(
-                f"""MERGE INTO delta.`{escaped_path}` AS target
-                    USING `{view}` AS incoming
-                    ON target.kafka_topic = incoming.kafka_topic
-                       AND target.kafka_partition = incoming.kafka_partition
-                    WHEN MATCHED AND incoming.kafka_offset > target.kafka_offset
-                      THEN UPDATE SET kafka_offset = incoming.kafka_offset
-                    WHEN NOT MATCHED THEN INSERT *"""
-            )
-        else:
-            offsets.write.format("delta").mode("overwrite").save(path)
-    finally:
-        spark.catalog.dropTempView(view)
+    if offsets.limit(1).count() > 0:
+        view = "silver_offset_batch"
+        offsets.createOrReplaceTempView(view)
+        escaped_path = _quote_sql_path(path)
+        try:
+            if _delta_exists(spark, path):
+                spark.sql(
+                    f"""MERGE INTO delta.`{escaped_path}` AS target
+                        USING `{view}` AS incoming
+                        ON target.kafka_topic = incoming.kafka_topic
+                           AND target.kafka_partition = incoming.kafka_partition
+                        WHEN MATCHED AND incoming.kafka_offset > target.kafka_offset
+                          THEN UPDATE SET kafka_offset = incoming.kafka_offset
+                        WHEN NOT MATCHED THEN INSERT *"""
+                )
+            else:
+                offsets.write.format("delta").mode("overwrite").save(path)
+        finally:
+            spark.catalog.dropTempView(view)
+    _save_silver_transform_version(spark, bucket, topic)
 
 
 def _upsert_silver_rejections(
-    spark: SparkSession, frame: DataFrame, table_name: str, path: str
+    spark: SparkSession,
+    frame: DataFrame,
+    table_name: str,
+    path: str,
+    rebuild: bool = False,
 ) -> int:
-    """Persist invalid/out-of-scope events for inspection instead of losing them."""
+    """Persist invalid or future-dated events for inspection instead of losing them."""
     frame = frame.dropDuplicates(["kafka_topic", "kafka_partition", "kafka_offset"])
     count = frame.count()
-    if count == 0:
+    path_exists = _delta_exists(spark, path)
+    if count == 0 and not (rebuild and path_exists):
         return 0
 
     escaped_path = _quote_sql_path(path)
-    if not _delta_exists(spark, path):
-        frame.write.format("delta").mode("overwrite").save(path)
+    if rebuild or not path_exists:
+        frame.write.format("delta").mode("overwrite").option(
+            "overwriteSchema", "true"
+        ).save(path)
     else:
         view = "silver_rejected_" + re.sub(r"\W+", "_", table_name)
         frame.createOrReplaceTempView(view)
@@ -409,14 +522,13 @@ def _upsert_silver_rejections(
 
 
 def _prune_silver_date_range(spark: SparkSession, path: str) -> None:
-    """Keep only observations from 2025-01-01 through the current date."""
+    """Remove future-dated observations but preserve valid economic history."""
     if not _delta_exists(spark, path):
         return
     escaped_path = _quote_sql_path(path)
     spark.sql(
         f"""DELETE FROM delta.`{escaped_path}`
-            WHERE observation_date < DATE '{MIN_OBSERVATION_DATE}'
-               OR observation_date > current_date()"""
+            WHERE observation_date > current_date()"""
     )
 
 
@@ -443,7 +555,8 @@ def process_topic(
     topic: str,
     table_name: str,
 ) -> tuple[int, int]:
-    """Normalize valid in-scope events and merge them into one compact table."""
+    """Normalize valid events, preserve history, and quarantine future-dated rows."""
+    stage_started_at = datetime.now(timezone.utc)
     good_path = f"s3a://{bucket}/silver/{table_name}"
     rejected_table = f"{table_name}_rejected"
     rejected_path = f"s3a://{bucket}/silver/{rejected_table}"
@@ -458,11 +571,26 @@ def process_topic(
     full_refresh = os.getenv("SILVER_FULL_REFRESH", "0").lower() in {
         "1", "true", "yes"
     }
+    policy_rebuild = _silver_policy_requires_rebuild(spark, bucket, topic)
     table_exists = _delta_exists(spark, good_path)
     schema_changed = table_exists and (
         spark.read.format("delta").load(good_path).columns != SILVER_COLUMNS
     )
-    rebuild = full_refresh or not table_exists or schema_changed
+    defer_rebuild = os.getenv("SILVER_DEFER_MIGRATION_REBUILD", "0").lower() in {
+        "1", "true", "yes"
+    }
+    if defer_rebuild and (policy_rebuild or schema_changed) and not full_refresh:
+        raise RuntimeError(
+            f"{table_name}: Silver schema/policy migration requires a full-history "
+            "rebuild. Trigger the nowcpi_full_history_rebuild DAG once, then resume "
+            "the scheduled daily pipeline."
+        )
+    rebuild = full_refresh or policy_rebuild or not table_exists or schema_changed
+    if policy_rebuild and table_exists and not full_refresh:
+        print(
+            f"{table_name}: Silver transform policy changed; rebuilding once from full Bronze history.",
+            flush=True,
+        )
     if schema_changed:
         print(
             f"{table_name}: old Silver schema detected; rebuilding from full Bronze history.",
@@ -475,8 +603,19 @@ def process_topic(
     )
     if source.limit(1).count() == 0:
         print(f"{topic}: no new Bronze offsets; Silver is already current.", flush=True)
+    input_event_count = source.count()
 
-    latest = Window.partitionBy("event_id").orderBy(
+    latest = Window.partitionBy(
+        F.coalesce(
+            F.col("event_id"),
+            F.concat_ws(
+                ":",
+                F.col("kafka_topic"),
+                F.col("kafka_partition").cast("string"),
+                F.col("kafka_offset").cast("string"),
+            ),
+        )
+    ).orderBy(
         F.col("bronze_ingested_at").desc_nulls_last(),
         F.col("kafka_timestamp").desc_nulls_last(),
         F.col("kafka_offset").desc_nulls_last(),
@@ -487,6 +626,15 @@ def process_topic(
         .filter(F.col("_row_num") == 1)
         .drop("_row_num")
     )
+    # Preserve each malformed event for quarantine. Only rows with valid key
+    # metadata can be grouped by the natural observation key; otherwise many
+    # unrelated null-key rows would collapse into one rejection.
+    metadata_valid = F.coalesce(
+        F.col("_metadata_rejection_reason") == "", F.lit(False)
+    )
+    metadata_rejected = normalized.filter(~metadata_valid)
+    valid_metadata = normalized.filter(metadata_valid)
+
     # Collapse duplicate source observations within a topic/domain. Stable
     # Bronze IDs break ties after source revision time and Kafka order.
     business_latest = Window.partitionBy(*SILVER_BUSINESS_KEY).orderBy(
@@ -495,11 +643,12 @@ def process_topic(
         F.col("kafka_offset").desc_nulls_last(),
         F.col("event_id").desc(),
     )
-    normalized = (
-        normalized.withColumn("_business_row", F.row_number().over(business_latest))
+    valid_metadata = (
+        valid_metadata.withColumn("_business_row", F.row_number().over(business_latest))
         .filter(F.col("_business_row") == 1)
         .drop("_business_row")
     )
+    normalized = valid_metadata.unionByName(metadata_rejected)
 
     numeric_invalid = (
         F.col("value").isNull()
@@ -518,30 +667,29 @@ def process_topic(
             ),
         ),
     ).drop("_metadata_rejection_reason")
-    in_scope = F.col("observation_date").isNull() | (
-        (F.col("observation_date") >= F.lit(MIN_OBSERVATION_DATE).cast("date"))
-        & (F.col("observation_date") <= F.current_date())
+    not_future_dated = F.col("observation_date").isNull() | (
+        F.col("observation_date") <= F.current_date()
     )
-    out_of_scope = normalized.filter(
-        F.col("observation_date").isNotNull() & ~in_scope
+    future_dated = normalized.filter(
+        F.col("observation_date").isNotNull() & ~not_future_dated
     )
-    out_of_scope_count = out_of_scope.count()
+    future_dated_count = future_dated.count()
     rejected = (
         normalized.filter(
             (F.col("rejection_reason") != "")
-            | (F.col("observation_date").isNotNull() & ~in_scope)
+            | (F.col("observation_date").isNotNull() & ~not_future_dated)
         )
         .withColumn(
             "rejection_reason",
             F.concat_ws(
                 ";",
                 F.col("rejection_reason"),
-                F.when(~in_scope, "observation_out_of_scope"),
+                F.when(~not_future_dated, "future_observation_date"),
             ),
         )
         .select(*SILVER_COLUMNS, "rejection_reason")
     )
-    normalized = normalized.filter(in_scope)
+    normalized = normalized.filter(not_future_dated)
     valid = normalized.filter(F.col("rejection_reason") == "").select(*SILVER_COLUMNS)
     rejected_counts = (
         normalized.filter(F.col("rejection_reason") != "")
@@ -560,17 +708,26 @@ def process_topic(
         spark, valid, f"silver.{table_name}", good_path, rebuild=rebuild
     )
     persisted_rejections = _upsert_silver_rejections(
-        spark, rejected, rejected_table, rejected_path
+        spark, rejected, rejected_table, rejected_path, rebuild=rebuild
     )
     _prune_silver_date_range(spark, good_path)
+    _write_silver_run_audit(
+        spark,
+        bucket,
+        topic,
+        input_event_count,
+        good_count,
+        persisted_rejections,
+        stage_started_at,
+    )
     _save_silver_checkpoint(spark, source, bucket, topic)
     print(
         f"{topic}: upserted {good_count} valid observation(s); "
         f"persisted {persisted_rejections} rejected event(s); "
-        f"{rejected_count} invalid and {out_of_scope_count} out-of-scope.",
+        f"{rejected_count} invalid and {future_dated_count} future-dated.",
         flush=True,
     )
-    return good_count, rejected_count + out_of_scope_count
+    return good_count, rejected_count + future_dated_count
 
 
 def run_domain(

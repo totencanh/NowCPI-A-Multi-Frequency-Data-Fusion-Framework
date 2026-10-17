@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: gold_nowcasting_features
+    description: >-
+      Monthly NowCPI feature panel. Market observations are cutoff at the
+      target's information date; age and coverage columns expose asynchronous
+      source availability. Historical values use observation-time pseudo-vintages
+      because archived source release vintages are unavailable.
+    columns:
+      - name: target_month
+        data_tests:
+          - not_null
+      - name: country
+        data_tests:
+          - not_null
+      - name: feature_source_coverage_pct
+        data_tests:
+          - not_null
+      - name: gold_build_id
+        data_tests:
+          - not_null
+      - name: gold_built_at
+        data_tests:
+          - not_null
+
+  - name: gold_nowcasting_labels
+    columns:
+      - name: target_month
+        data_tests:
+          - not_null
+      - name: country
+        data_tests:
+          - not_null
+      - name: label_available_at
+        data_tests:
+          - not_null

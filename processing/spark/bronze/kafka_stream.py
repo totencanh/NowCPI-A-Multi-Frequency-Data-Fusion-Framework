@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 
-from pyspark.sql import SparkSession, Window
+from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.types import StringType, StructField, StructType
 
@@ -45,9 +45,50 @@ def upsert_bronze_batch(spark: SparkSession, batch_df, batch_id: int, output_pat
     )
     invalid_count = invalid.count()
     if invalid_count:
+        bucket = os.getenv("MINIO_BUCKET", "nowcpi")
+        quarantine_path = f"s3a://{bucket}/bronze/kafka_events_quarantine"
+        quarantine = invalid.select(
+            F.concat_ws(
+                ":",
+                F.col("kafka_topic"),
+                F.col("kafka_partition").cast("string"),
+                F.col("kafka_offset").cast("string"),
+            ).alias("kafka_record_key"),
+            "kafka_topic",
+            "kafka_partition",
+            "kafka_offset",
+            "kafka_timestamp",
+            F.col("event_json").alias("raw_event_json"),
+            F.sha2(F.col("event_json"), 256).alias("payload_hash"),
+            F.when(F.col("_envelope").isNull(), "invalid_json")
+            .otherwise("missing_event_id")
+            .alias("rejection_reason"),
+            F.current_timestamp().alias("quarantined_at"),
+        )
+        quarantine_log = spark._jvm.org.apache.hadoop.fs.Path(
+            f"{quarantine_path.rstrip('/')}/_delta_log"
+        )
+        filesystem = quarantine_log.getFileSystem(spark._jsc.hadoopConfiguration())
+        if filesystem.exists(quarantine_log):
+            quarantine.createOrReplaceGlobalTempView("nowcpi_bronze_quarantine_batch")
+            try:
+                spark.sql(
+                    f"""MERGE INTO delta.`{quarantine_path}` AS target
+                        USING global_temp.nowcpi_bronze_quarantine_batch AS incoming
+                        ON target.kafka_record_key = incoming.kafka_record_key
+                        WHEN NOT MATCHED THEN INSERT *"""
+                )
+            finally:
+                spark.catalog.dropGlobalTempView("nowcpi_bronze_quarantine_batch")
+        else:
+            quarantine.write.format("delta").mode("overwrite").save(quarantine_path)
+        spark.sql(
+            "CREATE TABLE IF NOT EXISTS bronze.kafka_events_quarantine "
+            f"USING DELTA LOCATION '{quarantine_path}'"
+        )
         print(
-            f"Discarding {invalid_count} malformed Kafka event(s) in micro-batch "
-            f"{batch_id}: invalid JSON or missing event_id.",
+            f"Persisted {invalid_count} malformed Kafka event(s) in "
+            f"bronze.kafka_events_quarantine for micro-batch {batch_id}.",
             flush=True,
         )
 
@@ -86,36 +127,53 @@ def upsert_bronze_batch(spark: SparkSession, batch_df, batch_id: int, output_pat
             "source_record_id",
             F.get_json_object("event_json", "$.source_record_id"),
         )
+        .withColumn("business_key", F.get_json_object("event_json", "$.business_key"))
+        .withColumn("payload_hash", F.get_json_object("event_json", "$.payload_hash"))
+        .withColumn(
+            "event_time",
+            F.try_to_timestamp(F.get_json_object("event_json", "$.event_time")),
+        )
+        .withColumn(
+            "business_key",
+            F.coalesce(
+                F.col("business_key"),
+                F.to_json(
+                    F.struct(
+                        "source",
+                        "country",
+                        "series_id",
+                        "frequency",
+                        "observation_period",
+                        "unit",
+                    )
+                ),
+            ),
+        )
         .withColumn(
             "raw_payload_json",
             F.get_json_object("event_json", "$.raw_payload"),
         )
         .withColumn(
+            # Bronze is an immutable Kafka receipt log: replayed logical events
+            # retain separate offset-addressable records. Silver deduplicates
+            # observations by business key.
             "bronze_key",
-            F.when(
-                F.length(F.trim(F.col("event_id"))) > 0,
-                F.col("event_id"),
-            ).otherwise(
-                F.concat_ws(
-                    ":",
-                    F.col("kafka_topic"),
-                    F.col("kafka_partition").cast("string"),
-                    F.col("kafka_offset").cast("string"),
-                )
+            F.concat_ws(
+                ":",
+                F.col("kafka_topic"),
+                F.col("kafka_partition").cast("string"),
+                F.col("kafka_offset").cast("string"),
             ),
+        )
+        .withColumn(
+            "payload_hash",
+            F.coalesce(F.col("payload_hash"), F.sha2(F.col("event_json"), 256)),
         )
         .withColumn("bronze_ingested_at", F.current_timestamp())
     )
 
-    # Replayed Kafka messages share event_id and resolve to one latest row.
-    latest = Window.partitionBy("bronze_key").orderBy(
-        F.col("kafka_timestamp").desc(), F.col("kafka_offset").desc()
-    )
-    batch = (
-        events.withColumn("_row_number", F.row_number().over(latest))
-        .filter(F.col("_row_number") == 1)
-        .drop("_row_number")
-    )
+    # A topic/partition/offset identifies one Kafka receipt deterministically.
+    batch = events.dropDuplicates(["bronze_key"])
     delta_log = spark._jvm.org.apache.hadoop.fs.Path(
         f"{output_path.rstrip('/')}/_delta_log"
     )
@@ -131,7 +189,6 @@ def upsert_bronze_batch(spark: SparkSession, batch_df, batch_id: int, output_pat
                 MERGE INTO delta.`{output_path}` AS target
                 USING global_temp.{view_name} AS incoming
                 ON target.bronze_key = incoming.bronze_key
-                WHEN MATCHED THEN UPDATE SET *
                 WHEN NOT MATCHED THEN INSERT *
                 """
             )
