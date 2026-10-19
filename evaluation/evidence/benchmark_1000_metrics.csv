@@ -1,0 +1,2 @@
+scope,events,source_batches,freshness_sla_60m_pct,freshness_p95_sec,end_to_end_p50_sec,end_to_end_p95_sec,end_to_end_p99_sec,end_to_end_max_sec
+isolated_simplified_pipeline_post_write_proxy,1000,10,100.0,13.317,15.654,21.701,21.701,21.702
