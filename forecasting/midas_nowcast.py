@@ -7,9 +7,16 @@ latest 12 target-aligned weekly returns enter as separate regressors (U-MIDAS).
 The target is always the month after the latest released CPI month, matching
 the one-step-ahead design in ``midas_capstone``.
 
-Historical evaluation uses calendar month-end information sets, not archived
-real-time data vintages. It is therefore a pseudo-out-of-sample diagnostic,
-not a vintage-accurate performance claim.
+Historical evaluation uses rolling-origin folds. CPI target release timestamps
+are used as the forecast cutoff where the source provides them. Historical
+Brent publication times and source revisions are not archived, so this remains
+a hybrid/pseudo-vintage diagnostic rather than a vintage-accurate claim.
+
+When CPI release timestamps are missing, historical folds use an explicit
+fallback assumption: prior-month CPI by day 15 of the target month. Daily Brent
+is assumed available on the following UTC calendar day because its collector
+does not provide a source release timestamp. The live forecast uses stored
+source availability timestamps.
 """
 
 from __future__ import annotations
@@ -17,11 +24,21 @@ from __future__ import annotations
 import json
 import os
 import time
+from datetime import date, datetime, time as daytime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
 from trino.dbapi import connect
+
+from evaluation_protocol import (
+    MIN_DM_ORIGINS,
+    failure_cases,
+    paired_model_comparison,
+    release_timestamp_audit,
+)
+from source_history.raw_batch_version_audit import build_raw_batch_version_audit
 
 
 HERE = Path(__file__).resolve().parent
@@ -29,6 +46,13 @@ OUTPUT_DIR = HERE / "outputs"
 LAGS = 12
 MIN_TRAIN = 8
 RIDGE_ALPHA = 10.0
+HISTORICAL_CPI_RELEASE_DAY = 15
+HISTORICAL_BRENT_PUBLICATION_LAG_DAYS = 1
+RECENT_BACKTEST_MONTHS = 9
+INNER_VALIDATION_ORIGINS = 12
+MAPE_MIN_ABS_ACTUAL_PP = 0.05
+RAW_DATA_DIR = HERE.parent / "data" / "raw"
+VIETNAM_TZ = ZoneInfo("Asia/Ho_Chi_Minh")
 
 
 def as_utc(value: pd.Timestamp) -> pd.Timestamp:
@@ -40,6 +64,56 @@ def read_table(connection, table: str) -> pd.DataFrame:
     cursor.execute(f"SELECT * FROM delta.gold.{table}")
     columns = [item[0].lower() for item in cursor.description]
     return pd.DataFrame(cursor.fetchall(), columns=columns)
+
+
+def load_nso_release_calendar() -> tuple[dict[str, dict], str]:
+    """Load the newest immutable NSO date-only publication calendar snapshot."""
+    calendar_dir = RAW_DATA_DIR / "nso_cpi_release_calendar"
+    snapshots = sorted(calendar_dir.glob("snapshot_*.json"))
+    if not snapshots:
+        raise RuntimeError(
+            "No NSO CPI release-calendar snapshot exists; run the NSO calendar collector first."
+        )
+    # Snapshot names are content hashes, not timestamps; choose the most
+    # recently written immutable version by filesystem modification time.
+    snapshot_path = max(snapshots, key=lambda path: path.stat().st_mtime_ns)
+    snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
+    records = snapshot.get("records", [])
+    calendar = {
+        str(record["target_month"]): record
+        for record in records
+        if record.get("target_month") and record.get("issue_date")
+    }
+    if not calendar:
+        raise RuntimeError(f"NSO release-calendar snapshot is empty: {snapshot_path}")
+    return calendar, snapshot_path.name
+
+
+def apply_nso_release_calendar(
+    labels: pd.DataFrame, calendar: dict[str, dict]
+) -> pd.DataFrame:
+    """Attach NSO issue-date metadata while preserving CPI label values."""
+    frame = labels.copy()
+    periods = frame["target_month"].dt.strftime("%Y-%m")
+    frame["label_source_release_date"] = periods.map(
+        {period: record["issue_date"] for period, record in calendar.items()}
+    )
+    frame["label_nso_available_at_proxy"] = periods.map(
+        {
+            period: record["conservative_available_at_proxy_utc"]
+            for period, record in calendar.items()
+        }
+    )
+    frame["label_nso_release_article_url"] = periods.map(
+        {period: record.get("article_url") for period, record in calendar.items()}
+    )
+    frame["label_nso_release_basis"] = periods.map(
+        {period: record.get("availability_basis") for period, record in calendar.items()}
+    )
+    frame["label_nso_available_at_proxy"] = pd.to_datetime(
+        frame["label_nso_available_at_proxy"], errors="coerce", utc=True
+    )
+    return frame
 
 
 def brent_known_as_of(
@@ -103,6 +177,48 @@ def weekly_returns(
     return np.log(weekly).diff().dropna()
 
 
+def historical_weekly_returns(
+    brent: pd.DataFrame,
+    target_month: pd.Timestamp,
+    availability_cutoff: pd.Timestamp,
+) -> pd.Series:
+    """Build a historical Brent block using an explicit next-day availability assumption."""
+    frame = brent.copy()
+    frame["observation_date"] = pd.to_datetime(
+        frame["observation_date"], errors="coerce"
+    ).dt.tz_localize(None)
+    frame["value"] = pd.to_numeric(frame["brent_usd_per_barrel"], errors="coerce")
+    frame = frame.dropna(subset=["observation_date", "value"])
+    source_release = (
+        pd.to_datetime(frame["source_release_ts"], errors="coerce", utc=True)
+        if "source_release_ts" in frame
+        else pd.Series(pd.NaT, index=frame.index, dtype="datetime64[ns, UTC]")
+    )
+    assumed_available = pd.to_datetime(
+        frame["observation_date"].dt.normalize()
+        + pd.Timedelta(days=HISTORICAL_BRENT_PUBLICATION_LAG_DAYS),
+        utc=True,
+    )
+    frame["historical_available_at"] = source_release.where(
+        source_release.notna(), assumed_available
+    )
+    cutoff_utc = as_utc(availability_cutoff)
+    frame = frame.loc[
+        (frame["observation_date"] < target_month + pd.DateOffset(months=1))
+        & (frame["historical_available_at"] <= cutoff_utc)
+        & (frame["value"] > 0)
+    ]
+    if frame.empty:
+        return pd.Series(dtype=float)
+    weekly = (
+        frame.set_index("observation_date")["value"]
+        .resample("W-SUN")
+        .mean()
+        .dropna()
+    )
+    return np.log(weekly).diff().dropna()
+
+
 def make_row(
     month: pd.Timestamp,
     labels: pd.DataFrame,
@@ -110,24 +226,51 @@ def make_row(
     cutoff: pd.Timestamp,
     actual: float = np.nan,
     require_released_lag: bool = False,
+    historical_origin: bool = False,
 ) -> dict:
     prior_month = month - pd.DateOffset(months=1)
     prior = labels.loc[labels["target_month"] == prior_month, "target_cpi_mom_percent"]
-    if require_released_lag and not prior.empty:
-        if "label_available_at" not in labels:
-            prior = prior.iloc[0:0]
+    if (require_released_lag or historical_origin) and not prior.empty:
+        if historical_origin:
+            label_times = pd.Series(dtype="datetime64[ns, UTC]")
+            for timestamp_column in (
+                "label_source_release_ts",
+                "label_nso_available_at_proxy",
+            ):
+                if timestamp_column in labels:
+                    candidate = pd.to_datetime(
+                        labels.loc[
+                            labels["target_month"] == prior_month,
+                            timestamp_column,
+                        ],
+                        errors="coerce",
+                        utc=True,
+                    )
+                    if not candidate.empty and pd.notna(candidate.iloc[-1]):
+                        label_times = candidate
+                        break
         else:
+            timestamp_column = "label_available_at"
             label_times = pd.to_datetime(
-                labels.loc[labels["target_month"] == prior_month, "label_available_at"],
+                labels.loc[labels["target_month"] == prior_month, timestamp_column],
                 errors="coerce",
                 utc=True,
+            ) if timestamp_column in labels else pd.Series(dtype="datetime64[ns, UTC]")
+        if label_times.empty or pd.isna(label_times.iloc[-1]):
+            # Historical pseudo-vintage fallback only: never substitute
+            # ingestion time for a source release time.
+            assumed = pd.Timestamp(
+                year=month.year,
+                month=month.month,
+                day=HISTORICAL_CPI_RELEASE_DAY,
+                tz="UTC",
             )
-            if (
-                label_times.empty
-                or pd.isna(label_times.iloc[-1])
-                or label_times.iloc[-1] > as_utc(cutoff)
-            ):
+            if historical_origin and assumed <= as_utc(cutoff):
+                label_times = pd.Series([assumed])
+            else:
                 prior = prior.iloc[0:0]
+        if not label_times.empty and label_times.iloc[-1] > as_utc(cutoff):
+            prior = prior.iloc[0:0]
     row = {
         "target_month": month.strftime("%Y-%m-%d"),
         "cutoff_at": cutoff.isoformat(),
@@ -145,7 +288,12 @@ def make_row(
     return row
 
 
-def fit_predict(train: pd.DataFrame, test: pd.DataFrame, predictors: list[str]) -> float:
+def fit_predict(
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    predictors: list[str],
+    alpha: float = RIDGE_ALPHA,
+) -> float:
     """Train-only imputation/scaling and ridge with an unpenalized intercept."""
     x_train = train[predictors].to_numpy(dtype=float)
     x_test = test[predictors].to_numpy(dtype=float)
@@ -160,7 +308,7 @@ def fit_predict(train: pd.DataFrame, test: pd.DataFrame, predictors: list[str]) 
     x_test = (x_test - means) / scales
     x_train = np.column_stack([np.ones(len(x_train)), x_train])
     x_test = np.column_stack([np.ones(len(x_test)), x_test])
-    penalty = np.eye(x_train.shape[1]) * RIDGE_ALPHA
+    penalty = np.eye(x_train.shape[1]) * alpha
     penalty[0, 0] = 0.0
     beta = np.linalg.solve(
         x_train.T @ x_train + penalty,
@@ -169,10 +317,109 @@ def fit_predict(train: pd.DataFrame, test: pd.DataFrame, predictors: list[str]) 
     return float((x_test @ beta).item())
 
 
+def fit_ar1(train: pd.DataFrame, test: pd.DataFrame) -> float:
+    """Unregularized AR(1) benchmark using the previous CPI MoM only."""
+    usable = train.dropna(subset=["cpi_mom_lag_1", "actual_cpi_mom_percent"])
+    x = usable["cpi_mom_lag_1"].to_numpy(dtype=float)
+    y = usable["actual_cpi_mom_percent"].to_numpy(dtype=float)
+    design = np.column_stack([np.ones(len(x)), x])
+    beta = np.linalg.lstsq(design, y, rcond=None)[0]
+    return float(beta[0] + beta[1] * float(test["cpi_mom_lag_1"].iloc[0]))
+
+
+def select_ar_midas_by_validation(
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    lag_columns: list[str],
+) -> tuple[float | None, int | None, float | None, int]:
+    """Select lag count and ridge penalty via expanding inner validation only."""
+    train = train.reset_index(drop=True)
+    candidate_scores = []
+    for lag_count in (3, 6, 12):
+        predictors = ["cpi_mom_lag_1", *lag_columns[-lag_count:]]
+        if test[predictors].isna().any(axis=None):
+            continue
+        for alpha in (1.0, 10.0, 100.0):
+            errors = []
+            validation_start = max(MIN_TRAIN, len(train) - INNER_VALIDATION_ORIGINS)
+            for validation_index in range(validation_start, len(train)):
+                inner_train = train.iloc[:validation_index].dropna(
+                    subset=[*predictors, "actual_cpi_mom_percent"]
+                )
+                validation_row = train.iloc[[validation_index]]
+                if len(inner_train) < MIN_TRAIN or validation_row[predictors].isna().any(axis=None):
+                    continue
+                prediction = fit_predict(inner_train, validation_row, predictors, alpha)
+                errors.append(
+                    abs(float(validation_row["actual_cpi_mom_percent"].iloc[0]) - prediction)
+                )
+            if len(errors) >= 3:
+                candidate_scores.append((float(np.mean(errors)), lag_count, alpha, len(errors)))
+    if not candidate_scores:
+        return None, None, None, 0
+    _, lag_count, alpha, validation_origins = min(
+        candidate_scores, key=lambda item: (item[0], item[1], -item[2])
+    )
+    predictors = ["cpi_mom_lag_1", *lag_columns[-lag_count:]]
+    fit = train.dropna(subset=[*predictors, "actual_cpi_mom_percent"])
+    if len(fit) < MIN_TRAIN:
+        return None, None, None, validation_origins
+    return fit_predict(fit, test, predictors, alpha), lag_count, alpha, validation_origins
+
+
+def select_cpi_preserving_blend_share(
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    lag_columns: list[str],
+) -> tuple[float | None, float | None, int]:
+    """Select the AR-MIDAS share using only recent expanding inner folds.
+
+    The candidate grid keeps at least 25% weight on AR-MIDAS, so CPI remains
+    an active predictor while Brent-only U-MIDAS can contribute to the blend.
+    """
+    predictors = ["cpi_mom_lag_1", *lag_columns]
+    if test[predictors].isna().any(axis=None):
+        return None, None, 0
+    train = train.reset_index(drop=True)
+    validation_start = max(MIN_TRAIN, len(train) - INNER_VALIDATION_ORIGINS)
+    actuals, ar_preds, u_preds = [], [], []
+    for validation_index in range(validation_start, len(train)):
+        validation_row = train.iloc[[validation_index]]
+        if validation_row[predictors].isna().any(axis=None):
+            continue
+        inner_train = train.iloc[:validation_index].dropna(
+            subset=[*predictors, "actual_cpi_mom_percent"]
+        )
+        if len(inner_train) < MIN_TRAIN:
+            continue
+        ar_preds.append(fit_predict(inner_train, validation_row, predictors, RIDGE_ALPHA))
+        u_preds.append(fit_predict(inner_train, validation_row, lag_columns, RIDGE_ALPHA))
+        actuals.append(float(validation_row["actual_cpi_mom_percent"].iloc[0]))
+    if len(actuals) < 3:
+        return None, None, len(actuals)
+    actual = np.asarray(actuals, dtype=float)
+    ar = np.asarray(ar_preds, dtype=float)
+    u = np.asarray(u_preds, dtype=float)
+    candidates = []
+    for ar_share in (0.25, 0.5, 0.75, 1.0):
+        blend = ar_share * ar + (1 - ar_share) * u
+        candidates.append((float(np.mean(np.abs(actual - blend))), -ar_share, ar_share))
+    validation_mae, _, selected_share = min(candidates)
+    return selected_share, validation_mae, len(actuals)
+
+
 def evaluate(predictions: pd.DataFrame, column: str) -> dict:
     actual = predictions["actual_cpi_mom_percent"].to_numpy(dtype=float)
     predicted = predictions[column].to_numpy(dtype=float)
     error = actual - predicted
+    mape_mask = np.abs(actual) >= MAPE_MIN_ABS_ACTUAL_PP
+    smape_denominator = np.abs(actual) + np.abs(predicted)
+    smape_terms = np.divide(
+        2 * np.abs(error),
+        smape_denominator,
+        out=np.zeros_like(error),
+        where=smape_denominator > 0,
+    )
     return {
         "model": column,
         "evaluated_months": len(error),
@@ -181,10 +428,67 @@ def evaluate(predictions: pd.DataFrame, column: str) -> dict:
         "directional_accuracy_pct": float(
             np.mean(np.sign(actual) == np.sign(predicted)) * 100
         ),
+        "mape_pct_excluding_near_zero_actuals": (
+            float(np.mean(np.abs(error[mape_mask] / actual[mape_mask])) * 100)
+            if mape_mask.any() else None
+        ),
+        "mape_scored_months": int(mape_mask.sum()),
+        "mape_excluded_months_abs_actual_below_0_05pp": int((~mape_mask).sum()),
+        "smape_pct": float(np.mean(smape_terms) * 100),
     }
 
 
+def common_backtest_metrics(predictions: pd.DataFrame) -> pd.DataFrame:
+    """Score every model on identical expanding-window folds, full and recent."""
+    models = [
+        "naive_last_cpi",
+        "ar1_ols",
+        "cpi_only_ridge",
+        "u_midas_brent_only",
+        "ar_midas_ridge",
+        "ar_midas_validation_selected",
+        "ar_midas_validation_blend",
+    ]
+    if predictions.empty or any(model not in predictions for model in models):
+        return pd.DataFrame()
+    common = predictions.dropna(
+        subset=["actual_cpi_mom_percent", *models]
+    ).sort_values("target_month")
+    if common.empty:
+        return pd.DataFrame()
+
+    windows = [("all_common_months", common)]
+    research_holdout = common.tail(min(36, len(common)))
+    windows.append((f"latest_{len(research_holdout)}_common_month_research_holdout", research_holdout))
+    latest_24 = common.tail(min(24, len(common)))
+    windows.append((f"latest_{len(latest_24)}_common_month_subwindow", latest_24))
+    recent = common.tail(RECENT_BACKTEST_MONTHS)
+    windows.append((f"most_recent_{len(recent)}_common_months", recent))
+    metric_rows = []
+    for window_name, frame in windows:
+        for model_name in models:
+            row = evaluate(frame, model_name)
+            row["evaluation_window"] = window_name
+            row["information_set_policy"] = (
+                "target_CPI_source_release_minus_1_second_when_present_else_target_month_end_proxy; "
+                "CPI_lag_source_release_when_present_else_NSO_issue_date_plus_1_day_proxy_then_day_15_proxy; "
+                "Brent_source_release_when_present_else_observation_plus_1_UTC_day_proxy; source_revisions_unavailable"
+            )
+            row["origin_count_status"] = (
+                "meets_minimum_24_origins" if len(frame) >= 24
+                else f"insufficient_for_research_claim:{len(frame)}_of_24_origins"
+            )
+            row["evaluation_mode"] = "pseudo_vintage_diagnostic"
+            row["real_time_performance_claim_allowed"] = False
+            metric_rows.append(row)
+    return pd.DataFrame(metric_rows)
+
+
 def main() -> None:
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(build_raw_batch_version_audit(RAW_DATA_DIR)).to_csv(
+        OUTPUT_DIR / "raw_event_version_audit.csv", index=False
+    )
     processing_started_at = pd.Timestamp.now(tz="UTC")
     processing_started_clock = time.perf_counter()
     # Freeze the information set before querying sources. Records arriving
@@ -204,6 +508,10 @@ def main() -> None:
         connection.close()
 
     labels = labels.loc[labels["country"].astype(str).str.upper() == "VNM"].copy()
+    brent = brent.loc[brent["country"].astype(str).str.upper() == "VNM"].copy()
+    release_timestamp_audit(labels, brent).to_csv(
+        OUTPUT_DIR / "release_timestamp_audit.csv", index=False
+    )
     if "label_available_at" not in labels:
         raise RuntimeError(
             "Gold CPI labels do not expose label_available_at; refusing an as-of forecast."
@@ -225,19 +533,143 @@ def main() -> None:
         .sort_values("target_month")
         .reset_index(drop=True)
     )
-    brent = brent.loc[brent["country"].astype(str).str.upper() == "VNM"].copy()
+    release_calendar, release_snapshot_name = load_nso_release_calendar()
+    labels = apply_nso_release_calendar(labels, release_calendar)
+    matched_release_dates = int(labels["label_source_release_date"].notna().sum())
+    pd.DataFrame(
+        [
+            {
+                "calendar_snapshot": release_snapshot_name,
+                "cpi_label_months": len(labels),
+                "months_with_nso_issue_date": matched_release_dates,
+                "issue_date_coverage_pct": round(
+                    matched_release_dates / len(labels) * 100, 2
+                ) if len(labels) else 0.0,
+                "release_time_precision": "date_only",
+                "within_day_publication_time_known": False,
+                "historical_cpi_value_vintages_archived": False,
+                "strict_vintage_backtest_ready": False,
+            }
+        ]
+    ).to_csv(OUTPUT_DIR / "nso_release_calendar_audit.csv", index=False)
     if labels.empty or brent.empty:
         raise RuntimeError("Gold CPI labels or Vietnam Brent observations are empty.")
 
+    backtest_started_clock = time.perf_counter()
     historical_rows = []
     for item in labels.itertuples(index=False):
         month = item.target_month
-        cutoff = month + pd.offsets.MonthEnd(0) + pd.Timedelta(hours=23, minutes=59, seconds=59)
-        # Historical source ingestion timestamps are not historical release
-        # vintages. Filter by observation date only and disclose this caveat.
-        weekly = weekly_returns(brent, cutoff, respect_available_at=False)
+        month_end = month + pd.offsets.MonthEnd(0)
+        cutoff = (
+            month_end + pd.Timedelta(days=1, hours=23, minutes=59, seconds=59)
+        ).tz_localize("UTC")
+        label_row = labels.loc[labels["target_month"] == month].iloc[-1]
+        target_issue_date = label_row["label_source_release_date"]
+        if pd.notna(target_issue_date):
+            issue_day = date.fromisoformat(str(target_issue_date))
+            # With date-only metadata, do not use same-day observations. The
+            # cutoff is the beginning of the official issue date in Vietnam.
+            cutoff = pd.Timestamp(
+                datetime.combine(issue_day, daytime.min, tzinfo=VIETNAM_TZ)
+            ).tz_convert("UTC")
+        if "label_source_release_ts" in labels:
+            target_release = pd.to_datetime(
+                labels.loc[labels["target_month"] == month, "label_source_release_ts"],
+                errors="coerce", utc=True,
+            )
+            if not target_release.empty and pd.notna(target_release.iloc[-1]):
+                cutoff = target_release.iloc[-1] - pd.Timedelta(seconds=1)
+        assumed_cpi_release = pd.Timestamp(
+            year=month.year,
+            month=month.month,
+            day=HISTORICAL_CPI_RELEASE_DAY,
+            tz="UTC",
+        )
+        weekly = historical_weekly_returns(brent, month, cutoff)
+        row = make_row(
+            month, labels, weekly, cutoff, float(item.target_cpi_mom_percent),
+            historical_origin=True,
+        )
+        prior_label = labels.loc[labels["target_month"] == month - pd.DateOffset(months=1)]
+        cpi_lag_nso_available = (
+            prior_label["label_nso_available_at_proxy"].iloc[-1]
+            if not prior_label.empty and "label_nso_available_at_proxy" in prior_label
+            else pd.NaT
+        )
+        row["cpi_lag_assumed_available_at"] = (
+            cpi_lag_nso_available.isoformat()
+            if pd.notna(cpi_lag_nso_available)
+            else assumed_cpi_release.isoformat()
+        )
+        row["cpi_lag_nso_release_date"] = (
+            prior_label["label_source_release_date"].iloc[-1]
+            if not prior_label.empty else None
+        )
+        if "label_source_release_ts" in labels:
+            release_ts = pd.to_datetime(
+                labels.loc[labels["target_month"] == month, "label_source_release_ts"],
+                errors="coerce", utc=True,
+            )
+            row["target_source_release_ts"] = (
+                release_ts.iloc[-1].isoformat()
+                if not release_ts.empty and pd.notna(release_ts.iloc[-1]) else None
+            )
+        else:
+            row["target_source_release_ts"] = None
+        assumed_target_release = pd.Timestamp(
+            year=(month + pd.DateOffset(months=1)).year,
+            month=(month + pd.DateOffset(months=1)).month,
+            day=HISTORICAL_CPI_RELEASE_DAY,
+            tz="UTC",
+        )
+        target_nso_available = label_row["label_nso_available_at_proxy"]
+        row["target_effective_release_at"] = (
+            row["target_source_release_ts"]
+            or (
+                target_nso_available.isoformat()
+                if pd.notna(target_nso_available)
+                else assumed_target_release.isoformat()
+            )
+        )
+        row["target_nso_release_date"] = target_issue_date
+        row["information_origin_basis"] = (
+            "cpi_source_release_ts_minus_1_second"
+            if row["target_source_release_ts"]
+            else (
+                "nso_date_only_issue_date_day_start_vietnam"
+                if pd.notna(target_issue_date)
+                else "target_month_end_proxy"
+            )
+        )
+        row["cpi_lag_availability_basis"] = (
+            "cpi_source_release_ts"
+            if not prior_label.empty
+            and "label_source_release_ts" in prior_label
+            and pd.notna(prior_label["label_source_release_ts"].iloc[-1])
+            else (
+                "nso_issue_date_plus_one_day_vietnam_midnight_proxy"
+                if not prior_label.empty
+                and "label_nso_available_at_proxy" in prior_label
+                and pd.notna(prior_label["label_nso_available_at_proxy"].iloc[-1])
+                else "assumed_day_15_proxy"
+            )
+        )
+        row["cpi_lag_nso_release_date"] = (
+            prior_label["label_source_release_date"].iloc[-1]
+            if not prior_label.empty
+            and "label_source_release_date" in prior_label
+            and pd.notna(prior_label["label_source_release_date"].iloc[-1])
+            else None
+        )
+        row["brent_availability_assumption"] = (
+            "source_release_ts_when_present_else_observation_date_plus_"
+            f"{HISTORICAL_BRENT_PUBLICATION_LAG_DAYS}_utc_days"
+        )
+        row["historical_information_set"] = (
+            "source_release_when_present_else_explicit_proxy_no_archived_revisions"
+        )
         historical_rows.append(
-            make_row(month, labels, weekly, cutoff, float(item.target_cpi_mom_percent))
+            row
         )
     history = pd.DataFrame(historical_rows).sort_values("target_month").reset_index(drop=True)
 
@@ -247,19 +679,48 @@ def main() -> None:
     for index in range(len(history)):
         row = history.iloc[[index]]
         train = history.iloc[:index].dropna(subset=["actual_cpi_mom_percent"])
+        train_release_times = pd.to_datetime(
+            train["target_effective_release_at"], errors="coerce", utc=True
+        )
+        train = train.loc[train_release_times <= as_utc(pd.Timestamp(row["cutoff_at"].iloc[0]))]
         if len(train) < MIN_TRAIN:
             continue
         record = {
             "target_month": row["target_month"].iloc[0],
             "actual_cpi_mom_percent": float(row["actual_cpi_mom_percent"].iloc[0]),
             "training_months": len(train),
+            "information_cutoff_at": row["cutoff_at"].iloc[0],
+            "cpi_lag_assumed_available_at": row[
+                "cpi_lag_assumed_available_at"
+            ].iloc[0],
+            "brent_availability_assumption": row[
+                "brent_availability_assumption"
+            ].iloc[0],
+            "historical_information_set": row[
+                "historical_information_set"
+            ].iloc[0],
+            "information_origin_basis": row["information_origin_basis"].iloc[0],
+            "cpi_lag_availability_basis": row["cpi_lag_availability_basis"].iloc[0],
+            "cpi_lag_nso_release_date": row["cpi_lag_nso_release_date"].iloc[0],
+            "target_nso_release_date": row["target_nso_release_date"].iloc[0],
+            "naive_last_cpi": (
+                float(row["cpi_mom_lag_1"].iloc[0])
+                if pd.notna(row["cpi_mom_lag_1"].iloc[0])
+                else np.nan
+            ),
         }
+        record["ar1_ols"] = (
+            fit_ar1(train, row)
+            if pd.notna(row["cpi_mom_lag_1"].iloc[0])
+            and len(train.dropna(subset=["cpi_mom_lag_1"])) >= MIN_TRAIN
+            else np.nan
+        )
         midas_train = train.dropna(subset=lag_columns)
         if row[lag_columns].notna().all(axis=None) and len(midas_train) >= MIN_TRAIN:
-            record["midas_ridge"] = fit_predict(midas_train, row, lag_columns)
+            record["u_midas_brent_only"] = fit_predict(midas_train, row, lag_columns)
             record["midas_training_months"] = len(midas_train)
         else:
-            record["midas_ridge"] = np.nan
+            record["u_midas_brent_only"] = np.nan
         cpi_train = train.dropna(subset=["cpi_mom_lag_1"])
         if pd.notna(row["cpi_mom_lag_1"].iloc[0]) and len(cpi_train) >= MIN_TRAIN:
             record["cpi_only_ridge"] = fit_predict(cpi_train, row, ["cpi_mom_lag_1"])
@@ -276,21 +737,117 @@ def main() -> None:
             )
         else:
             record["ar_midas_ridge"] = np.nan
+        selection_started_clock = time.perf_counter()
+        selected, selected_lags, selected_alpha, validation_origins = select_ar_midas_by_validation(
+            train, row, lag_columns
+        )
+        record["feature_selection_duration_seconds"] = round(
+            time.perf_counter() - selection_started_clock, 6
+        )
+        record["ar_midas_validation_selected"] = (
+            selected if selected is not None else np.nan
+        )
+        record["selected_brent_lags"] = selected_lags
+        record["selected_ridge_alpha"] = selected_alpha
+        record["inner_validation_origins"] = validation_origins
+        blend_share, blend_validation_mae, blend_validation_origins = select_cpi_preserving_blend_share(
+            train, row, lag_columns
+        )
+        record["selected_ar_midas_share"] = blend_share
+        record["blend_validation_mae_pp"] = blend_validation_mae
+        record["blend_validation_origins"] = blend_validation_origins
+        record["ar_midas_validation_blend"] = (
+            blend_share * record["ar_midas_ridge"]
+            + (1 - blend_share) * record["u_midas_brent_only"]
+            if blend_share is not None
+            and pd.notna(record["ar_midas_ridge"])
+            and pd.notna(record["u_midas_brent_only"])
+            else np.nan
+        )
         backtest.append(record)
 
     predictions = pd.DataFrame(backtest)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     predictions.to_csv(OUTPUT_DIR / "midas_backtest_predictions.csv", index=False)
-    metric_rows = []
-    for model_name in ["cpi_only_ridge", "midas_ridge", "ar_midas_ridge"]:
-        if model_name in predictions:
-            comparable = predictions.dropna(
-                subset=["actual_cpi_mom_percent", model_name]
-            )
-            if not comparable.empty:
-                metric_rows.append(evaluate(comparable, model_name))
-    metrics = pd.DataFrame(metric_rows)
+    metrics = common_backtest_metrics(predictions)
     metrics.to_csv(OUTPUT_DIR / "midas_backtest_metrics.csv", index=False)
+    backtest_evaluation_duration = round(
+        time.perf_counter() - backtest_started_clock, 3
+    )
+    (OUTPUT_DIR / "backtest_protocol.json").write_text(
+        json.dumps(
+            {
+                "protocol_version": 2,
+                "outer_split": "expanding rolling origin; each target is scored once",
+                "minimum_initial_training_months": MIN_TRAIN,
+                "baseline_models": ["last_cpi_naive", "ar1_ols"],
+                "proposed_models": ["fixed_ar_midas_ridge", "validation_selected_ar_midas", "validation_selected_cpi_preserving_blend"],
+                "validation_grid": {"brent_weekly_lags": [3, 6, 12], "ridge_alpha": [1, 10, 100], "ar_midas_blend_share": [0.25, 0.5, 0.75, 1.0]},
+                "maximum_inner_validation_origins_per_outer_fold": INNER_VALIDATION_ORIGINS,
+                "blend_change": "single controlled ablation; choose AR-MIDAS share from {0.25,0.5,0.75,1.0} using inner validation; CPI model retains positive weight",
+                "research_holdout_months": 36,
+                "minimum_research_holdout_months": 24,
+                "feature_selection": "expanding inner validation only; outer target excluded",
+                "primary_metric": "MAE in CPI MoM percentage points",
+                "guardrail_metric": "RMSE in CPI MoM percentage points",
+                "supplementary_metrics": ["MAPE excluding abs(actual)<0.05pp; report scored/excluded counts", "sMAPE"],
+                "mape_near_zero_exclusion_threshold_pp": MAPE_MIN_ABS_ACTUAL_PP,
+                "paired_comparison": "identical target months per model pair",
+                "reported_windows": ["all_available", "latest_36", "latest_24", "latest_9_descriptive_only"],
+                "dm_minimum_paired_origins": MIN_DM_ORIGINS,
+                "dm_losses": ["absolute_error", "squared_error"],
+                "uncertainty": "seeded paired circular moving-block bootstrap 95% CI",
+                "release_time_policy": "CPI uses source_release_ts when present, otherwise NSO issue date with a conservative next-Vietnam-day availability proxy, then day-15 fallback; Brent uses source_release_ts when present, otherwise observation date + 1 UTC day",
+                "vintage_limit": "NSO CPI issue dates are collected, but historical CPI value vintages and complete source vintages are not archived; do not claim strict vintage-accurate results",
+                "real_time_performance_claim_allowed": False,
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    paired_rows = []
+    paired_evaluation_started_clock = time.perf_counter()
+    model_baselines = {
+        "ar1_ols": ["naive_last_cpi"],
+        "cpi_only_ridge": ["naive_last_cpi", "ar1_ols"],
+        "u_midas_brent_only": ["naive_last_cpi", "ar1_ols"],
+        "ar_midas_ridge": ["naive_last_cpi", "ar1_ols"],
+        "ar_midas_validation_selected": ["naive_last_cpi", "ar1_ols"],
+        "ar_midas_validation_blend": ["naive_last_cpi", "ar1_ols", "ar_midas_ridge"],
+    }
+    for model_name, baselines in model_baselines.items():
+        if model_name not in predictions:
+            continue
+        for baseline_model in baselines:
+            paired = predictions.dropna(
+                subset=["actual_cpi_mom_percent", baseline_model, model_name]
+            ).sort_values("target_month")
+            for window_name, window in (
+                ("all_pairwise_common_origins", paired),
+                ("latest_36_pairwise_common_origins", paired.tail(36)),
+                ("latest_24_pairwise_common_origins", paired.tail(24)),
+                ("latest_9_descriptive_only", paired.tail(RECENT_BACKTEST_MONTHS)),
+            ):
+                if window.empty:
+                    continue
+                comparison = paired_model_comparison(window, model_name, baseline_model)
+                comparison["evaluation_window"] = window_name
+                comparison["evaluation_mode"] = "pseudo_vintage_diagnostic"
+                comparison["real_time_performance_claim_allowed"] = False
+                paired_rows.append(comparison)
+    pd.DataFrame(paired_rows).to_csv(
+        OUTPUT_DIR / "midas_paired_comparisons.csv", index=False
+    )
+    failure_frame = predictions.dropna(
+        subset=["actual_cpi_mom_percent", "naive_last_cpi", "ar_midas_ridge"]
+    ).sort_values("target_month")
+    if not failure_frame.empty:
+        failure_cases(failure_frame, "ar_midas_ridge", "naive_last_cpi").to_csv(
+            OUTPUT_DIR / "midas_failure_cases.csv", index=False
+        )
+    paired_evaluation_duration = round(
+        time.perf_counter() - paired_evaluation_started_clock, 3
+    )
 
     now = data_cutoff
     calendar_current_month = now.tz_localize(None).to_period("M").to_timestamp()
@@ -340,6 +897,8 @@ def main() -> None:
         "cpi_only_ridge_nowcast_mom_percent": None,
         "u_midas_brent_only_diagnostic_mom_percent": None,
         "ar_midas_ridge_nowcast_mom_percent": None,
+        "ar_midas_validation_blend_diagnostic_mom_percent": None,
+        "validation_selected_ar_midas_share": None,
         "nowcast_mom_percent": None,
         "nowcast_model": None,
         "midas_status": "insufficient labeled CPI training months",
@@ -348,12 +907,18 @@ def main() -> None:
             "AR-MIDAS uses the latest actual monthly CPI lag and 12 weekly "
             "Brent log returns when available."
         ),
-        "evaluation_note": "Historical scores use month-end calendar cutoffs, not archived real-time vintages.",
+        "evaluation_note": (
+            "Historical scores use source release timestamps when present; absent CPI "
+            "timestamps use NSO's actual issue date with a conservative next-Vietnam-day "
+            "availability proxy, then a day-15 fallback; absent Brent release dates use "
+            "observation date plus one UTC day. Source revisions are not archived, "
+            "so scores are pseudo-vintage diagnostics and not real-time performance claims."
+        ),
         "availability_policy": (
-            "CPI labels must be available by the run cutoff. Brent observations "
-            "are restricted to the target month and must be available by the "
-            "run cutoff. Archived historical release vintages are unavailable, "
-            "so a past target month is a delayed estimate, not a real-time vintage."
+            "Live CPI labels and Brent observations are filtered by pipeline available_at; "
+            "the available_at_basis fields identify whether this is a source release, "
+            "Kafka timestamp, Bronze ingest, or source ingest time. Historical "
+            "source vintages are not archived."
         ),
         "brent_observations_available_at_cutoff": int(len(current_brent)),
         "brent_latest_observation_date": (
@@ -368,11 +933,35 @@ def main() -> None:
             if not current_brent.empty
             else None
         ),
+        "brent_latest_available_at_basis": (
+            current_brent.loc[current_brent["available_at"].idxmax(), "available_at_basis"]
+            if not current_brent.empty and "available_at_basis" in current_brent
+            else "basis_not_exposed_by_Gold"
+        ),
         "cpi_lag_month": cpi_lag_month.strftime("%Y-%m"),
+        "cpi_lag_nso_issue_date": (
+            cpi_lag_label["label_source_release_date"].iloc[-1]
+            if not cpi_lag_label.empty
+            and "label_source_release_date" in cpi_lag_label
+            and pd.notna(cpi_lag_label["label_source_release_date"].iloc[-1])
+            else None
+        ),
+        "cpi_lag_nso_available_at_proxy_utc": (
+            cpi_lag_label["label_nso_available_at_proxy"].iloc[-1].isoformat()
+            if not cpi_lag_label.empty
+            and "label_nso_available_at_proxy" in cpi_lag_label
+            and pd.notna(cpi_lag_label["label_nso_available_at_proxy"].iloc[-1])
+            else None
+        ),
         "cpi_lag_available_at_utc": (
             cpi_lag_label["label_available_at"].max().isoformat()
             if not cpi_lag_label.empty
             else None
+        ),
+        "cpi_lag_available_at_basis": (
+            cpi_lag_label["label_available_at_basis"].iloc[-1]
+            if not cpi_lag_label.empty and "label_available_at_basis" in cpi_lag_label
+            else "basis_not_exposed_by_Gold"
         ),
     }
     if pd.notna(current["cpi_mom_lag_1"].iloc[0]) and len(cpi_train) >= MIN_TRAIN:
@@ -397,6 +986,22 @@ def main() -> None:
         current_result["ar_midas_ridge_nowcast_mom_percent"] = fit_predict(
             ar_midas_train, current, ar_midas_predictors
         )
+    blend_share, blend_validation_mae, blend_validation_origins = select_cpi_preserving_blend_share(
+        train, current, lag_columns
+    )
+    current_result["validation_selected_ar_midas_share"] = blend_share
+    current_result["blend_validation_mae_pp"] = blend_validation_mae
+    current_result["blend_validation_origins"] = blend_validation_origins
+    if (
+        blend_share is not None
+        and current_result["ar_midas_ridge_nowcast_mom_percent"] is not None
+        and current_result["u_midas_brent_only_diagnostic_mom_percent"] is not None
+    ):
+        current_result["ar_midas_validation_blend_diagnostic_mom_percent"] = (
+            blend_share * current_result["ar_midas_ridge_nowcast_mom_percent"]
+            + (1 - blend_share)
+            * current_result["u_midas_brent_only_diagnostic_mom_percent"]
+        )
     if current_result["ar_midas_ridge_nowcast_mom_percent"] is not None:
         current_result["nowcast_mom_percent"] = current_result[
             "ar_midas_ridge_nowcast_mom_percent"
@@ -419,6 +1024,15 @@ def main() -> None:
     current_result["processing_completed_at_utc"] = processing_completed_at.isoformat()
     current_result["processing_duration_seconds"] = round(
         time.perf_counter() - processing_started_clock, 3
+    )
+    current_result["backtest_evaluation_duration_seconds"] = backtest_evaluation_duration
+    current_result["paired_evaluation_duration_seconds"] = paired_evaluation_duration
+    current_result["feature_selection_duration_seconds_total"] = round(
+        float(predictions.get("feature_selection_duration_seconds", pd.Series(dtype=float)).sum()),
+        3,
+    )
+    current_result["active_model_policy"] = (
+        "Fixed AR-MIDAS remains the production estimate; validation-selected AR-MIDAS is benchmark-only and is not automatically promoted."
     )
     (OUTPUT_DIR / "midas_current_nowcast.json").write_text(
         json.dumps(current_result, indent=2), encoding="utf-8"

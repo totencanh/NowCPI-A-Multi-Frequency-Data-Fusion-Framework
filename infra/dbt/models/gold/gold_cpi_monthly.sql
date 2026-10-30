@@ -4,7 +4,9 @@ with cpi_observations as (
         series_id,
         cast(date_trunc('month', observation_date) as date) as month_start,
         cpi_index,
-        available_at
+        available_at,
+        source_release_ts,
+        available_at_basis
     from {{ ref('stg_cpi') }}
     union all
     select
@@ -12,7 +14,9 @@ with cpi_observations as (
         series_id,
         cast(date_trunc('month', observation_date) as date) as month_start,
         component_index as cpi_index,
-        available_at
+        available_at,
+        source_release_ts,
+        available_at_basis
     from {{ ref('stg_cpi_components') }}
 ), cpi_with_changes as (
     select
@@ -21,6 +25,8 @@ with cpi_observations as (
         current.month_start,
         current.cpi_index,
         current.available_at,
+        current.source_release_ts,
+        current.available_at_basis,
         100.0 * (current.cpi_index - previous.cpi_index)
             / nullif(previous.cpi_index, 0) as mom_percent,
         100.0 * (current.cpi_index - prior_year.cpi_index)
@@ -39,6 +45,8 @@ select
     month_start,
     country,
     max(case when series_id = 'cpi_headline' then available_at end) as cpi_available_at,
+    max(case when series_id = 'cpi_headline' then source_release_ts end) as cpi_source_release_ts,
+    max(case when series_id = 'cpi_headline' then available_at_basis end) as cpi_available_at_basis,
     max(case when series_id = 'cpi_headline' then cpi_index end) as cpi_headline,
     max(case when series_id = 'cpi_headline' then mom_percent end) as cpi_headline_mom_percent,
     max(case when series_id = 'cpi_headline' then yoy_percent end) as cpi_headline_yoy_percent,

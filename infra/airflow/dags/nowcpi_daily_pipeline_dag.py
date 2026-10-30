@@ -154,6 +154,30 @@ with DAG(
         ),
         execution_timeout=timedelta(minutes=30),
     )
+    dbt_pit_feature_test = BashOperator(
+        task_id="dbt_pit_feature_tests",
+        bash_command=(
+            "env -u PYTHONPATH /opt/dbt_venv/bin/dbt test "
+            "--project-dir /opt/airflow/dbt --profiles-dir /opt/airflow/dbt "
+            "--select gold_nowcasting_features_pit"
+        ),
+        execution_timeout=timedelta(minutes=15),
+    )
+    feature_ablation_evaluation = BashOperator(
+        task_id="feature_ablation_evaluation",
+        bash_command="python -u /opt/airflow/forecasting/benchmark/evaluate_feature_ablation.py",
+        env={"TRINO_HOST": "trino", "TRINO_PORT": "8080", "TRINO_USER": "nowcpi"},
+        append_env=True,
+        execution_timeout=timedelta(minutes=45),
+    )
+    collect_nso_cpi_release_calendar = BashOperator(
+        task_id="collect_nso_cpi_release_calendar",
+        bash_command=(
+            "python -u "
+            "/opt/airflow/forecasting/source_history/collect_nso_cpi_release_calendar.py"
+        ),
+        execution_timeout=timedelta(minutes=15),
+    )
     midas_nowcast = BashOperator(
         task_id="midas_inflation_nowcast",
         bash_command="python -u /opt/airflow/forecasting/midas_nowcast.py",
@@ -172,4 +196,7 @@ with DAG(
     ] >> publish_to_kafka
     publish_to_kafka >> wait_for_bronze
     wait_for_bronze >> silver_cpi >> silver_market
-    silver_market >> dbt_staging >> dbt_gold >> midas_nowcast
+    silver_market >> dbt_staging >> dbt_gold
+    dbt_gold >> [midas_nowcast, dbt_pit_feature_test]
+    dbt_pit_feature_test >> feature_ablation_evaluation
+    collect_nso_cpi_release_calendar >> midas_nowcast

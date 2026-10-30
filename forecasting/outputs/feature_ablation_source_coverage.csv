@@ -1,0 +1,5 @@
+source,eligible_target_months,target_months,eligible_pct,point_in_time_rule,strict_historical_vintages_available
+Brent,0,140,0.0,source available_at <= Gold as-of cutoff <= forecast cutoff; observation date <= cutoff,False
+USD/VND,0,140,0.0,source available_at <= Gold as-of cutoff <= forecast cutoff; observation date <= cutoff,False
+Fuel,0,140,0.0,source available_at <= Gold as-of cutoff <= forecast cutoff; observation date <= cutoff,False
+IIP,0,140,0.0,source available_at <= Gold as-of cutoff <= forecast cutoff; observation date <= cutoff,False

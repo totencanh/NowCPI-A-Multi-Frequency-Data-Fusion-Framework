@@ -61,6 +61,11 @@ It is not guaranteed to be the original public-release time for every source.
 - Historical source-release vintages are not archived. Historical metrics are
   pseudo-out-of-sample diagnostics using available history, not proof of
   vintage-accurate real-time performance.
+- The rolling-origin MIDAS comparison reports naïve last-CPI, CPI-only Ridge,
+  and AR-MIDAS on identical folds, for both all common months and the latest
+  nine common months. Historical availability uses explicit assumptions
+  (previous CPI by day 15 of the target month; Brent available the following
+  UTC day); those assumptions are not archived official release vintages.
 - Treat the forecast as an estimate for the target month, not an official CPI
   release. State the target month and data cutoff beside every reported value.
 - Do not call CPI component MoM/YoY values “contributions” to headline CPI

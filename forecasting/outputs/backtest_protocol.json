@@ -1,0 +1,60 @@
+{
+  "protocol_version": 2,
+  "outer_split": "expanding rolling origin; each target is scored once",
+  "minimum_initial_training_months": 8,
+  "baseline_models": [
+    "last_cpi_naive",
+    "ar1_ols"
+  ],
+  "proposed_models": [
+    "fixed_ar_midas_ridge",
+    "validation_selected_ar_midas",
+    "validation_selected_cpi_preserving_blend"
+  ],
+  "validation_grid": {
+    "brent_weekly_lags": [
+      3,
+      6,
+      12
+    ],
+    "ridge_alpha": [
+      1,
+      10,
+      100
+    ],
+    "ar_midas_blend_share": [
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ]
+  },
+  "maximum_inner_validation_origins_per_outer_fold": 12,
+  "blend_change": "single controlled ablation; choose AR-MIDAS share from {0.25,0.5,0.75,1.0} using inner validation; CPI model retains positive weight",
+  "research_holdout_months": 36,
+  "minimum_research_holdout_months": 24,
+  "feature_selection": "expanding inner validation only; outer target excluded",
+  "primary_metric": "MAE in CPI MoM percentage points",
+  "guardrail_metric": "RMSE in CPI MoM percentage points",
+  "supplementary_metrics": [
+    "MAPE excluding abs(actual)<0.05pp; report scored/excluded counts",
+    "sMAPE"
+  ],
+  "mape_near_zero_exclusion_threshold_pp": 0.05,
+  "paired_comparison": "identical target months per model pair",
+  "reported_windows": [
+    "all_available",
+    "latest_36",
+    "latest_24",
+    "latest_9_descriptive_only"
+  ],
+  "dm_minimum_paired_origins": 24,
+  "dm_losses": [
+    "absolute_error",
+    "squared_error"
+  ],
+  "uncertainty": "seeded paired circular moving-block bootstrap 95% CI",
+  "release_time_policy": "CPI uses source_release_ts when present, otherwise NSO issue date with a conservative next-Vietnam-day availability proxy, then day-15 fallback; Brent uses source_release_ts when present, otherwise observation date + 1 UTC day",
+  "vintage_limit": "NSO CPI issue dates are collected, but historical CPI value vintages and complete source vintages are not archived; do not claim strict vintage-accurate results",
+  "real_time_performance_claim_allowed": false
+}

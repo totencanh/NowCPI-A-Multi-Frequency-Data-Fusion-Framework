@@ -19,12 +19,36 @@ both Airflow pipeline DAGs run this script and write:
   the latest actual CPI month, target-aligned feature cutoff, source availability,
   model selection, and processing start/end/duration.
 - `outputs/midas_backtest_predictions.csv`: expanding-window historical predictions.
-- `outputs/midas_backtest_metrics.csv`: MAE, RMSE, and directional accuracy.
+- `outputs/midas_backtest_metrics.csv`: naïve last-CPI, unregularized AR(1),
+  CPI-only Ridge, Brent-only U-MIDAS, fixed AR-MIDAS, and validation-selected
+  AR-MIDAS plus a validation-selected CPI-preserving AR-MIDAS/U-MIDAS blend,
+  scored on identical common folds. It includes all common
+  origins, the latest 36-origin research window, its latest-24 subwindow, and a
+  descriptive latest-nine window.
+- `outputs/midas_paired_comparisons.csv`: paired MAE/RMSE differences against
+  last-CPI naive, relative uplift, circular block-bootstrap 95% intervals, and
+  directional-accuracy deltas and Diebold–Mariano p-values for all, latest-36,
+  latest-24, and descriptive latest-nine windows. DM p-values are omitted below
+  24 paired origins.
+- `outputs/midas_failure_cases.csv`: up to three largest paired AR-MIDAS error
+  cases, with wrong-direction and worse-than-naive labels.
+- `outputs/release_timestamp_audit.csv`: per-source coverage of source release
+  timestamps and separate counts/bases for pipeline availability timestamps.
+  Ingestion time is never substituted for a source release time.
 
-Historical rows use market observation dates and calendar month-end cutoffs.
-The lakehouse does not preserve historical source-release vintages, so those
-backtest results are diagnostic and must not be described as vintage-accurate
-real-time performance. For a current run, the script freezes the information
+Historical rows use an explicit pseudo-vintage: prior-month CPI is assumed to be
+available by day 15 of the target month, daily Brent is assumed available on the
+following UTC day, and the information cutoff is target-month end plus one day.
+The model records target CPI `source_release_ts` when available. Brent currently
+has no source release timestamp, and the lakehouse does not preserve historical
+revisions. The release audit reports timestamp coverage; until both sources have
+at least 24 source-timestamped records and vintage/revision history is preserved,
+the output explicitly disallows real-time performance claims and remains a
+labelled pseudo-vintage diagnostic, not proof of vintage-accurate performance.
+AR-MIDAS lag count and ridge penalty are
+selected only inside each outer fold's expanding validation window, using at most
+the most recent 12 prior validation origins to bound compute time. For a current
+run, the script freezes the information
 cutoff before reading the tables and independently filters Brent and CPI by
 their stored availability timestamps. If no usable latest CPI lag is available,
 the script reports no CPI forecast instead of returning a Brent-only number.
@@ -59,7 +83,37 @@ this nowcast. News collection and NLP are not implemented. The standalone
 CPI-only and Brent-only MIDAS predictions remain diagnostics; the reported
 NowCPI estimate prioritizes the CPI-plus-Brent AR-MIDAS model.
 
-Forecast comparison uses the same expanding-window months for the CPI-only and
-MIDAS variants. Metrics are diagnostic because historical source-release
-vintages are not preserved. The complete seminar scope, model roles, and claim
-limitations are described in `docs/seminar_scope.md`.
+Forecast comparison uses the same expanding-window folds for naïve last-CPI,
+CPI-only Ridge, Brent-only U-MIDAS, and the active AR-MIDAS model. The recent
+nine-month window is a subset of these common folds. The separate
+`outputs/simulated_metrics.csv` is a nine-month feature-ablation exercise with a
+different model set; it does not score the active AR-MIDAS forecast and must not
+be used as its direct comparison. Metrics are diagnostic because historical
+source-release vintages are not preserved. The complete seminar scope, model
+roles, and claim limitations are described in `docs/seminar_scope.md`.
+
+## Multi-source and Elastic Net ablation
+
+The Gold layer also exposes `gold_nowcasting_features_pit`, a conservative
+projection that nulls features when either `available_at` or the observation
+period is later than the feature cutoff. `gold_nowcasting_features_pit_integrity`
+is run in the daily DAG before the standalone feature ablation task.
+
+`benchmark/evaluate_feature_ablation.py` compares last-CPI naive, AR(1),
+CPI-only Ridge, Brent-only U-MIDAS, AR-MIDAS Ridge, MIDAS Elastic Net, Lasso,
+Huber, and full multi-source Ridge/Elastic Net with the same rolling-origin
+targets. It records nested-validation hyperparameters, paired CI/DM results,
+per-source as-of coverage, model runtime, peak RSS, model-fold failures, and
+the three largest forecast-error cases for each model. Outputs use the
+`feature_ablation_` prefix in `outputs/`.
+
+In the 2026-10-30 run, extra-source eligibility was 0/140 historical target
+months because the stored source `available_at` timestamps post-date those
+historical cutoffs. The current month is available, but lacks a realized CPI
+label for backtesting. Thus full multi-source scores effectively reduce to
+AR-MIDAS and do not demonstrate incremental source value. Brent-only U-MIDAS
+had a slightly lower latest-36 MAE (0.1998 vs 0.2028), but its paired interval
+crosses zero and it reverses on the latest 24 months. Elastic Net and Lasso
+had higher latest-36 MAE; Huber was close to Ridge. Keep AR-MIDAS Ridge in
+production until point-in-time raw snapshots accumulate. Detailed comparisons
+are in `../docs/README_CAI_TIEN_2.md`.

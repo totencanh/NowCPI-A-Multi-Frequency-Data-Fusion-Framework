@@ -4,6 +4,8 @@ select
     cpi_headline as target_cpi_index,
     cpi_headline_mom_percent as target_cpi_mom_percent,
     cpi_headline_yoy_percent as target_cpi_yoy_percent,
-    cpi_available_at as label_available_at
+    cpi_available_at as label_available_at,
+    cpi_source_release_ts as label_source_release_ts,
+    cpi_available_at_basis as label_available_at_basis
 from {{ ref('gold_cpi_monthly') }}
 where cpi_headline is not null

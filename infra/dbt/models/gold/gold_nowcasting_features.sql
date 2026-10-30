@@ -35,6 +35,7 @@ with countries as (
         lagged.month_start as cpi_observation_month,
         date_diff('month', lagged.month_start, target.target_month)
             as cpi_observation_age_months,
+        lagged.cpi_available_at as cpi_latest_available_at,
         lagged.cpi_headline as cpi_headline_index_latest,
         lagged.cpi_headline_mom_percent as cpi_headline_mom_latest,
         lagged.cpi_headline_yoy_percent as cpi_headline_yoy_latest,
@@ -136,6 +137,7 @@ select
     'observation_date_cutoff_no_archived_release_vintages' as feature_vintage_mode,
     cpi.cpi_observation_month,
     cpi.cpi_observation_age_months,
+    cpi.cpi_latest_available_at,
     cpi.cpi_headline_index_latest,
     cpi.cpi_headline_mom_latest,
     cpi.cpi_headline_yoy_latest,

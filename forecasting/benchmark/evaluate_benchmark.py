@@ -29,8 +29,8 @@ def main():
             rows.append({'event_id': event['event_id'], 'batch_id': event['batch_id'],
                          'emitted_at':event['emitted_at'], 'bronze_ready_at':entry['bronze_ready_at'],
                          'gold_ready_at':entry['gold_ready_at'],
-                         'freshness_sec':round((bronze-t0).total_seconds(),3),
-                         'end_to_end_sec':round((gold-t0).total_seconds(),3)})
+                         'kafka_to_bronze_latency_sec':round((bronze-t0).total_seconds(),3),
+                         'synthetic_end_to_end_latency_sec':round((gold-t0).total_seconds(),3)})
     # Deduplicate if a batch was replayed and audited twice.
     rows = list({r['event_id']:r for r in rows}.values())
     rows.sort(key=lambda r:r['emitted_at'])
@@ -38,19 +38,20 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     with (out/'benchmark_events.csv').open('w', newline='',encoding='utf-8') as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)
-    fresh = np.array([r['freshness_sec'] for r in rows])
-    e2e = np.array([r['end_to_end_sec'] for r in rows])
-    metric = {'scope':'isolated_simplified_pipeline_post_write_proxy',
+    kafka_bronze = np.array([r['kafka_to_bronze_latency_sec'] for r in rows])
+    e2e = np.array([r['synthetic_end_to_end_latency_sec'] for r in rows])
+    metric = {'scope':'isolated_synthetic_pipeline_latency_not_source_freshness',
               'events':len(rows), 'source_batches':len({r['batch_id'] for r in rows}),
-              'freshness_sla_60m_pct':round(100*np.mean((fresh >= 0)&(fresh <= 3600)),2),
-              'freshness_p95_sec':round(float(np.percentile(fresh,95)),3),
-              'end_to_end_p50_sec':round(float(np.percentile(e2e,50)),3),
-              'end_to_end_p95_sec':round(float(np.percentile(e2e,95)),3),
-              'end_to_end_p99_sec':round(float(np.percentile(e2e,99)),3),
-              'end_to_end_max_sec':round(float(e2e.max()),3)}
+              'synthetic_kafka_to_bronze_latency_sla_60m_pct':round(100*np.mean((kafka_bronze >= 0)&(kafka_bronze <= 3600)),2),
+              'synthetic_kafka_to_bronze_latency_p95_sec':round(float(np.percentile(kafka_bronze,95)),3),
+              'synthetic_end_to_end_latency_p50_sec':round(float(np.percentile(e2e,50)),3),
+              'synthetic_end_to_end_latency_p95_sec':round(float(np.percentile(e2e,95)),3),
+              'synthetic_end_to_end_latency_p99_sec':round(float(np.percentile(e2e,99)),3),
+              'synthetic_end_to_end_latency_max_sec':round(float(e2e.max()),3)}
     with (out/'benchmark_metrics.csv').open('w', newline='',encoding='utf-8') as f:
         w=csv.DictWriter(f,fieldnames=list(metric));w.writeheader();w.writerow(metric)
     print(json.dumps(metric,indent=2))
+    print('This isolated synthetic benchmark measures Kafka/processing latency, not freshness of real source observations or publication delays.')
     print('Note: 10 events committed in one micro-batch are NOT 10 independent end-to-end batch latency observations.')
 
 if __name__=='__main__':

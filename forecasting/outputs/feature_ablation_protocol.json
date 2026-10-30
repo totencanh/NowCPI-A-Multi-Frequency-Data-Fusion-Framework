@@ -1,0 +1,61 @@
+{
+  "protocol_version": 1,
+  "configs": [
+    "naive_last_cpi",
+    "ar1_ols",
+    "cpi_only_ridge",
+    "u_midas_brent_ridge",
+    "fixed_ar_midas_ridge",
+    "midas_elastic_net",
+    "midas_lasso",
+    "midas_huber",
+    "full_multisource_ridge",
+    "full_multisource_elastic_net"
+  ],
+  "full_sources": [
+    "Brent",
+    "USD/VND",
+    "RON95 fuel",
+    "E10 RON95 fuel",
+    "annual IIP"
+  ],
+  "elastic_net_grid": {
+    "alpha": [
+      0.1,
+      1.0
+    ],
+    "l1_ratio": [
+      0.2,
+      0.8
+    ],
+    "inner_validation_origins_max": 6
+  },
+  "lasso_grid": {
+    "alpha": [
+      0.1,
+      1.0
+    ],
+    "l1_ratio": [
+      1.0
+    ],
+    "inner_validation_origins_max": 6
+  },
+  "huber_grid": {
+    "alpha": [
+      0.1,
+      1.0,
+      10.0
+    ],
+    "epsilon": 1.345,
+    "inner_validation_origins_max": 6
+  },
+  "selection": "expanding validation folds within each outer fold; preprocessing fitted only on training data",
+  "asof_join": "feature-store cutoff <= forecast cutoff; each source available_at <= both cutoffs; observation date/year <= cutoff",
+  "missingness": "train-only median imputation plus explicit per-source availability indicators",
+  "primary_metric": "MAE CPI MoM percentage points",
+  "guardrail_metric": "RMSE CPI MoM percentage points",
+  "operational_metrics": "per-model fit/predict seconds, max fold seconds, failures, completed folds, process peak RSS",
+  "nso_calendar_snapshot": "snapshot_b3a2bdc81d5ae6d3.json",
+  "source_vintages": "not archived before first raw collection; results are pseudo-vintage diagnostics",
+  "real_time_performance_claim_allowed": false
+}

@@ -1,0 +1,1420 @@
+{
+  "schema_version": 1,
+  "snapshot_id": "b3a2bdc81d5ae6d3effe13f96f91ef3cd052e91f49f587778b43992b22d31b84",
+  "retrieved_at_utc": "2026-10-30T13:51:10.161630+00:00",
+  "source_url": "https://www.nso.gov.vn/en/cpi/",
+  "metadata_precision": "issue date only; exact publication time is not exposed",
+  "record_count": 141,
+  "records": [
+    {
+      "target_month": "2015-01",
+      "issue_date": "2015-01-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2015-01-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, January 2015",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/12/cpi-gold-and-usd-price-indexes-january-2015/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2015-02",
+      "issue_date": "2015-02-28",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2015-02-28T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, February 2015",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/12/cpi-gold-and-usd-price-indexes-february-2015/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2015-03",
+      "issue_date": "2015-03-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2015-03-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, March 2015",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/12/cpi-gold-and-usd-price-indexes-march-2015/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2015-04",
+      "issue_date": "2015-04-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2015-04-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, April 2015",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/12/cpi-gold-and-usd-price-indexes-april-2015/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2015-05",
+      "issue_date": "2015-05-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2015-05-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, May 2015",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/12/cpi-gold-and-usd-price-indexes-may-2015/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2015-06",
+      "issue_date": "2015-06-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2015-06-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, June 2015",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/12/cpi-gold-and-usd-price-indexes-june-2015/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2015-07",
+      "issue_date": "2015-07-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2015-07-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, July 2015",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/12/cpi-gold-and-usd-price-indexes-july-2015/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2015-08",
+      "issue_date": "2015-08-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2015-08-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, August 2015",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/12/cpi-gold-and-usd-price-indexes-august-2015/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2015-09",
+      "issue_date": "2015-09-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2015-09-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, September 2015",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/12/cpi-gold-and-usd-price-indexes-september-2015/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2015-10",
+      "issue_date": "2015-10-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2015-10-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, October 2015",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/12/cpi-gold-and-usd-price-indexes-october-2015/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2015-11",
+      "issue_date": "2015-11-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2015-11-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, November 2015",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/12/cpi-gold-and-usd-price-indexes-november-2015/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2015-12",
+      "issue_date": "2015-12-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2015-12-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, December 2015",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/12/cpi-gold-and-usd-price-indexes-december-2015/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2016-01",
+      "issue_date": "2016-01-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2016-01-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, January 2016",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-january-2016/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2016-02",
+      "issue_date": "2016-02-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2016-02-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, February 2016",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-february-2016/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2016-03",
+      "issue_date": "2016-03-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2016-03-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, March 2016",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-march-2016/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2016-04",
+      "issue_date": "2016-04-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2016-04-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, April 2016",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-april-2016/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2016-05",
+      "issue_date": "2016-05-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2016-05-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, May 2016",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-may-2016/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2016-06",
+      "issue_date": "2016-06-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2016-06-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, June 2016",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-june-2016/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2016-07",
+      "issue_date": "2016-07-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2016-07-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, July 2016",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-july-2016/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2016-08",
+      "issue_date": "2016-08-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2016-08-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, August 2016",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-august-2016/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2016-09",
+      "issue_date": "2016-09-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2016-09-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, September 2016",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-september-2016/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2016-10",
+      "issue_date": "2016-10-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2016-10-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, October 2016",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-october-2016/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2016-11",
+      "issue_date": "2016-11-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2016-11-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, November 2016",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-november-2016/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2016-12",
+      "issue_date": "2016-12-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2016-12-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, December 2016",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-december-2016/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2017-01",
+      "issue_date": "2017-01-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2017-01-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, Jannuary 2017",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-jannuary-2017/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2017-02",
+      "issue_date": "2017-02-28",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2017-02-28T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, February 2017",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-february-2017/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2017-03",
+      "issue_date": "2017-03-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2017-03-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, March 2017",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-march-2017/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2017-04",
+      "issue_date": "2017-04-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2017-04-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, April 2017",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-april-2017/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2017-05",
+      "issue_date": "2017-05-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2017-05-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, May 2017",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-may-2017/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2017-06",
+      "issue_date": "2017-06-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2017-06-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, June 2017",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-june-2017/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2017-07",
+      "issue_date": "2017-07-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2017-07-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, July 2017",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-july-2017/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2017-08",
+      "issue_date": "2017-08-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2017-08-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, August 2017",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-august-2017/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2017-09",
+      "issue_date": "2017-09-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2017-09-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, September 2017",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-september-2017/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2017-10",
+      "issue_date": "2017-10-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2017-10-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, October 2017",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-october-2017/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2017-11",
+      "issue_date": "2017-11-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2017-11-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, November 2017",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-november-2017/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2017-12",
+      "issue_date": "2017-12-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2017-12-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, December 2017",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-december-2017/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2018-01",
+      "issue_date": "2018-01-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2018-01-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, January 2018",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-january-2018/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2018-02",
+      "issue_date": "2018-02-28",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2018-02-28T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, February 2018",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-february-2018/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2018-03",
+      "issue_date": "2018-03-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2018-03-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, March 2018",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-march-2018/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2018-04",
+      "issue_date": "2018-04-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2018-04-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, April 2018",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-april-2018/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2018-05",
+      "issue_date": "2018-05-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2018-05-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, May 2018",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-may-2018/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2018-06",
+      "issue_date": "2018-06-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2018-06-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, June 2018",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-june-2018/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2018-07",
+      "issue_date": "2018-07-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2018-07-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, July 2018",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-july-2018/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2018-08",
+      "issue_date": "2018-08-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2018-08-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, August 2018",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-august-2018/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2018-09",
+      "issue_date": "2018-09-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2018-09-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, September 2018",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-september-2018/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2018-10",
+      "issue_date": "2018-10-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2018-10-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, October 2018",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-october-2018/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2018-11",
+      "issue_date": "2018-11-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2018-11-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, November 2018",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-november-2018/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2018-12",
+      "issue_date": "2018-12-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2018-12-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, December 2018",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-december-2018/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2019-01",
+      "issue_date": "2019-01-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2019-01-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, January 2019",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-january-2019/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2019-02",
+      "issue_date": "2019-02-28",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2019-02-28T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, February 2019",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-february-2019/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2019-03",
+      "issue_date": "2019-03-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2019-03-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, March 2019",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-march-2019/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2019-04",
+      "issue_date": "2019-04-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2019-04-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, April 2019",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-april-2019/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2019-05",
+      "issue_date": "2019-05-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2019-05-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, May 2019",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-may-2019/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2019-06",
+      "issue_date": "2019-06-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2019-06-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, June 2019",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-june-2019/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2019-07",
+      "issue_date": "2019-07-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2019-07-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, July 2019",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-july-2019/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2019-08",
+      "issue_date": "2019-08-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2019-08-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, August 2019",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/consumer-price-index-gold-and-usd-price-indexes-august-2019/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2019-09",
+      "issue_date": "2019-09-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2019-09-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, September 2019",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/consumer-price-index-gold-and-usd-price-indexes-september-2019/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2019-10",
+      "issue_date": "2019-10-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2019-10-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, October 2019",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/consumer-price-index-gold-and-usd-price-indexes-october-2019/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2019-11",
+      "issue_date": "2019-11-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2019-11-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, November 2019",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/11/cpi-gold-and-usd-price-indexes-november-2019/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2019-12",
+      "issue_date": "2019-12-27",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2019-12-27T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "CPI, gold and USD price indexes, December 2019",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2019/12/cpi-gold-and-usd-price-indexes-december-2019/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2020-01",
+      "issue_date": "2020-01-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2020-01-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, January 2020",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2020/01/consumer-price-index-gold-and-usd-price-indexes-january-2020/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2020-02",
+      "issue_date": "2020-02-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2020-02-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, February 2020",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2020/02/consumer-price-index-gold-and-usd-price-indexes-february-2020/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2020-03",
+      "issue_date": "2020-03-27",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2020-03-27T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, March 2020",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2020/03/consumer-price-index-gold-and-usd-price-indexes-march-2020/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2020-04",
+      "issue_date": "2020-04-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2020-04-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, April 2020",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2020/04/consumer-price-index-gold-and-usd-price-indexes-april-2020/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2020-05",
+      "issue_date": "2020-05-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2020-05-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, May 2020",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2020/05/consumer-price-index-gold-and-usd-price-indexes-may-2020/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2020-06",
+      "issue_date": "2020-06-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2020-06-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, June 2020",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2020/06/consumer-price-index-gold-and-usd-price-indexes-june-2020/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2020-07",
+      "issue_date": "2020-07-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2020-07-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, July 2020",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2020/07/consumer-price-index-gold-and-usd-price-indexes-july-2020/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2020-08",
+      "issue_date": "2020-08-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2020-08-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, August 2020",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2020/08/consumer-price-index-gold-and-usd-price-indexes-august-2020/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2020-09",
+      "issue_date": "2020-09-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2020-09-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, September 2020",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2020/09/consumer-price-index-gold-and-usd-price-indexes-september-2020/",
+      "source": "National Statistics Office of Vietnam CPI article archive"
+    },
+    {
+      "target_month": "2020-10",
+      "issue_date": "2020-10-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2020-10-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, October 2020",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2020/10/consumer-price-index-gold-and-usd-price-indexes-october-2020/",
+      "source": "National Statistics Office of Vietnam CPI article archive"
+    },
+    {
+      "target_month": "2020-11",
+      "issue_date": "2020-11-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2020-11-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in November of 2020",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2020/11/consumer-price-index-gold-and-usd-price-indexes-november-2020/",
+      "source": "National Statistics Office of Vietnam CPI article archive"
+    },
+    {
+      "target_month": "2020-12",
+      "issue_date": "2020-12-27",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2020-12-27T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, December 2020",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2020/12/consumer-price-index-gold-and-usd-price-indexes-december-2020/",
+      "source": "National Statistics Office of Vietnam CPI article archive"
+    },
+    {
+      "target_month": "2021-01",
+      "issue_date": "2021-01-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2021-01-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in January of 2021",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2021/01/consumer-price-index-gold-and-usd-price-indexes-in-january-of-2021/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2021-02",
+      "issue_date": "2021-02-28",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2021-02-28T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in February of 2021",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2021/02/consumer-price-index-gold-and-usd-price-indexes-in-february-of-2021/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2021-03",
+      "issue_date": "2021-03-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2021-03-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in March of 2021",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2021/03/consumer-price-index-gold-and-usd-price-indexes-in-march-of-2021/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2021-04",
+      "issue_date": "2021-04-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2021-04-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in April of 2021",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2021/04/consumer-price-index-gold-and-usd-price-indexes-in-april-of-2021/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2021-05",
+      "issue_date": "2021-05-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2021-05-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in May of 2021",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2021/05/consumer-price-index-gold-and-usd-price-indexes-in-may-of-2021/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2021-06",
+      "issue_date": "2021-06-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2021-06-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in June of 2021",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2021/06/consumer-price-index-gold-and-usd-price-indexes-in-june-of-2021/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2021-07",
+      "issue_date": "2021-07-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2021-07-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in July of 2021",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2021/07/consumer-price-index-gold-and-usd-price-indexes-in-july-of-2021/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2021-08",
+      "issue_date": "2021-08-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2021-08-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in August of 2021",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2021/08/consumer-price-index-gold-and-usd-price-indexes-in-august-of-2021/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2021-09",
+      "issue_date": "2021-09-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2021-09-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, September 2021",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2021/09/consumer-price-index-gold-and-usd-price-indexes-september-2021/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2021-10",
+      "issue_date": "2021-10-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2021-10-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, October 2021",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2021/10/consumer-price-index-gold-and-usd-price-indexes-october-2021/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2021-11",
+      "issue_date": "2021-11-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2021-11-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, November 2021",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2021/11/consumer-price-index-gold-and-usd-price-indexes-november-2021/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2021-12",
+      "issue_date": "2021-12-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2021-12-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, December 2021",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2021/12/consumer-price-index-gold-and-usd-price-indexes-december-2021/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2022-01",
+      "issue_date": "2022-01-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2022-01-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in January of 2022",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2022/01/consumer-price-index-gold-and-usd-price-indexes-in-january-of-2022/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2022-02",
+      "issue_date": "2022-02-28",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2022-02-28T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in February of 2022",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2022/02/consumer-price-index-gold-and-usd-price-indexes-in-february-of-2022/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2022-03",
+      "issue_date": "2022-03-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2022-03-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in March of 2022",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2022/04/consumer-price-index-gold-and-usd-price-indexes-in-march-of-2022/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2022-04",
+      "issue_date": "2022-04-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2022-04-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in April of 2022",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2022/04/consumer-price-index-gold-and-usd-price-indexes-in-april-of-2022/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2022-05",
+      "issue_date": "2022-05-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2022-05-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in May of 2022",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2022/05/consumer-price-index-gold-and-usd-price-indexes-in-may-of-2022/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2022-06",
+      "issue_date": "2022-06-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2022-06-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in June of 2022",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2022/06/consumer-price-index-gold-and-usd-price-indexes-in-june-of-2022/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2022-07",
+      "issue_date": "2022-07-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2022-07-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in July of 2022",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2022/07/consumer-price-index-gold-and-usd-price-indexes-in-july-of-2022/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2022-08",
+      "issue_date": "2022-08-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2022-08-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in August of 2022",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2022/08/consumer-price-index-gold-and-usd-price-indexes-in-august-of-2022/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2022-09",
+      "issue_date": "2022-09-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2022-09-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in September 2022",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2022/09/consumer-price-index-gold-and-usd-price-indexes-september-2022/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2022-10",
+      "issue_date": "2022-10-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2022-10-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in October of 2022",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2022/10/consumer-price-index-gold-and-usd-price-indexes-in-october-of-2022/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2022-11",
+      "issue_date": "2022-11-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2022-11-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in November 2022",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2022/11/consumer-price-index-gold-and-usd-price-indexes-in-november-2022/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2022-12",
+      "issue_date": "2022-12-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2022-12-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, December 2022",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2022/12/consumer-price-index-gold-and-usd-price-indexes-december-2022/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2023-01",
+      "issue_date": "2023-01-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2023-01-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in January of 2023",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2023/01/consumer-price-index-gold-and-usd-price-indexes-in-january-of-2023/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2023-02",
+      "issue_date": "2023-02-28",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2023-02-28T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in February of 2023",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2023/03/consumer-price-index-gold-and-usd-price-indexes-in-february-of-2023/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2023-03",
+      "issue_date": "2023-03-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2023-03-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in March of 2023",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2023/03/consumer-price-index-gold-and-usd-price-indexes-in-march-of-2023/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2023-04",
+      "issue_date": "2023-04-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2023-04-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in April of 2023",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2023/04/consumer-price-index-gold-and-usd-price-indexes-in-april-of-2023/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2023-05",
+      "issue_date": "2023-05-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2023-05-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in May of 2023",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2023/05/consumer-price-index-gold-and-usd-price-indexes-in-may-of-2023/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2023-06",
+      "issue_date": "2023-06-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2023-06-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in June of 2023",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2023/06/consumer-price-index-gold-and-usd-price-indexes-in-june-of-2023/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2023-07",
+      "issue_date": "2023-07-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2023-07-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in July of 2023",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2023/07/consumer-price-index-gold-and-usd-price-indexes-in-july-of-2023/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2023-08",
+      "issue_date": "2023-08-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2023-08-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in August of 2023",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2023/08/consumer-price-index-gold-and-usd-price-indexes-in-august-of-2023/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2023-09",
+      "issue_date": "2023-09-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2023-09-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in September 2023",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2023/09/consumer-price-index-gold-and-usd-price-indexes-in-september-2023/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2023-10",
+      "issue_date": "2023-10-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2023-10-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in October of 2023",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2023/10/consumer-price-index-gold-and-usd-price-indexes-in-october-of-2023/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2023-11",
+      "issue_date": "2023-11-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2023-11-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in November 2023",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2023/11/consumer-price-index-gold-and-usd-price-indexes-in-november-2023/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2023-12",
+      "issue_date": "2023-12-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2023-12-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes, December 2023",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2023/12/consumer-price-index-gold-and-usd-price-indexes-december-2023/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2024-01",
+      "issue_date": "2024-01-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2024-01-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in January of 2024",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2024/01/consumer-price-index-gold-and-usd-price-indexes-in-january-of-2024/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2024-02",
+      "issue_date": "2024-02-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2024-02-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in February of 2024",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2024/02/consumer-price-index-gold-and-usd-price-indexes-in-february-of-2024/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2024-03",
+      "issue_date": "2024-03-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2024-03-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in March of 2024",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2024/03/consumer-price-index-gold-and-usd-price-indexes-in-march-of-2024/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2024-04",
+      "issue_date": "2024-04-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2024-04-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and usd price indexes in April of 2024",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2024/04/consumer-price-index-gold-and-usd-price-indexes-in-april-of-2024/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2024-05",
+      "issue_date": "2024-05-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2024-05-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold and USD price indexes in May of 2024",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2024/05/consumer-price-index-gold-and-usd-price-indexes-in-may-of-2024/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2024-06",
+      "issue_date": "2024-06-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2024-06-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and US dollar price index in June, second quarter and first 6 months of 2024",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2024/06/consumer-price-index-gold-price-index-and-us-dollar-price-index-in-june-second-quarter-and-first-6-months-of-2024/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2024-07",
+      "issue_date": "2024-07-29",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2024-07-29T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and US dollar price index in July and 7 months of 2024",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2024/07/consumer-price-index-gold-price-index-and-us-dollar-price-index-in-july-and-7-months-of-2024/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2024-08",
+      "issue_date": "2024-09-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2024-09-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and US dollar price index in August and 8 months of 2024",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2024/09/consumer-price-index-gold-price-index-and-us-dollar-price-index-in-august-and-8-months-of-2024/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2024-09",
+      "issue_date": "2024-10-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2024-10-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and US dollar price index in September, third quarter and 9 months of 2024",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2024/10/consumer-price-index-gold-price-index-and-us-dollar-price-index-in-september-third-quarter-and-9-months-of-2024/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2024-10",
+      "issue_date": "2024-11-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2024-11-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and US dollar price index October and 10 months of 2024",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2024/11/consumer-price-index-gold-price-index-and-us-dollar-price-index-october-and-10-months-of-2024/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2024-11",
+      "issue_date": "2024-12-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2024-12-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and US dollar price index in November and 11 months of 2024",
+      "article_url": "https://www.nso.gov.vn/en/default/2024/12/consumer-price-index-gold-price-index-and-us-dollar-price-index-in-november-and-11-months-of-2024/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2024-12",
+      "issue_date": "2025-01-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2025-01-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and US dollar price index in December, fourth quarter and 2024",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2025/01/consumer-price-index-gold-price-index-and-us-dollar-price-index-in-december-fourth-quarter-and-2024/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2025-01",
+      "issue_date": "2025-02-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2025-02-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and US dollar price index January 2025",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2025/02/consumer-price-index-gold-price-index-and-us-dollar-price-index-january-2025/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2025-02",
+      "issue_date": "2025-03-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2025-03-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and US dollar price index for February and 2 months of 2025",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2025/03/consumer-price-index-gold-price-index-and-us-dollar-price-index-for-february-and-2-months-of-2025/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2025-03",
+      "issue_date": "2025-04-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2025-04-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and US dollar price index for March and first quarter of 2025",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2025/04/consumer-price-index-gold-price-index-and-us-dollar-price-index-for-march-and-first-quarter-of-2025/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2025-04",
+      "issue_date": "2025-05-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2025-05-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and US dollar price index in April and the first 4 months of 2025",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2025/05/consumer-price-index-gold-price-index-and-us-dollar-price-index-in-april-and-the-first-4-months-of-2025/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2025-05",
+      "issue_date": "2025-06-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2025-06-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and USD price index in May and the first five months of 2025",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2025/06/consumer-price-index-gold-price-index-and-usd-price-index-in-may-and-the-first-five-months-of-2025/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2025-06",
+      "issue_date": "2025-07-05",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2025-07-05T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and US dollar price index in June, second quarter and first 6 months of 2025",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2025/07/consumer-price-index-gold-price-index-and-us-dollar-price-index-in-june-second-quarter-and-first-6-months-of-2025/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2025-07",
+      "issue_date": "2025-08-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2025-08-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and USD price index for July and 7 months of 2025",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2025/08/consumer-price-index-gold-price-index-and-usd-price-index-for-july-and-7-months-of-2025/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2025-08",
+      "issue_date": "2025-09-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2025-09-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and USD price index in August and 8 months of 2025",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2025/09/consumer-price-index-gold-price-index-and-usd-price-index-in-august-and-8-months-of-2025/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2025-09",
+      "issue_date": "2025-10-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2025-10-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and USD price index for September, third quarter and 9 months of 2025",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2025/10/consumer-price-index-gold-price-index-and-usd-price-index-for-september-third-quarter-and-9-months-of-2025/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2025-10",
+      "issue_date": "2025-11-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2025-11-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and USD price index in October and 10 months of 2025",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2025/11/consumer-price-index-gold-price-index-and-usd-price-index-in-october-and-10-months-of-2025/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2025-11",
+      "issue_date": "2025-12-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2025-12-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and USD price index in November and 11 months of 2025",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2025/12/consumer-price-index-gold-price-index-and-usd-price-index-in-november-and-11-months-of-2025/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2025-12",
+      "issue_date": "2026-01-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2026-01-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer Price Index, Gold Price Index, and USD Price Index for December, the fourth quarter, and 2025.",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2026/01/consumer-price-index-gold-price-index-and-usd-price-index-for-december-the-fourth-quarter-and-2025/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2026-01",
+      "issue_date": "2026-02-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2026-02-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer Price Index, Gold Price Index, and US Dollar Price Index for January 2026",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2026/02/consumer-price-index-gold-price-index-and-us-dollar-price-index-for-january-2026/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2026-02",
+      "issue_date": "2026-03-06",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2026-03-06T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer Price Index, Gold Price Index, and USD Price Index for February and the first two months of 2026",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2026/03/consumer-price-index-gold-price-index-and-usd-price-index-for-february-and-the-first-two-months-of-2026/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2026-03",
+      "issue_date": "2026-04-03",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2026-04-03T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold, US dollar price index in March and the first quarter in 2026",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2026/04/consumer-price-index-gold-us-dollar-price-index-in-march-and-the-first-quarter-in-2026/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2026-04",
+      "issue_date": "2026-05-03",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2026-05-03T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer price index, gold price index and USD price index for April and the first four months of 2026",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2026/05/consumer-price-index-gold-price-index-and-usd-price-index-for-april-and-the-first-four-months-of-2026/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2026-05",
+      "issue_date": "2026-06-03",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2026-06-03T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer Price Index, Gold Price Index, and USD Price Index for May and the first five months of 2026.",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2026/06/consumer-price-index-gold-price-index-and-usd-price-index-for-may-and-the-first-five-months-of-2026/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2026-06",
+      "issue_date": "2026-07-03",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2026-07-03T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer Price Index, Gold Price Index, and US Dollar Price Index in June 2026, Q2 2026, and the first six months of 2026",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2026/07/consumer-price-index-gold-price-index-and-us-dollar-price-index-in-june-2026-q2-2026-and-the-first-six-months-of-2026/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2026-07",
+      "issue_date": "2026-08-03",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2026-08-03T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer Price Index, Gold Price Index and US Dollar Price Index in July and the first seven months of 2026",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2026/08/consumer-price-index-gold-price-index-and-us-dollar-price-index-in-july-and-the-first-seven-months-of-2026/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2026-08",
+      "issue_date": "2026-09-03",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2026-09-03T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer Price Index, Gold Price Index and US Dollar Price Index in August and eight months of 2026",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2026/09/consumer-price-index-gold-price-index-and-us-dollar-price-index-in-august-and-eight-months-of-2026/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    },
+    {
+      "target_month": "2026-09",
+      "issue_date": "2026-10-03",
+      "release_timestamp_precision": "date_only",
+      "conservative_available_at_proxy_utc": "2026-10-03T17:00:00+00:00",
+      "availability_basis": "nso_issue_date_plus_one_day_vietnam_midnight_proxy",
+      "article_title": "Consumer Price Index, Gold Price Index, and US Dollar Price Index in September 2026, Q3 2026, and the nine months of 2026",
+      "article_url": "https://www.nso.gov.vn/en/data-and-statistics/2026/10/consumer-price-index-gold-price-index-and-us-dollar-price-index-in-september-2026-q3-2026-and-the-nine-months-of-2026/",
+      "source": "National Statistics Office of Vietnam CPI archive"
+    }
+  ]
+}

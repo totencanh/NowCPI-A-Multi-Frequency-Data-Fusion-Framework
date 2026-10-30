@@ -1,0 +1,6 @@
+model,target_month,error
+u_midas_brent_ridge,2015-11-01,ValueError: fewer than minimum training folds after as-of feature checks
+ar_midas_ridge,2015-11-01,ValueError: fewer than minimum training folds after as-of feature checks
+midas_elastic_net,2015-11-01,ValueError: fewer than minimum training folds after as-of feature checks
+midas_lasso,2015-11-01,ValueError: fewer than minimum training folds after as-of feature checks
+midas_huber,2015-11-01,ValueError: fewer than minimum training folds after as-of feature checks

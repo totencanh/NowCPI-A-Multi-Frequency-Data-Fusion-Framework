@@ -1,0 +1,2 @@
+calendar_snapshot,cpi_label_months,months_with_nso_issue_date,issue_date_coverage_pct,release_time_precision,within_day_publication_time_known,historical_cpi_value_vintages_archived,strict_vintage_backtest_ready
+snapshot_b3a2bdc81d5ae6d3.json,140,140,100.0,date_only,False,False,False

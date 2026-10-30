@@ -407,69 +407,115 @@ def measure_kafka_bronze_lag(
 
 
 def read_nowcast_backtest(output_dir: Path) -> dict[str, Any]:
-    """Compare MIDAS with the CPI-only baseline on identical backtest months."""
+    """Compare naïve, CPI-only, and AR-MIDAS forecasts on identical folds."""
     path = output_dir / "midas_backtest_predictions.csv"
     if not path.is_file():
         return {"available": False, "reason": f"Missing {path.name}"}
-    rows: list[dict[str, float | str]] = []
+    raw_rows: list[dict[str, str]] = []
     with path.open(encoding="utf-8", newline="") as source:
-        for row in csv.DictReader(source):
-            try:
-                actual = float(row["actual_cpi_mom_percent"])
-                baseline = float(row["cpi_only_ridge"])
-                model = float(row["ar_midas_ridge"])
-            except (KeyError, TypeError, ValueError):
-                continue
-            values = (actual, baseline, model)
-            if all(value == value and abs(value) != float("inf") for value in values):
-                rows.append(
-                    {
-                        "target_month": row.get("target_month", ""),
-                        "actual": actual,
-                        "baseline": baseline,
-                        "model": model,
-                    }
-                )
-    if not rows:
-        return {"available": False, "reason": "No common finite baseline/model predictions"}
-    actuals = [float(row["actual"]) for row in rows]
-    baseline_predictions = [float(row["baseline"]) for row in rows]
-    model_predictions = [float(row["model"]) for row in rows]
+        raw_rows = list(csv.DictReader(source))
 
-    def metrics(predictions: list[float]) -> dict[str, float]:
+    actual_by_month: dict[str, float] = {}
+    for row in raw_rows:
+        try:
+            actual_by_month[row["target_month"][:7]] = float(
+                row["actual_cpi_mom_percent"]
+            )
+        except (KeyError, TypeError, ValueError):
+            continue
+
+    rows: list[dict[str, float | str]] = []
+    for row in raw_rows:
+        try:
+            target = datetime.fromisoformat(row["target_month"][:10]).date()
+            actual = float(row["actual_cpi_mom_percent"])
+            cpi_only = float(row["cpi_only_ridge"])
+            model = float(row["ar_midas_ridge"])
+            naive_text = row.get("naive_last_cpi", "")
+            if naive_text:
+                naive = float(naive_text)
+            else:
+                prior_month = (target.replace(day=1) - timedelta(days=1)).strftime("%Y-%m")
+                naive = actual_by_month[prior_month]
+        except (KeyError, TypeError, ValueError):
+            continue
+        values = (actual, cpi_only, model, naive)
+        if all(value == value and abs(value) != float("inf") for value in values):
+            rows.append(
+                {
+                    "target_month": target.isoformat(),
+                    "actual": actual,
+                    "naive": naive,
+                    "cpi_only": cpi_only,
+                    "ar_midas": model,
+                }
+            )
+    rows.sort(key=lambda row: str(row["target_month"]))
+    if not rows:
+        return {"available": False, "reason": "No common finite naïve/CPI-only/AR-MIDAS predictions"}
+
+    def metrics(frame: list[dict[str, float | str]], column: str) -> dict[str, float]:
+        actuals = [float(row["actual"]) for row in frame]
+        predictions = [float(row[column]) for row in frame]
         errors = [actual - predicted for actual, predicted in zip(actuals, predictions)]
         return {
             "mae_pp": round(sum(abs(error) for error in errors) / len(errors), 6),
             "rmse_pp": round((sum(error * error for error in errors) / len(errors)) ** 0.5, 6),
             "directional_accuracy_pct": round(
                 100 * sum(
-                    (actual >= 0) == (predicted >= 0)
+                    (actual == 0 and predicted == 0)
+                    or (actual > 0 and predicted > 0)
+                    or (actual < 0 and predicted < 0)
                     for actual, predicted in zip(actuals, predictions)
                 ) / len(errors),
                 2,
             ),
         }
 
-    baseline_metrics = metrics(baseline_predictions)
-    model_metrics = metrics(model_predictions)
+    windows = {
+        "all_common_months": rows,
+        f"most_recent_{min(9, len(rows))}_common_months": rows[-9:],
+    }
+    comparisons = {}
+    for window_name, frame in windows.items():
+        comparisons[window_name] = {
+            "comparison_months": len(frame),
+            "models": {
+                name: metrics(frame, column)
+                for name, column in [
+                    ("naive_last_cpi", "naive"),
+                    ("cpi_only_ridge", "cpi_only"),
+                    ("ar_midas_ridge", "ar_midas"),
+                ]
+            },
+        }
+
+    full = comparisons["all_common_months"]["models"]
+    naive_metrics = full["naive_last_cpi"]
+    model_metrics = full["ar_midas_ridge"]
     return {
         "available": True,
         "comparison_months": len(rows),
-        "baseline": {"model": "cpi_only_ridge", **baseline_metrics},
+        "windows": comparisons,
+        "baseline": {"model": "naive_last_cpi", **naive_metrics},
         "model": {"model": "ar_midas_ridge", **model_metrics},
         "mae_improvement_percent": round(
-            100 * (baseline_metrics["mae_pp"] - model_metrics["mae_pp"])
-            / baseline_metrics["mae_pp"], 2
-        ) if baseline_metrics["mae_pp"] else None,
+            100 * (naive_metrics["mae_pp"] - model_metrics["mae_pp"])
+            / naive_metrics["mae_pp"], 2
+        ) if naive_metrics["mae_pp"] else None,
         "rmse_improvement_percent": round(
-            100 * (baseline_metrics["rmse_pp"] - model_metrics["rmse_pp"])
-            / baseline_metrics["rmse_pp"], 2
-        ) if baseline_metrics["rmse_pp"] else None,
+            100 * (naive_metrics["rmse_pp"] - model_metrics["rmse_pp"])
+            / naive_metrics["rmse_pp"], 2
+        ) if naive_metrics["rmse_pp"] else None,
         "directional_accuracy_delta_pp": round(
             model_metrics["directional_accuracy_pct"]
-            - baseline_metrics["directional_accuracy_pct"], 2
+            - naive_metrics["directional_accuracy_pct"], 2
         ),
-        "evaluation_note": "Pseudo-out-of-sample using calendar-month-end information sets; not vintage-accurate.",
+        "evaluation_note": (
+            "Expanding-window pseudo-vintage. Prior CPI is assumed released by day 15 "
+            "of the target month and Brent is assumed available the following UTC day; "
+            "archived historical release vintages are unavailable."
+        ),
     }
 
 
@@ -625,9 +671,9 @@ def markdown_report(report: dict[str, Any]) -> str:
         "- Throughput: **not scored**; an expected workload/throughput target has not been agreed, so the report shows observed rates only.",
         "These are provisional targets for transparent tracking, not externally established guarantees.",
         "",
-        "## Data Freshness",
+        "## Source Observation Freshness",
         "",
-        "Check age measures the most recent successful or failed source check. The observation period is the latest vintage stored in raw JSON, not the last check time.",
+        "This section reports observation-age freshness from the latest stored source period plus the last collector-check status. It is not source publication-to-ingestion latency; that requires trustworthy release timestamps. The isolated synthetic benchmark reports processing latency only and is not a source-freshness measurement.",
         "",
         "| Source | Last check | Warning | Observation age / target | SLO | Latest observation | Release timestamp | New records |",
         "|---|---|---|---:|---|---|---|---:|",
@@ -699,19 +745,37 @@ def markdown_report(report: dict[str, Any]) -> str:
     else:
         lines.append(f"Airflow metadata history unavailable: {reliability.get('error')}.")
     backtest = report["nowcast_backtest"]
-    lines += ["", "## Nowcast backtest versus CPI-only baseline", ""]
+    lines += ["", "## Nowcast backtest versus naïve and CPI-only baselines", ""]
     if backtest.get("available"):
-        lines += [
-            f"Common evaluation months: **{backtest['comparison_months']}**.",
-            f"AR-MIDAS MAE improvement: **{backtest['mae_improvement_percent']}%**; "
-            f"RMSE improvement: **{backtest['rmse_improvement_percent']}%**; "
-            f"directional-accuracy change: **{backtest['directional_accuracy_delta_pp']} percentage points**.",
-            "| Model | MAE (pp) | RMSE (pp) | Direction accuracy |",
-            "|---|---:|---:|---:|",
-            f"| CPI-only ridge | {backtest['baseline']['mae_pp']} | {backtest['baseline']['rmse_pp']} | {backtest['baseline']['directional_accuracy_pct']}% |",
-            f"| AR-MIDAS ridge | {backtest['model']['mae_pp']} | {backtest['model']['rmse_pp']} | {backtest['model']['directional_accuracy_pct']}% |",
-            backtest["evaluation_note"],
-        ]
+        for window_name, comparison in backtest.get("windows", {}).items():
+            lines += [
+                f"### {window_name.replace('_', ' ').title()}",
+                "",
+                f"Common folds: **{comparison['comparison_months']}**.",
+                "| Model | MAE (pp) | RMSE (pp) | Direction accuracy |",
+                "|---|---:|---:|---:|",
+            ]
+            for model_name, label in [
+                ("naive_last_cpi", "Naïve: previous CPI MoM"),
+                ("cpi_only_ridge", "CPI-only ridge"),
+                ("ar_midas_ridge", "AR-MIDAS ridge"),
+            ]:
+                metrics = comparison["models"][model_name]
+                lines.append(
+                    f"| {label} | {metrics['mae_pp']} | {metrics['rmse_pp']} "
+                    f"| {metrics['directional_accuracy_pct']}% |"
+                )
+            naive = comparison["models"]["naive_last_cpi"]
+            ar_midas = comparison["models"]["ar_midas_ridge"]
+            mae_gain = (
+                round(100 * (naive["mae_pp"] - ar_midas["mae_pp"]) / naive["mae_pp"], 2)
+                if naive["mae_pp"] else None
+            )
+            lines.append(
+                f"AR-MIDAS MAE change versus naïve: **{mae_gain}%**; "
+                f"directional-accuracy change: **{round(ar_midas['directional_accuracy_pct'] - naive['directional_accuracy_pct'], 2)} pp**."
+            )
+        lines.append(backtest["evaluation_note"])
     else:
         lines.append(f"Backtest comparison unavailable: {backtest.get('reason')}.")
     throughput = report["throughput"]
@@ -1141,7 +1205,14 @@ def main() -> None:
             },
             "kafka_consumer_lag": kafka_bronze_lag,
         },
-        "data_freshness": {"sources": source_freshness},
+        "data_freshness": {
+            "measurement_scope": "latest_stored_observation_age_and_collector_check_status",
+            "publication_to_ingestion_latency_measured": False,
+            "publication_latency_limitation": (
+                "Requires trustworthy source release timestamps or a maintained release calendar."
+            ),
+            "sources": source_freshness,
+        },
         "pipeline_latency": {
             "latest_dag_run": latest_dag,
             "latest_dag_duration_seconds": latest_dag.get("duration_seconds") if latest_dag else None,

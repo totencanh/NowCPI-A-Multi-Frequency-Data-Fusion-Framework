@@ -61,7 +61,10 @@ docker compose --profile airflow exec -T airflow-scheduler python /opt/airflow/s
 ```
 
 The report is written to `workspace/pipeline-audit/reports/` in JSON and
-Markdown formats. It measures source-check freshness, Kafka-to-Bronze latency,
+Markdown formats. Its source freshness section measures the age of the latest
+stored observation and the latest collector-check status; it does not claim
+publication-to-ingestion lag without a reliable source release timestamp. It
+also measures Kafka-to-Bronze latency,
 recent persisted-event throughput, Silver quality/rejection reasons, Kafka
 consumer lag and expired-offset gaps, Airflow success/retry/duration percentiles
 over 7/30-day windows, and Gold feature age/coverage. Silver writes
@@ -95,3 +98,10 @@ Open `http://localhost:8085`. The local development login defaults to `admin` /
 `admin`; set `AIRFLOW_ADMIN_USERNAME` and `AIRFLOW_ADMIN_PASSWORD` before startup
 to override it. The Airflow services use a separate PostgreSQL volume and connect
 to the existing Trino service over the Compose network.
+
+After dbt Gold, the daily DAG also runs `dbt_pit_feature_tests` followed by
+`feature_ablation_evaluation`. The PIT test enforces observation and source
+availability cutoffs. The ablation task writes model comparisons, per-source
+historical eligibility, runtime/RSS, failure counts, and error cases under
+`forecasting/outputs/feature_ablation_*`. It runs independently from
+`midas_inflation_nowcast`; an ablation failure does not block the nowcast task.
