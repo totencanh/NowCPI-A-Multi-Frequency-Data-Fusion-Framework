@@ -19,6 +19,7 @@ SOURCE_FAILURE_PATTERNS = (
     re.compile(r"yfratelimiterror", re.IGNORECASE),
     re.compile(r"too many requests", re.IGNORECASE),
 )
+FALLBACK_TRIGGER_PATTERNS = SOURCE_FAILURE_PATTERNS
 
 
 def utc_now() -> datetime:
@@ -109,7 +110,35 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--raw-data-dir", type=Path, required=True)
     parser.add_argument("--audit-file", type=Path, required=True)
     parser.add_argument("--collector", type=Path, required=True)
+    parser.add_argument(
+        "--fallback-collector",
+        type=Path,
+        help="Optional collector to run after a recognized transient source failure.",
+    )
     return parser.parse_args()
+
+
+def run_collector(command: list[str]) -> tuple[int, str | None, list[str]]:
+    """Stream a collector's output and return its status and recognized warnings."""
+    warnings: list[str] = []
+    try:
+        process = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1,
+        )
+        assert process.stdout is not None
+        for output_line in process.stdout:
+            print(output_line, end="", flush=True)
+            if any(pattern.search(output_line) for pattern in SOURCE_FAILURE_PATTERNS):
+                warnings.append(output_line.strip())
+        return process.wait(), None, warnings
+    except OSError as exc:
+        error = str(exc)
+        print(f"Collector could not start: {error}", file=sys.stderr, flush=True)
+        return 127, error, warnings
 
 
 def main() -> int:
@@ -124,27 +153,38 @@ def main() -> int:
         f"SOURCE_CHECK_START source={args.source} checked_at={isoformat(started_at)}",
         flush=True,
     )
-    try:
-        process = subprocess.Popen(
-            command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            bufsize=1,
+    exit_code, error, warnings = run_collector(command)
+    recovered_warnings: list[str] = []
+    fallback_used = False
+    fallback_source = None
+    fallback_warnings: list[str] = []
+    should_fallback = (
+        args.source == "usd_vnd_daily"
+        and args.fallback_collector is not None
+        and any(
+            pattern.search(line)
+            for line in warnings
+            for pattern in FALLBACK_TRIGGER_PATTERNS
         )
-        warnings: list[str] = []
-        assert process.stdout is not None
-        for output_line in process.stdout:
-            print(output_line, end="", flush=True)
-            if any(pattern.search(output_line) for pattern in SOURCE_FAILURE_PATTERNS):
-                warnings.append(output_line.strip())
-        exit_code = process.wait()
-        error = None
-    except OSError as exc:
-        exit_code = 127
-        error = str(exc)
-        warnings = []
-        print(f"Collector could not start: {error}", file=sys.stderr, flush=True)
+    )
+    if should_fallback:
+        recovered_warnings = warnings
+        fallback_used = True
+        fallback_source = "frankfurter_v2"
+        print(
+            "Primary USD/VND provider was rate-limited; trying Frankfurter v2 fallback.",
+            flush=True,
+        )
+        exit_code, error, fallback_warnings = run_collector(
+            [
+                sys.executable,
+                "-u",
+                str(args.fallback_collector),
+                "--raw-data-dir",
+                str(args.raw_data_dir),
+            ]
+        )
+        warnings = fallback_warnings
 
     completed_at = utc_now()
     collector_duration = round(time.monotonic() - started_clock, 3)
@@ -181,6 +221,9 @@ def main() -> int:
         "collector_exit_code": exit_code,
         "error": error,
         "warnings": warnings,
+        "recovered_warnings": recovered_warnings,
+        "fallback_used": fallback_used,
+        "fallback_source": fallback_source,
         "batch_files_written": len(changed_paths),
         "changed_records_written": len(changed_events),
         "stored_unique_records": stored_event_count,

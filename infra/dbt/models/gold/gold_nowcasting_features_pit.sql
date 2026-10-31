@@ -27,7 +27,7 @@ with base as (
             as fuel_asof_eligible,
         iip_available_at is not null
             and iip_available_at <= asof_cutoff_ts
-            and iip_observation_year < year(target_month)
+            and iip_observation_month < target_month
             as iip_asof_eligible
     from base
 )
@@ -44,6 +44,8 @@ select
         as cpi_headline_mom_asof,
     case when cpi_asof_eligible then cpi_latest_available_at end
         as cpi_available_at_asof,
+    case when cpi_asof_eligible then cpi_available_at_basis end
+        as cpi_available_at_basis_asof,
     cpi_asof_eligible,
     case when brent_asof_eligible then brent_usd_per_barrel_avg_mtd end
         as brent_usd_per_barrel_avg_mtd_asof,
@@ -53,6 +55,8 @@ select
         as brent_latest_observation_date_asof,
     case when brent_asof_eligible then brent_latest_available_at end
         as brent_available_at_asof,
+    case when brent_asof_eligible then brent_latest_available_at_basis end
+        as brent_available_at_basis_asof,
     brent_asof_eligible,
     case when fx_asof_eligible then vnd_per_usd_avg_mtd end
         as vnd_per_usd_avg_mtd_asof,
@@ -62,6 +66,8 @@ select
         as fx_latest_observation_date_asof,
     case when fx_asof_eligible then fx_latest_available_at end
         as fx_available_at_asof,
+    case when fx_asof_eligible then fx_latest_available_at_basis end
+        as fx_available_at_basis_asof,
     fx_asof_eligible,
     case when fuel_asof_eligible then fuel_ron95_vnd_per_liter_avg_mtd end
         as fuel_ron95_vnd_per_liter_avg_mtd_asof,
@@ -73,13 +79,17 @@ select
         as fuel_latest_observation_date_asof,
     case when fuel_asof_eligible then fuel_latest_available_at end
         as fuel_available_at_asof,
+    case when fuel_asof_eligible then fuel_latest_available_at_basis end
+        as fuel_available_at_basis_asof,
     fuel_asof_eligible,
-    case when iip_asof_eligible then iip_observation_year end
-        as iip_observation_year_asof,
-    case when iip_asof_eligible then iip_growth_latest_prior_year end
-        as iip_growth_latest_prior_year_asof,
+    case when iip_asof_eligible then iip_observation_month end
+        as iip_observation_month_asof,
+    case when iip_asof_eligible then iip_yoy_growth_latest_prior_month end
+        as iip_yoy_growth_latest_prior_month_asof,
     case when iip_asof_eligible then iip_available_at end
         as iip_available_at_asof,
+    case when iip_asof_eligible then iip_available_at_basis end
+        as iip_available_at_basis_asof,
     iip_asof_eligible,
     cast(100.0 * (
         case when cpi_asof_eligible then 1 else 0 end

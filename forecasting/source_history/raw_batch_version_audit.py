@@ -13,7 +13,7 @@ SOURCES = (
     "brent_oil_daily",
     "usd_vnd_daily",
     "vn_fuel_e10_ron95",
-    "worldbank_iip_vietnam",
+    "nso_iip_vietnam",
 )
 
 

@@ -17,7 +17,7 @@ from confluent_kafka import Consumer, Producer, TopicPartition
 SOURCE_TOPICS = {
     "imf_cpi_vietnam": "nowcpi.cpi",
     "imf_cpi_components_vietnam": "nowcpi.cpi_components",
-    "worldbank_iip_vietnam": "nowcpi.ppi_iip",
+    "nso_iip_vietnam": "nowcpi.ppi_iip",
     "brent_oil_daily": "nowcpi.brent_oil",
     "usd_vnd_daily": "nowcpi.usd_vnd",
     "vn_fuel_e10_ron95": "nowcpi.vn_fuel",

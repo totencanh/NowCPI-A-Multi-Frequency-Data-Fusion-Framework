@@ -1,0 +1,34 @@
+{
+  "model_name": "ar1_ols",
+  "model_version": "v1-b73d41c7e659",
+  "evaluation_run_id": "20261030T200737Z",
+  "generated_at_utc": "2026-10-30T20:07:37.446547+00:00",
+  "source_code_sha256": "e2aba21e5f17ad501f953ae8a57eef1d0c391d3ca8e72771d07dedea4e9a8ea4",
+  "role": "baseline",
+  "model_family": "AR(1) OLS",
+  "predictors": [
+    "cpi_mom_lag_1"
+  ],
+  "hyperparameters": {
+    "fit_intercept": true,
+    "regularization": null
+  },
+  "prediction_file": "predictions.csv",
+  "metrics_file": "metrics.csv",
+  "runtime_file": "runtime.csv",
+  "ineligible_folds_file": "ineligible_folds.csv",
+  "failures_file": "failures.csv",
+  "operational_metrics": {
+    "model": "ar1_ols",
+    "fit_predict_seconds": 0.21412407899697428,
+    "failed_folds": 0,
+    "ineligible_folds": 0,
+    "completed_folds": 131,
+    "max_fit_predict_seconds": 0.0028086629999961588,
+    "max_rss_kb": 138132,
+    "script_wall_seconds": 53.294,
+    "strict_vintage_available": false
+  },
+  "metrics_protocol": "paired common rolling-origin folds; MAE primary, RMSE guardrail",
+  "point_in_time_claim": "historical source vintages are incomplete; diagnostic only"
+}

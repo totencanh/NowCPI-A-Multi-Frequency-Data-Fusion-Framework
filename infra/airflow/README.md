@@ -29,9 +29,16 @@ in the raw archive.
 time the source was last checked. Source checks without a changed batch still
 appear in the audit file.
 
+If Yahoo Finance rate-limits the USD/VND collector, the audit wrapper runs the
+Frankfurter v2 fallback for the recent gap and records the recovered warning
+and provider. Frankfurter supplies a blended reference rate; it is not an SBV
+or commercial-bank quote. It does not provide a release timestamp in this
+collector, so fallback events use ingestion time for availability and do not
+resolve historical point-in-time vintage coverage.
+
 `nowcpi_full_history_rebuild` is a separate, manual backfill DAG. It reads the
 existing Bronze lake, forces a complete Silver rebuild, rebuilds Gold, and
-refreshes the current MIDAS nowcast. It does not call source collectors or
+refreshes the current full multi-source nowcast. It does not call source collectors or
 publish to Kafka. **It does not run automatically when the daily pipeline fails.**
 It has no schedule and must be triggered deliberately in Airflow. A normal daily
 task failure follows that task's retry policy (two retries, five minutes apart);
@@ -45,8 +52,8 @@ daily DAG can resume incremental processing.
 
 The most recent verified run was `manual__2026-10-17T08:47:02+00:00`:
 collectors, Kafka publication, Bronze catch-up, both Silver jobs, dbt staging,
-dbt Gold, and MIDAS all succeeded. The forecast output and its interpretation
-are recorded in `forecasting/README.md`.
+dbt Gold, and the nowcast task all succeeded. The forecast output and its
+interpretation are recorded in `forecasting/README.md`.
 
 Bronze receipts are immutable and keyed by Kafka topic, partition, and offset.
 Malformed JSON or events without `event_id` are retained in
@@ -104,4 +111,4 @@ After dbt Gold, the daily DAG also runs `dbt_pit_feature_tests` followed by
 availability cutoffs. The ablation task writes model comparisons, per-source
 historical eligibility, runtime/RSS, failure counts, and error cases under
 `forecasting/outputs/feature_ablation_*`. It runs independently from
-`midas_inflation_nowcast`; an ablation failure does not block the nowcast task.
+`multisource_inflation_nowcast`; an ablation failure does not block the nowcast task.

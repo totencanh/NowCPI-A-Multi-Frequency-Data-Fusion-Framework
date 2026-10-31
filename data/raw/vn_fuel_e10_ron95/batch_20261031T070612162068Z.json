@@ -1,0 +1,58 @@
+[
+  {
+    "schema_version": 1,
+    "event_id": "5c23c2ac775ce07b7905150d5a5faa78f332c6059d627b85cd57fe15b85b730d",
+    "source": "giaxanghomnay",
+    "series_id": "vn_fuel_e10_ron95",
+    "country": "VNM",
+    "observation_period": "2026-10-30",
+    "frequency": "daily",
+    "value": 26530,
+    "unit": "VND/liter",
+    "release_ts": null,
+    "ingested_at": "2026-10-31T07:06:11.991563+00:00",
+    "source_record_id": "vn_fuel_e10_ron95:8959",
+    "raw_payload": {
+      "id": 8959,
+      "created_at": "2026-10-29T17:00:03.000000Z",
+      "updated_at": "2026-10-29T17:00:03.000000Z",
+      "petrolimex_id": "b85a9189d7174ee0a4be489f34962ab7",
+      "date": "2026-10-30 00:00:00",
+      "title": "Xăng E10 RON 95 Mức 5",
+      "zone1_price": 26530,
+      "zone2_price": 27060,
+      "source_date": "2026-10-30",
+      "price": 26530
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "e6dbf1ca7f34660113f9faa2c845acef597d833b92cc750b81775ab4009d3d5c",
+    "source": "giaxanghomnay",
+    "series_id": "vn_fuel_e10_ron95",
+    "country": "VNM",
+    "observation_period": "2026-10-31",
+    "frequency": "daily",
+    "value": 26530,
+    "unit": "VND/liter",
+    "release_ts": null,
+    "ingested_at": "2026-10-31T07:06:11.991432+00:00",
+    "source_record_id": "vn_fuel_e10_ron95:8965",
+    "raw_payload": {
+      "id": 8965,
+      "created_at": "2026-10-30T17:00:04.000000Z",
+      "updated_at": "2026-10-30T17:00:04.000000Z",
+      "petrolimex_id": "b85a9189d7174ee0a4be489f34962ab7",
+      "date": "2026-10-31 00:00:00",
+      "title": "Xăng E10 RON 95 Mức 5",
+      "zone1_price": 26530,
+      "zone2_price": 27060,
+      "daily_change": 0,
+      "adjustment_change": 820,
+      "zone2_daily_change": 0,
+      "zone2_adjustment_change": 840,
+      "source_date": "2026-10-31",
+      "price": 26530
+    }
+  }
+]

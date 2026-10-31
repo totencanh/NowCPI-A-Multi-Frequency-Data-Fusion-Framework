@@ -1,10 +1,10 @@
 # NowCPI
 
-**NowCPI: A Streaming Lakehouse for Asynchronous Multi-Frequency CPI Nowcasting in Vietnam: An AR-MIDAS Application with Weekly Brent and Monthly CPI**
+**NowCPI: A Multi-Frequency Data Fusion Framework for Real-Time Inflation Nowcasting in Vietnam via Streaming Lakehouse Architecture under Asynchronous Multi-Source Data**
 
-NowCPI is a research prototype for daily CPI nowcasting in Vietnam. Its streaming lakehouse ingests asynchronous source observations and retains their observation and availability times. The current forecast model predicts **monthly headline CPI MoM** with AR-MIDAS Ridge, combining the latest available monthly CPI lag with up to 12 weekly Brent log returns. The target month is one month after the latest actual CPI month, not automatically the computer's current month.
+NowCPI is a research prototype for daily CPI nowcasting in Vietnam. Its streaming lakehouse ingests asynchronous source observations and retains their observation and availability times. The primary forecast model is **Full multi-source Ridge**, using CPI lags, weekly Brent returns, USD/VND, domestic fuel, NSO IIP, and source-missingness indicators when eligible at the point-in-time cutoff. AR-MIDAS is retained as a comparison model. The target month is one month after the latest actual CPI month, not automatically the computer's current month.
 
-USD/VND, domestic fuel prices, CPI components, and annual industrial activity are retained for dashboard analysis and can be evaluated as future model inputs. They are not currently predictors in the MIDAS nowcast. News collection and NLP are not implemented. Because source collection and forecasting are scheduled daily, the project demonstrates a daily nowcasting workflow over a streaming lakehouse, not continuous live forecasts.
+Macro sources are used by the primary multi-source model when their point-in-time features are eligible; CPI components are retained for analysis. Historical source vintages are incomplete, so historical ablation does not yet prove the incremental value of every source. News collection and NLP are not implemented. Because source collection and forecasting are scheduled daily, the project demonstrates a daily nowcasting workflow over a streaming lakehouse, not continuous live forecasts.
 
 ## Architecture
 
@@ -26,9 +26,10 @@ IMF CPI / CPI components / Brent / USD-VND / fuel / annual activity
                 dbt staging → Gold
                          ▼
        ┌─────────────────┼──────────────────┐
-       ▼                 ▼                  ▼
-   Power BI         SQL analytics      U-MIDAS Ridge
-   dashboards       with Trino         CPI MoM nowcast
+   ▼                 ▼                          ▼
+   Power BI         SQL analytics       Full multi-source Ridge
+   dashboards       with Trino          CPI MoM nowcast
+                                         AR-MIDAS comparison
 
   MinIO: lakehouse object storage
   Hive Metastore: table catalog
@@ -59,7 +60,7 @@ NowCPI/
 │   ├── trino/                  # SQL query engine configuration
 │   ├── superset/               # Inactive visualization scaffold
 │   └── jupyter-lab/            # Exploration environment configuration
-├── forecasting/                # MIDAS nowcast, benchmarks, and outputs
+├── forecasting/                # Multi-source primary nowcast, comparison models, and outputs
 ├── analytics/powerbi/          # Power BI connection and dashboard guide
 ├── workspace/                  # Local working and runtime files
 ├── docker-compose.yaml         # Local service orchestration
@@ -73,14 +74,10 @@ NowCPI/
 3. Spark Structured Streaming consumes asynchronous events and stores the source-level records in the Bronze Delta layer on MinIO.
 4. Spark Silver processing validates schemas, handles timestamps and duplicate observations, and harmonizes units and frequencies while retaining source lineage.
 5. dbt builds staging views and Gold subject, reporting, and model tables through Trino.
-6. The current MIDAS model reads CPI labels and Brent history from Gold through Trino and writes its nowcast and evaluation metrics under `forecasting/outputs/`.
+6. The primary full multi-source Ridge model reads point-in-time features from Gold through Trino; AR-MIDAS and other candidates are evaluated as comparison models. Forecasts and evaluation metrics are written under `forecasting/outputs/`.
 7. Airflow schedules daily collection, processing, Gold transformations, and nowcasting. Power BI can query Gold through Trino; Power BI is not a Compose service. News NLP remains outside the implemented pipeline.
 
-The latest verified full DAG run (`manual__2026-10-17T08:47:02+00:00`)
-completed successfully. CPI was available through July 2026, so the model
-estimated **August 2026 CPI MoM at 0.181355%**. This is a delayed one-step
-estimate, not an October nowcast; source release vintages are not archived.
-See `forecasting/README.md` for the cutoff and model details. The separate
+The forecast target is always the month immediately after the latest actual CPI month. Historical source-release vintages are not fully archived, so historical metrics remain diagnostics rather than strict real-time evidence. See `forecasting/README.md` for model roles and output details. The separate
 `nowcpi_full_history_rebuild` DAG is manually triggered for intentional
 historical rebuilds or Silver migrations; it does not automatically run after
 a daily pipeline failure.
@@ -93,6 +90,6 @@ a daily pipeline failure.
 - **Hive Metastore and Trino** for cataloging and SQL access
 - **dbt** for SQL transformations and feature marts
 - **Airflow** for workflow orchestration
-- **U-MIDAS Ridge** for CPI MoM nowcasting with weekly Brent predictors
+- **Full multi-source Ridge** for CPI MoM nowcasting; AR-MIDAS is a comparison model
 - **Power BI-ready Gold datasets** for monthly CPI/market summaries and daily market trends
 

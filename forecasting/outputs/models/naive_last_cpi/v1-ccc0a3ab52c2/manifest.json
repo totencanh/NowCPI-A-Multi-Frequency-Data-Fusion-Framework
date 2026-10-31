@@ -1,0 +1,21 @@
+{
+  "model_name": "naive_last_cpi",
+  "model_version": "v1-ccc0a3ab52c2",
+  "evaluation_run_id": "20261031T080133Z",
+  "generated_at_utc": "2026-10-31T08:01:33.324265+00:00",
+  "source_code_sha256": "6ff26ecd230d4a4bbc85fb3456d4466be244d4304e11c65772acb70a9638d7f4",
+  "role": "baseline",
+  "model_family": "naive_last_observation",
+  "predictors": [
+    "cpi_mom_lag_1"
+  ],
+  "hyperparameters": {},
+  "prediction_file": "predictions.csv",
+  "metrics_file": "metrics.csv",
+  "runtime_file": "runtime.csv",
+  "ineligible_folds_file": "ineligible_folds.csv",
+  "failures_file": "failures.csv",
+  "operational_metrics": {},
+  "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",
+  "point_in_time_claim": "historical source vintages are incomplete; diagnostic only"
+}

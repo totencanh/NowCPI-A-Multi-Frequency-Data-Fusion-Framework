@@ -74,7 +74,7 @@ with DAG(
     collect_iip = BashOperator(
         task_id="collect_iip",
         bash_command=audited_collector_command(
-            "worldbank_iip_vietnam", "ppi_iip/ppi_iip.py"
+            "nso_iip_vietnam", "ppi_iip/nso_iip.py"
         ),
         execution_timeout=timedelta(minutes=20),
     )
@@ -94,8 +94,10 @@ with DAG(
     )
     collect_usd_vnd = BashOperator(
         task_id="collect_usd_vnd",
-        bash_command=audited_collector_command(
-            "usd_vnd_daily", "usd/usd_vnd.py"
+        bash_command=(
+            audited_collector_command("usd_vnd_daily", "usd/usd_vnd.py")
+            + " --fallback-collector "
+            + "/opt/airflow/scripts/collect_usd_vnd_fallback.py"
         ),
         execution_timeout=timedelta(minutes=20),
     )
@@ -117,20 +119,19 @@ with DAG(
     wait_for_bronze = BashOperator(
         task_id="wait_for_bronze_catchup",
         bash_command=spark_submit_command("wait_for_bronze", 17178),
+        pool="nowcpi_spark_pool",
         execution_timeout=timedelta(minutes=35),
     )
     silver_cpi = BashOperator(
         task_id="silver_cpi_sources",
         bash_command=spark_submit_command("cpi", 17180),
-        env={"SILVER_DEFER_MIGRATION_REBUILD": "1"},
-        append_env=True,
+        pool="nowcpi_spark_pool",
         execution_timeout=timedelta(minutes=45),
     )
     silver_market = BashOperator(
         task_id="silver_market_sources",
         bash_command=spark_submit_command("market", 17182),
-        env={"SILVER_DEFER_MIGRATION_REBUILD": "1"},
-        append_env=True,
+        pool="nowcpi_spark_pool",
         execution_timeout=timedelta(minutes=45),
     )
     dbt_staging = BashOperator(
@@ -159,7 +160,7 @@ with DAG(
         bash_command=(
             "env -u PYTHONPATH /opt/dbt_venv/bin/dbt test "
             "--project-dir /opt/airflow/dbt --profiles-dir /opt/airflow/dbt "
-            "--select gold_nowcasting_features_pit"
+            "--select gold_nowcasting_features_pit gold_nowcasting_feature_vintages stg_observation_versions"
         ),
         execution_timeout=timedelta(minutes=15),
     )
@@ -178,9 +179,9 @@ with DAG(
         ),
         execution_timeout=timedelta(minutes=15),
     )
-    midas_nowcast = BashOperator(
-        task_id="midas_inflation_nowcast",
-        bash_command="python -u /opt/airflow/forecasting/midas_nowcast.py",
+    multisource_nowcast = BashOperator(
+        task_id="multisource_inflation_nowcast",
+        bash_command="python -u /opt/airflow/forecasting/multisource_nowcast.py",
         env={"TRINO_HOST": "trino", "TRINO_PORT": "8080", "TRINO_USER": "nowcpi"},
         append_env=True,
         execution_timeout=timedelta(minutes=30),
@@ -197,6 +198,6 @@ with DAG(
     publish_to_kafka >> wait_for_bronze
     wait_for_bronze >> silver_cpi >> silver_market
     silver_market >> dbt_staging >> dbt_gold
-    dbt_gold >> [midas_nowcast, dbt_pit_feature_test]
+    dbt_gold >> [multisource_nowcast, dbt_pit_feature_test]
     dbt_pit_feature_test >> feature_ablation_evaluation
-    collect_nso_cpi_release_calendar >> midas_nowcast
+    collect_nso_cpi_release_calendar >> multisource_nowcast

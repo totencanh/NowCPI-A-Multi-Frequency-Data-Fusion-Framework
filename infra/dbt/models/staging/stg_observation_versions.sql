@@ -1,0 +1,23 @@
+select
+    version_id,
+    event_id,
+    source,
+    source_record_id,
+    source_release_ts,
+    source_event_time,
+    business_key,
+    payload_hash,
+    source_ingested_at,
+    available_at,
+    available_at_basis,
+    bronze_ingested_at,
+    kafka_topic,
+    kafka_partition,
+    kafka_offset,
+    series_id,
+    country,
+    observation_date,
+    frequency,
+    value,
+    unit
+from {{ source('silver', 'observation_versions') }}

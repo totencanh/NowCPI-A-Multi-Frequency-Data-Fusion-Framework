@@ -37,7 +37,7 @@ AUDIT_SOURCES = {
     "brent_oil_daily": "brent",
     "usd_vnd_daily": "usd_vnd",
     "vn_fuel_e10_ron95": "vn_fuel",
-    "worldbank_iip_vietnam": "iip",
+    "nso_iip_vietnam": "iip",
 }
 TOPIC_SOURCES = {
     "nowcpi.cpi": "cpi",
@@ -53,16 +53,15 @@ SOURCE_FREQUENCIES = {
     "brent_oil_daily": "daily",
     "usd_vnd_daily": "daily",
     "vn_fuel_e10_ron95": "daily",
-    "worldbank_iip_vietnam": "annual",
+    "nso_iip_vietnam": "monthly",
 }
 # Provisional, visible monitoring objectives. Adjust these to the seminar's
 # agreed service levels; no throughput target is set without a workload target.
 FRESHNESS_SLO_DAYS = {"daily": 3, "monthly": 75, "annual": 400}
 DAG_LATENCY_SLO_SECONDS = 600
 KAFKA_BRONZE_P95_SLO_SECONDS = 60
-# CPI indices and market prices cannot be zero or negative. IIP growth is a
-# growth rate and may legitimately be zero or negative during contraction.
-POSITIVE_VALUE_DOMAINS = set(SILVER_TABLES) - {"iip"}
+# CPI/IIP indices and market prices cannot be zero or negative.
+POSITIVE_VALUE_DOMAINS = set(SILVER_TABLES)
 
 
 def parse_time(value: Any) -> datetime | None:
@@ -135,14 +134,24 @@ def latest_source_checks(records: list[dict[str, Any]], now: datetime) -> list[d
 
     result = []
     for source, record in sorted(latest.items()):
+        # Retired collectors can remain in the append-only audit log. Do not
+        # count them as current sources or let their old frequency distort SLOs.
+        if source not in AUDIT_SOURCES:
+            continue
         completed = parse_time(record.get("check_completed_at"))
         observation_end = observation_period_end(record.get("latest_stored_observation_period"))
+        warnings = list(record.get("warnings", []))
+        if record.get("fallback_used"):
+            warnings.append(
+                "recovered with "
+                + str(record.get("fallback_source") or "fallback provider")
+            )
         result.append(
             {
                 "source": source,
                 "domain": AUDIT_SOURCES.get(source, source),
                 "last_check_status": record.get("status"),
-                "warnings": record.get("warnings", []),
+                "warnings": warnings,
                 "expected_source_frequency": SOURCE_FREQUENCIES.get(source, "unknown"),
                 "freshness_slo_days": FRESHNESS_SLO_DAYS.get(
                     SOURCE_FREQUENCIES.get(source, "unknown")
@@ -407,7 +416,7 @@ def measure_kafka_bronze_lag(
 
 
 def read_nowcast_backtest(output_dir: Path) -> dict[str, Any]:
-    """Compare naïve, CPI-only, and AR-MIDAS forecasts on identical folds."""
+    """Compare the primary multi-source model with baselines on common folds."""
     path = output_dir / "midas_backtest_predictions.csv"
     if not path.is_file():
         return {"available": False, "reason": f"Missing {path.name}"}
@@ -430,7 +439,8 @@ def read_nowcast_backtest(output_dir: Path) -> dict[str, Any]:
             target = datetime.fromisoformat(row["target_month"][:10]).date()
             actual = float(row["actual_cpi_mom_percent"])
             cpi_only = float(row["cpi_only_ridge"])
-            model = float(row["ar_midas_ridge"])
+            ar_midas = float(row["ar_midas_ridge"])
+            full_multisource = float(row["full_multisource_ridge"])
             naive_text = row.get("naive_last_cpi", "")
             if naive_text:
                 naive = float(naive_text)
@@ -439,7 +449,7 @@ def read_nowcast_backtest(output_dir: Path) -> dict[str, Any]:
                 naive = actual_by_month[prior_month]
         except (KeyError, TypeError, ValueError):
             continue
-        values = (actual, cpi_only, model, naive)
+        values = (actual, cpi_only, ar_midas, full_multisource, naive)
         if all(value == value and abs(value) != float("inf") for value in values):
             rows.append(
                 {
@@ -447,20 +457,38 @@ def read_nowcast_backtest(output_dir: Path) -> dict[str, Any]:
                     "actual": actual,
                     "naive": naive,
                     "cpi_only": cpi_only,
-                    "ar_midas": model,
+                    "ar_midas": ar_midas,
+                    "full_multisource": full_multisource,
                 }
             )
     rows.sort(key=lambda row: str(row["target_month"]))
     if not rows:
-        return {"available": False, "reason": "No common finite naïve/CPI-only/AR-MIDAS predictions"}
+        return {"available": False, "reason": "No common finite naïve/CPI-only/AR-MIDAS/full multi-source predictions"}
 
     def metrics(frame: list[dict[str, float | str]], column: str) -> dict[str, float]:
         actuals = [float(row["actual"]) for row in frame]
         predictions = [float(row[column]) for row in frame]
         errors = [actual - predicted for actual, predicted in zip(actuals, predictions)]
+        mape_rows = [
+            (actual, predicted)
+            for actual, predicted in zip(actuals, predictions)
+            if abs(actual) >= 0.05
+        ]
+        smape_values = [
+            200 * abs(actual - predicted) / (abs(actual) + abs(predicted))
+            if abs(actual) + abs(predicted) > 0
+            else 0.0
+            for actual, predicted in zip(actuals, predictions)
+        ]
         return {
             "mae_pp": round(sum(abs(error) for error in errors) / len(errors), 6),
             "rmse_pp": round((sum(error * error for error in errors) / len(errors)) ** 0.5, 6),
+            "mape_pct_excluding_near_zero": round(
+                100 * sum(abs(actual - predicted) / abs(actual) for actual, predicted in mape_rows) / len(mape_rows), 6
+            ) if mape_rows else None,
+            "mape_scored_months": len(mape_rows),
+            "mape_excluded_months": len(actuals) - len(mape_rows),
+            "smape_pct": round(sum(smape_values) / len(smape_values), 6),
             "directional_accuracy_pct": round(
                 100 * sum(
                     (actual == 0 and predicted == 0)
@@ -486,19 +514,52 @@ def read_nowcast_backtest(output_dir: Path) -> dict[str, Any]:
                     ("naive_last_cpi", "naive"),
                     ("cpi_only_ridge", "cpi_only"),
                     ("ar_midas_ridge", "ar_midas"),
+                    ("full_multisource_ridge", "full_multisource"),
                 ]
             },
         }
 
     full = comparisons["all_common_months"]["models"]
     naive_metrics = full["naive_last_cpi"]
-    model_metrics = full["ar_midas_ridge"]
+    model_metrics = full["full_multisource_ridge"]
+    paired_comparisons: dict[str, dict[str, Any]] = {}
+    paired_path = output_dir / "midas_paired_comparisons.csv"
+    if paired_path.is_file():
+        with paired_path.open(encoding="utf-8", newline="") as source:
+            for row in csv.DictReader(source):
+                if (
+                    row.get("proposed_model") != "full_multisource_ridge"
+                    or row.get("baseline_model") not in {"naive_last_cpi", "ar_midas_ridge"}
+                    or row.get("evaluation_window") not in {
+                        "all_pairwise_common_origins",
+                        "latest_36_pairwise_common_origins",
+                        "latest_24_pairwise_common_origins",
+                        "latest_9_descriptive_only",
+                    }
+                ):
+                    continue
+                window_name = row["evaluation_window"]
+                baseline_name = row["baseline_model"]
+                paired_comparisons.setdefault(window_name, {})[baseline_name] = {
+                    key: (float(row[key]) if row.get(key) not in {None, ""} else None)
+                    for key in (
+                        "paired_origins",
+                        "mae_delta_pp_proposed_minus_baseline",
+                        "mae_delta_95ci_low_pp",
+                        "mae_delta_95ci_high_pp",
+                        "rmse_delta_pp_proposed_minus_baseline",
+                        "dm_pvalue_mae_loss",
+                        "dm_pvalue_squared_loss",
+                    )
+                }
+    model_source = "full_multisource_ridge"
     return {
         "available": True,
         "comparison_months": len(rows),
         "windows": comparisons,
         "baseline": {"model": "naive_last_cpi", **naive_metrics},
-        "model": {"model": "ar_midas_ridge", **model_metrics},
+        "model": {"model": model_source, **model_metrics},
+        "paired_comparisons": paired_comparisons,
         "mae_improvement_percent": round(
             100 * (naive_metrics["mae_pp"] - model_metrics["mae_pp"])
             / naive_metrics["mae_pp"], 2
@@ -512,9 +573,9 @@ def read_nowcast_backtest(output_dir: Path) -> dict[str, Any]:
             - naive_metrics["directional_accuracy_pct"], 2
         ),
         "evaluation_note": (
-            "Expanding-window pseudo-vintage. Prior CPI is assumed released by day 15 "
-            "of the target month and Brent is assumed available the following UTC day; "
-            "archived historical release vintages are unavailable."
+            "Expanding-window pseudo-vintage. Historical source-release vintages are "
+            "unavailable; latest-nine results are descriptive only and DM inference "
+            "is not reported below 24 paired origins."
         ),
     }
 
@@ -590,7 +651,7 @@ def summarize_bursts(
     return len(events), bursts
 
 
-def build_sql() -> tuple[str, str, str, str]:
+def build_sql(existing_silver_tables: set[str] | None = None) -> tuple[str, str, str, str]:
     quality_selects = []
     for domain, table in SILVER_TABLES.items():
         nonpositive_metric = (
@@ -615,6 +676,8 @@ def build_sql() -> tuple[str, str, str, str]:
     rejected_selects = []
     rejection_reason_selects = []
     for domain, table in REJECTED_TABLES.items():
+        if existing_silver_tables is not None and table not in existing_silver_tables:
+            continue
         rejected_selects.append(
             f"""SELECT '{domain}' AS domain, count(*) AS rejected_events,
                 count_if(rejection_reason LIKE '%missing_or_non_numeric_value%')
@@ -631,8 +694,15 @@ def build_sql() -> tuple[str, str, str, str]:
               GROUP BY rejection_reason"""
         )
     quality_sql = " UNION ALL ".join(quality_selects)
-    rejected_sql = " UNION ALL ".join(rejected_selects)
-    rejection_reasons_sql = " UNION ALL ".join(rejection_reason_selects)
+    rejected_sql = " UNION ALL ".join(rejected_selects) or (
+        "SELECT CAST(NULL AS varchar) AS domain, CAST(NULL AS bigint) AS rejected_events, "
+        "CAST(NULL AS bigint) AS missing_or_non_numeric_events, "
+        "CAST(NULL AS bigint) AS policy_excluded_events WHERE false"
+    )
+    rejection_reasons_sql = " UNION ALL ".join(rejection_reason_selects) or (
+        "SELECT CAST(NULL AS varchar) AS domain, CAST(NULL AS varchar) AS rejection_reason, "
+        "CAST(NULL AS bigint) AS rejected_events WHERE false"
+    )
     latency_sql = """SELECT kafka_topic, count(*) AS persisted_events,
         min(kafka_timestamp) AS first_kafka_event_at,
         max(kafka_timestamp) AS last_kafka_event_at,
@@ -667,7 +737,7 @@ def markdown_report(report: dict[str, Any]) -> str:
         f"- Source freshness: **{report['metric_slo_attainment']['freshness']['passed_sources']}/{report['metric_slo_attainment']['freshness']['measured_sources']} ({report['metric_slo_attainment']['freshness']['achievement_percent']}%)**; targets are daily ≤3d, monthly ≤75d, annual ≤400d, and the latest collector check must be successful.",
         f"- Scheduled DAG latency: **{report['metric_slo_attainment']['dag_latency']['passed_runs']}/{report['metric_slo_attainment']['dag_latency']['measured_runs']} runs ({report['metric_slo_attainment']['dag_latency']['achievement_percent']}%)**; target ≤{report['metric_slo_attainment']['dag_latency']['target_seconds']}s ({report['metric_slo_attainment']['dag_latency']['duration_seconds']}s observed). Manual full-history rebuilds are shown in Pipeline Latency but excluded from this daily-run SLO.",
         f"- Kafka → Bronze P95: **{report['metric_slo_attainment']['kafka_bronze_latency']['passed_topics']}/{report['metric_slo_attainment']['kafka_bronze_latency']['measured_topics']} topics ({report['metric_slo_attainment']['kafka_bronze_latency']['achievement_percent']}%)**; target ≤{report['metric_slo_attainment']['kafka_bronze_latency']['target_seconds']}s.",
-        f"- Silver integrity checks: **{report['metric_slo_attainment']['silver_integrity']['passed_checks']}/{report['metric_slo_attainment']['silver_integrity']['measured_checks']} ({report['metric_slo_attainment']['silver_integrity']['achievement_percent']}%)**; checks are domain-aware. Non-positive values are disallowed for price/index domains, while negative IIP growth is valid.",
+        f"- Silver integrity checks: **{report['metric_slo_attainment']['silver_integrity']['passed_checks']}/{report['metric_slo_attainment']['silver_integrity']['measured_checks']} ({report['metric_slo_attainment']['silver_integrity']['achievement_percent']}%)**; checks are domain-aware. IIP is now an index level and must be positive.",
         "- Throughput: **not scored**; an expected workload/throughput target has not been agreed, so the report shows observed rates only.",
         "These are provisional targets for transparent tracking, not externally established guarantees.",
         "",
@@ -745,36 +815,62 @@ def markdown_report(report: dict[str, Any]) -> str:
     else:
         lines.append(f"Airflow metadata history unavailable: {reliability.get('error')}.")
     backtest = report["nowcast_backtest"]
-    lines += ["", "## Nowcast backtest versus naïve and CPI-only baselines", ""]
+    lines += ["", "## Primary multi-source nowcast versus baselines", ""]
     if backtest.get("available"):
         for window_name, comparison in backtest.get("windows", {}).items():
             lines += [
                 f"### {window_name.replace('_', ' ').title()}",
                 "",
                 f"Common folds: **{comparison['comparison_months']}**.",
-                "| Model | MAE (pp) | RMSE (pp) | Direction accuracy |",
-                "|---|---:|---:|---:|",
+                "| Model | MAE (pp) | RMSE (pp) | Direction accuracy | MAPE %* | sMAPE % |",
+                "|---|---:|---:|---:|---:|---:|",
             ]
             for model_name, label in [
                 ("naive_last_cpi", "Naïve: previous CPI MoM"),
                 ("cpi_only_ridge", "CPI-only ridge"),
                 ("ar_midas_ridge", "AR-MIDAS ridge"),
+                ("full_multisource_ridge", "Full multi-source Ridge (primary)"),
             ]:
                 metrics = comparison["models"][model_name]
                 lines.append(
                     f"| {label} | {metrics['mae_pp']} | {metrics['rmse_pp']} "
-                    f"| {metrics['directional_accuracy_pct']}% |"
+                    f"| {metrics['directional_accuracy_pct']}% "
+                    f"| {metrics['mape_pct_excluding_near_zero']} "
+                    f"({metrics['mape_scored_months']} scored/{metrics['mape_excluded_months']} excluded) "
+                    f"| {metrics['smape_pct']} |"
                 )
+            lines.append("\n*MAPE excludes realized CPI MoM values with absolute magnitude below 0.05 percentage points.*")
             naive = comparison["models"]["naive_last_cpi"]
-            ar_midas = comparison["models"]["ar_midas_ridge"]
+            primary = comparison["models"]["full_multisource_ridge"]
             mae_gain = (
-                round(100 * (naive["mae_pp"] - ar_midas["mae_pp"]) / naive["mae_pp"], 2)
+                round(100 * (naive["mae_pp"] - primary["mae_pp"]) / naive["mae_pp"], 2)
                 if naive["mae_pp"] else None
             )
             lines.append(
-                f"AR-MIDAS MAE change versus naïve: **{mae_gain}%**; "
-                f"directional-accuracy change: **{round(ar_midas['directional_accuracy_pct'] - naive['directional_accuracy_pct'], 2)} pp**."
+                f"Full multi-source Ridge MAE improvement versus naïve: **{mae_gain}%**; "
+                f"directional-accuracy change: **{round(primary['directional_accuracy_pct'] - naive['directional_accuracy_pct'], 2)} pp.**"
             )
+            evidence_window = {
+                "all_common_months": "all_pairwise_common_origins",
+                "most_recent_9_common_months": "latest_9_descriptive_only",
+            }.get(window_name)
+            if evidence_window:
+                paired = backtest.get("paired_comparisons", {}).get(evidence_window, {})
+                for baseline_name, label in (
+                    ("naive_last_cpi", "naive"),
+                    ("ar_midas_ridge", "AR-MIDAS"),
+                ):
+                    comparison_stats = paired.get(baseline_name)
+                    if not comparison_stats:
+                        continue
+                    ci_low = comparison_stats.get("mae_delta_95ci_low_pp")
+                    ci_high = comparison_stats.get("mae_delta_95ci_high_pp")
+                    dm_p = comparison_stats.get("dm_pvalue_mae_loss")
+                    lines.append(
+                        f"Paired vs {label}: ΔMAE **{comparison_stats.get('mae_delta_pp_proposed_minus_baseline')} pp** "
+                        f"(95% CI [{ci_low}, {ci_high}]); DM p="
+                        f"{dm_p if dm_p is not None else 'not reported (<24 origins)'}."
+                    )
         lines.append(backtest["evaluation_note"])
     else:
         lines.append(f"Backtest comparison unavailable: {backtest.get('reason')}.")
@@ -806,24 +902,33 @@ def markdown_report(report: dict[str, Any]) -> str:
             f"| {row['missing_country']} | {row['missing_observation_date']} "
             f"| {row['nonpositive_values'] if row['nonpositive_values'] is not None else 'N/A'} | {row['duplicate_business_keys']} "
             f"| {integrity.get('passed_checks', 0)}/{integrity.get('measured_checks', 0)} ({integrity.get('achievement_percent')}%) "
-            f"| {rejected.get('rejected_events', 0)} "
-            f"| {rejected.get('missing_or_non_numeric_events', 0)} "
-            f"| {rejected.get('policy_excluded_events', 0)} |"
+            f"| {rejected.get('rejected_events') if rejected.get('rejected_events') is not None else 'N/A'} "
+            f"| {rejected.get('missing_or_non_numeric_events') if rejected.get('missing_or_non_numeric_events') is not None else 'N/A'} "
+            f"| {rejected.get('policy_excluded_events') if rejected.get('policy_excluded_events') is not None else 'N/A'} |"
         )
     lines += [
         "",
-        "Non-positive values are checked for CPI, CPI components, Brent, FX, and fuel. IIP is a growth rate and may be negative; its sign check is not applicable (N/A). Reject counts are deduplicated by Kafka topic/partition/offset. The invalid share uses quarantined events as its denominator; accepted rows are deduplicated by business key, so they are not mixed into that percentage.",
+        "Non-positive values are checked for CPI, CPI components, Brent, FX, fuel, and the monthly IIP index level. Reject counts are deduplicated by Kafka topic/partition/offset. The invalid share uses quarantined events as its denominator; accepted rows are deduplicated by business key, so they are not mixed into that percentage.",
         "",
         "| Domain | Rejected events | Missing/non-numeric | Invalid share of quarantined events | Future-date policy rejects |",
         "|---|---:|---:|---:|---:|",
     ]
     for row in report["data_quality"]["rejection_metrics"]:
         invalid_share = row["invalid_share_of_rejects_percent"]
+        rejected_events = row["rejected_events"] if row["rejection_table_available"] else "N/A (table missing)"
+        invalid_events = row["invalid_or_non_numeric_events"] if row["rejection_table_available"] else "N/A"
+        policy_events = row["policy_excluded_events"] if row["rejection_table_available"] else "N/A"
         lines.append(
-            f"| {row['domain']} | {row['rejected_events']} "
-            f"| {row['invalid_or_non_numeric_events']} "
+            f"| {row['domain']} | {rejected_events} "
+            f"| {invalid_events} "
             f"| {f'{invalid_share}%' if invalid_share is not None else 'N/A'} "
-            f"| {row['policy_excluded_events']} |"
+            f"| {policy_events} |"
+        )
+    unavailable_tables = report["data_quality"]["unavailable_rejection_tables"]
+    if unavailable_tables:
+        lines.append(
+            "\nRejection counts are **not measured** for missing Silver rejection "
+            f"tables: {', '.join(unavailable_tables)}. They are not reported as zero."
         )
     lines += [
         "",
@@ -857,8 +962,8 @@ def markdown_report(report: dict[str, Any]) -> str:
         "## Gold feature coverage",
         "",
         f"Latest feature month: **{report['gold_feature_coverage'].get('latest_target_month')}**; latest CPI observation: **{report['gold_feature_coverage'].get('latest_cpi_observation_month')}** ({report['gold_feature_coverage'].get('latest_cpi_age_months')} months old); five-source coverage: **{report['gold_feature_coverage'].get('latest_target_source_coverage_pct')}%**; mean across feature rows: **{report['gold_feature_coverage'].get('mean_source_coverage_pct')}%**.",
-        f"Latest feature input ages: CPI {report['gold_feature_coverage'].get('latest_cpi_age_months')} month(s), Brent {report['gold_feature_coverage'].get('latest_brent_age_days')} day(s), USD/VND {report['gold_feature_coverage'].get('latest_fx_age_days')} day(s), fuel {report['gold_feature_coverage'].get('latest_fuel_age_days')} day(s), IIP {report['gold_feature_coverage'].get('latest_iip_age_years')} year(s).",
-        "Coverage is the share of five inputs present: latest CPI before target month, Brent, USD/VND, fuel, and prior-year IIP. It measures availability, not predictive accuracy.",
+        f"Latest feature input ages: CPI {report['gold_feature_coverage'].get('latest_cpi_age_months')} month(s), Brent {report['gold_feature_coverage'].get('latest_brent_age_days')} day(s), USD/VND {report['gold_feature_coverage'].get('latest_fx_age_days')} day(s), fuel {report['gold_feature_coverage'].get('latest_fuel_age_days')} day(s), IIP {report['gold_feature_coverage'].get('latest_iip_age_months')} month(s).",
+        "Coverage is the share of five inputs present: latest CPI before target month, Brent, USD/VND, fuel, and latest available prior-month Vietnam IIP. It measures availability, not predictive accuracy.",
     ]
     lines += ["", "## Metric limitations and recommended additions", ""]
     for item in report["recommended_additional_metrics"]:
@@ -895,13 +1000,40 @@ def main() -> None:
         schema="silver",
         http_scheme="http",
     )
-    quality_sql, rejected_sql, rejection_reasons_sql, latency_sql = build_sql()
     try:
         cursor = conn.cursor()
+        cursor.execute(
+            "SELECT table_name FROM delta.information_schema.tables "
+            "WHERE table_schema = 'silver'"
+        )
+        existing_silver_tables = {
+            str(row[0]) for row in cursor.fetchall()
+        }
+        quality_sql, rejected_sql, rejection_reasons_sql, latency_sql = build_sql(
+            existing_silver_tables
+        )
         cursor.execute(quality_sql)
         silver_quality = rows_as_dicts(cursor)
         cursor.execute(rejected_sql)
         rejected_quality = rows_as_dicts(cursor)
+        available_rejection_domains = {row["domain"] for row in rejected_quality}
+        for domain, table in REJECTED_TABLES.items():
+            if domain not in available_rejection_domains:
+                rejected_quality.append(
+                    {
+                        "domain": domain,
+                        "rejected_events": None,
+                        "missing_or_non_numeric_events": None,
+                        "policy_excluded_events": None,
+                        "rejection_table_available": False,
+                        "rejection_table": table,
+                    }
+                )
+            else:
+                for row in rejected_quality:
+                    if row["domain"] == domain:
+                        row["rejection_table_available"] = True
+                        row["rejection_table"] = table
         cursor.execute(rejection_reasons_sql)
         rejection_reason_counts = rows_as_dicts(cursor)
         cursor.execute(latency_sql)
@@ -936,7 +1068,7 @@ def main() -> None:
             "brent_observation_age_days",
             "fx_observation_age_days",
             "fuel_observation_age_days",
-            "iip_observation_age_years",
+            "iip_observation_age_months",
         }
         if age_columns.issubset(gold_feature_columns):
             gold_feature_age_select = """
@@ -952,10 +1084,10 @@ def main() -> None:
                     AS latest_fuel_observation_date,
                 max_by(fuel_observation_age_days, target_month)
                     AS latest_fuel_age_days,
-                max_by(iip_observation_year, target_month)
-                    AS latest_iip_observation_year,
-                max_by(iip_observation_age_years, target_month)
-                    AS latest_iip_age_years,"""
+                max_by(iip_observation_month, target_month)
+                    AS latest_iip_observation_month,
+                max_by(iip_observation_age_months, target_month)
+                    AS latest_iip_age_months,"""
         else:
             gold_feature_age_select = """
                 CAST(NULL AS date) AS latest_brent_observation_date,
@@ -964,8 +1096,8 @@ def main() -> None:
                 CAST(NULL AS bigint) AS latest_fx_age_days,
                 CAST(NULL AS date) AS latest_fuel_observation_date,
                 CAST(NULL AS bigint) AS latest_fuel_age_days,
-                CAST(NULL AS integer) AS latest_iip_observation_year,
-                CAST(NULL AS integer) AS latest_iip_age_years,"""
+                CAST(NULL AS date) AS latest_iip_observation_month,
+                CAST(NULL AS integer) AS latest_iip_age_months,"""
         if "gold_built_at" in gold_feature_columns:
             gold_build_select = """
                 max(gold_built_at) AS latest_gold_built_at,
@@ -1147,9 +1279,11 @@ def main() -> None:
         rejection_metrics.append(
             {
                 "domain": domain,
-                "rejected_events": rejected_count,
-                "invalid_or_non_numeric_events": invalid_count,
-                "policy_excluded_events": policy_excluded,
+                "rejected_events": rejected.get("rejected_events"),
+                "invalid_or_non_numeric_events": rejected.get("missing_or_non_numeric_events"),
+                "policy_excluded_events": rejected.get("policy_excluded_events"),
+                "rejection_table_available": rejected.get("rejection_table_available", False),
+                "rejection_table": rejected.get("rejection_table"),
                 "invalid_share_of_rejects_percent": round(100 * invalid_count / rejected_count, 2)
                 if rejected_count
                 else None,
@@ -1236,6 +1370,11 @@ def main() -> None:
             "rejected_by_domain": rejected_quality,
             "rejection_metrics": rejection_metrics,
             "rejection_reason_metrics": rejection_reason_metrics,
+            "unavailable_rejection_tables": [
+                row["rejection_table"]
+                for row in rejected_quality
+                if not row.get("rejection_table_available", False)
+            ],
             "bronze_envelope_quarantine": bronze_quarantine_metrics,
             "gold_cpi": gold_quality,
         },

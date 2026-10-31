@@ -21,7 +21,7 @@ Delta files directly.
 | `gold_powerbi_monthly_overview` | Country-month | CPI headline MoM/YoY cards and trend lines; monthly Brent, USD/VND, RON95 and E10 averages; source observation counts |
 | `gold_powerbi_cpi_components` | Country-component-month | Component MoM/YoY bar charts, component index trends, component slicer |
 | `gold_powerbi_market_daily` | Country-indicator-day | Daily Brent, exchange-rate, RON95 and E10 trends with indicator and date slicers |
-| `gold_iip_annual` | Country-year | Annual IIP growth trend and comparison with annual CPI summaries |
+| `gold_iip_monthly` | Country-month | Monthly Vietnam IIP index and derived year-over-year growth |
 | `gold_nowcasting_features` | Country-target month | Latest prior CPI and its age, market/IIP inputs, and source coverage percentage |
 
 The monthly overview uses a union of observed month-country keys and left joins
@@ -36,9 +36,10 @@ monthly data.
 - **Inflation overview:** headline CPI MoM/YoY cards and monthly trend.
 - **CPI components:** component MoM/YoY clustered bars and index trend.
 - **Market inputs:** daily Brent, USD/VND and fuel prices; monthly averages.
-- **Industrial production:** annual IIP growth, with a separate annual CPI view
+- **Industrial production:** monthly Vietnam IIP index and year-over-year growth
   if comparing annual frequencies.
-- **Nowcast context:** latest MIDAS estimate from
+- **Nowcast context:** latest primary-model estimate (check `nowcast_model` for
+  the selected model) from
   `forecasting/outputs/midas_current_nowcast.json`, shown with its target month
   and data cutoff. This JSON file is a local Airflow output, not a Trino table.
 

@@ -6,4 +6,4 @@ where feature_source_coverage_pct < 0
    or brent_observation_age_days < 0
    or fx_observation_age_days < 0
    or fuel_observation_age_days < 0
-   or iip_observation_age_years < 1
+   or iip_observation_age_months < 1

@@ -1,0 +1,34 @@
+{
+  "model_name": "ar1_ols",
+  "model_version": "v1-aad693a73049",
+  "evaluation_run_id": "20261031T073702Z",
+  "generated_at_utc": "2026-10-31T07:37:03.085981+00:00",
+  "source_code_sha256": "9973215bee07e0de62167ea5f1fc6251592ab82d3763c642afbd3ea5a760371b",
+  "role": "baseline",
+  "model_family": "AR(1) OLS",
+  "predictors": [
+    "cpi_mom_lag_1"
+  ],
+  "hyperparameters": {
+    "fit_intercept": true,
+    "regularization": null
+  },
+  "prediction_file": "predictions.csv",
+  "metrics_file": "metrics.csv",
+  "runtime_file": "runtime.csv",
+  "ineligible_folds_file": "ineligible_folds.csv",
+  "failures_file": "failures.csv",
+  "operational_metrics": {
+    "model": "ar1_ols",
+    "fit_predict_seconds": 0.23036023000099703,
+    "failed_folds": 0,
+    "ineligible_folds": 0,
+    "completed_folds": 131,
+    "max_fit_predict_seconds": 0.0038366670000868908,
+    "max_rss_kb": 137276,
+    "script_wall_seconds": 58.451,
+    "strict_vintage_available": false
+  },
+  "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",
+  "point_in_time_claim": "historical source vintages are incomplete; diagnostic only"
+}

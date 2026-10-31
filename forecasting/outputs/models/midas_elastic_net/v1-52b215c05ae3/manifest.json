@@ -1,0 +1,38 @@
+{
+  "model_name": "midas_elastic_net",
+  "model_version": "v1-52b215c05ae3",
+  "evaluation_run_id": "20261030T194500Z",
+  "generated_at_utc": "2026-10-30T19:45:00.263521+00:00",
+  "source_code_sha256": "87ea597ac57dff4303629c412fce30e192da881042a601aaff942062dd939ca6",
+  "role": "method_ablation",
+  "model_family": "Elastic Net",
+  "predictors": [
+    "cpi_mom_lag_1",
+    "brent_weekly_log_return_lag_12",
+    "brent_weekly_log_return_lag_11",
+    "brent_weekly_log_return_lag_10",
+    "brent_weekly_log_return_lag_9",
+    "brent_weekly_log_return_lag_8",
+    "brent_weekly_log_return_lag_7",
+    "brent_weekly_log_return_lag_6",
+    "brent_weekly_log_return_lag_5",
+    "brent_weekly_log_return_lag_4",
+    "brent_weekly_log_return_lag_3",
+    "brent_weekly_log_return_lag_2",
+    "brent_weekly_log_return_lag_1"
+  ],
+  "hyperparameters": {
+    "alpha_grid": [
+      0.1,
+      1.0
+    ],
+    "l1_ratio_grid": [
+      0.2,
+      0.8
+    ]
+  },
+  "prediction_file": "predictions.csv",
+  "metrics_file": "metrics.csv",
+  "metrics_protocol": "paired common rolling-origin folds; MAE primary, RMSE guardrail",
+  "point_in_time_claim": "historical source vintages are incomplete; diagnostic only"
+}

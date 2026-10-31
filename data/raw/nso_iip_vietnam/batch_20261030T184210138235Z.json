@@ -1,0 +1,3980 @@
+[
+  {
+    "schema_version": 1,
+    "event_id": "4d41659a9e4a940abbd91706d9d0176181513f9a02bad986a1e9dbb5761fda17",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2017-01",
+    "frequency": "monthly",
+    "value": 96.8,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123134+00:00",
+    "source_record_id": "nso_iip_total_index:2017-01",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2017-01",
+        "OBS_VALUE": "96.8"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "17d7313e407ec897ffe92f9795c0353605260454c036adae53b29d37b44d0dc5",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2017-02",
+    "frequency": "monthly",
+    "value": 96.26,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123210+00:00",
+    "source_record_id": "nso_iip_total_index:2017-02",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2017-02",
+        "OBS_VALUE": "96.26"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "16a7b1bed098f7828fd3a36763c948ec08f338a6fc5fdc564be3c8f7882326bb",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2017-03",
+    "frequency": "monthly",
+    "value": 114.49,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123240+00:00",
+    "source_record_id": "nso_iip_total_index:2017-03",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2017-03",
+        "OBS_VALUE": "114.49"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "183908be0f8c9dd40dd28ad02a0d90d02020fb976d6c2211a63c3ad0e3a72f2d",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2017-04",
+    "frequency": "monthly",
+    "value": 118.14,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123267+00:00",
+    "source_record_id": "nso_iip_total_index:2017-04",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2017-04",
+        "OBS_VALUE": "118.14"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "2e6f7615d3ec63428a0fe6ea42755af24ee4d555bfefdfd9df8bd373ce4bad44",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2017-05",
+    "frequency": "monthly",
+    "value": 117.49,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123295+00:00",
+    "source_record_id": "nso_iip_total_index:2017-05",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2017-05",
+        "OBS_VALUE": "117.49"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "20551cce608b21c32868c508133dfe00fbd91e69a47e772d3a3aa6bfe335782b",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2017-06",
+    "frequency": "monthly",
+    "value": 112.95,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123323+00:00",
+    "source_record_id": "nso_iip_total_index:2017-06",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2017-06",
+        "OBS_VALUE": "112.95"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "aa8c0f7930d706f3538fd54fd0b4fefe04cf2099e3852344dd13eeffd7c95489",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2017-07",
+    "frequency": "monthly",
+    "value": 113.89,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123350+00:00",
+    "source_record_id": "nso_iip_total_index:2017-07",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2017-07",
+        "OBS_VALUE": "113.89"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "e580ec19bc1cd22968c008b740d9ccff30cdca9e46d6c68217c9bf5049f40d52",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2017-08",
+    "frequency": "monthly",
+    "value": 122.31,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123380+00:00",
+    "source_record_id": "nso_iip_total_index:2017-08",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2017-08",
+        "OBS_VALUE": "122.31"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "07e57777bdc1fc3527fd327aebef58fc409aacae24b0c70b573f874e524beda6",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2017-09",
+    "frequency": "monthly",
+    "value": 126.63,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123420+00:00",
+    "source_record_id": "nso_iip_total_index:2017-09",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2017-09",
+        "OBS_VALUE": "126.63"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "a7c2ac82265065bc93e2ea46c2e042ae675625ea349d564eacf1222dd03ebcaa",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2017-10",
+    "frequency": "monthly",
+    "value": 128.76,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123448+00:00",
+    "source_record_id": "nso_iip_total_index:2017-10",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2017-10",
+        "OBS_VALUE": "128.76"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "08e4360008a458b04f4618186a088ae98b1b542f5ad70f7387e32b4499fa1fc9",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2017-11",
+    "frequency": "monthly",
+    "value": 129.21,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123479+00:00",
+    "source_record_id": "nso_iip_total_index:2017-11",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2017-11",
+        "OBS_VALUE": "129.21"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "bf83c748a16dc02a1e9dd6943cd57c715deba375724f0a98eeedfad5a37f1aba",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2017-12",
+    "frequency": "monthly",
+    "value": 131.75,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123504+00:00",
+    "source_record_id": "nso_iip_total_index:2017-12",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2017-12",
+        "OBS_VALUE": "131.75"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "c67f3f19cc84f6ebb1932ddb875c7a2046e6b01b5cb14ec5c375734f8ce684a9",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2018-01",
+    "frequency": "monthly",
+    "value": 126.8,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123529+00:00",
+    "source_record_id": "nso_iip_total_index:2018-01",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2018-01",
+        "OBS_VALUE": "126.8"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "3b4dfc654be7f227e1e81d39435105df6c3b3a5d7d1c59a41a53661cab246232",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2018-02",
+    "frequency": "monthly",
+    "value": 101.72,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123554+00:00",
+    "source_record_id": "nso_iip_total_index:2018-02",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2018-02",
+        "OBS_VALUE": "101.72"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "906d82dc6b89b251760929ef661b92f4ac509548138ba0f4e21d49c3b18525f5",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2018-03",
+    "frequency": "monthly",
+    "value": 126.79,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123579+00:00",
+    "source_record_id": "nso_iip_total_index:2018-03",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2018-03",
+        "OBS_VALUE": "126.79"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "b5a21bf3fe5712694cb4eee544b39b9fd4f07d081a7716e5ec005c70fc769528",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2018-04",
+    "frequency": "monthly",
+    "value": 125.04,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123634+00:00",
+    "source_record_id": "nso_iip_total_index:2018-04",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2018-04",
+        "OBS_VALUE": "125.04"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "e15bbad1bb30061c9c3a3cfdc74509e69b76638d40fccbf0eb71ff8a136e2103",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2018-05",
+    "frequency": "monthly",
+    "value": 128.72,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123667+00:00",
+    "source_record_id": "nso_iip_total_index:2018-05",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2018-05",
+        "OBS_VALUE": "128.72"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "2326e5b991ce39749c520a936f3a1e68c42ff27e9f2d7b341a4320cea79495cf",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2018-06",
+    "frequency": "monthly",
+    "value": 127.27,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123694+00:00",
+    "source_record_id": "nso_iip_total_index:2018-06",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2018-06",
+        "OBS_VALUE": "127.27"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "dbe3f72f1cc5590e720dad3cf8bbdeb2db61b20df490b1d39c4e40a4aa10e2a5",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2018-07",
+    "frequency": "monthly",
+    "value": 129.62,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123728+00:00",
+    "source_record_id": "nso_iip_total_index:2018-07",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2018-07",
+        "OBS_VALUE": "129.62"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "376127f52b2f20549150fdb48b4f5099513a7a5bb81f7b252bec1f90baf80893",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2018-08",
+    "frequency": "monthly",
+    "value": 135.35,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123755+00:00",
+    "source_record_id": "nso_iip_total_index:2018-08",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2018-08",
+        "OBS_VALUE": "135.35"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "be67fdf964e8b1efd9ccb4bb9f4318f18e0a12c697f6c3479f3b958fdb133a6d",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2018-09",
+    "frequency": "monthly",
+    "value": 134.43,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123787+00:00",
+    "source_record_id": "nso_iip_total_index:2018-09",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2018-09",
+        "OBS_VALUE": "134.43"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "42fe18c1e1c078ad0346dac3ed9a8327560b46fdd16e795703efb9b0b5b4dc4c",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2018-10",
+    "frequency": "monthly",
+    "value": 139.41,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123814+00:00",
+    "source_record_id": "nso_iip_total_index:2018-10",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2018-10",
+        "OBS_VALUE": "139.41"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "85973680081b8687d8c12a59cf04f76b4d38796bf95c646d50ccd750b3e9803d",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2018-11",
+    "frequency": "monthly",
+    "value": 143.13,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123840+00:00",
+    "source_record_id": "nso_iip_total_index:2018-11",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2018-11",
+        "OBS_VALUE": "143.13"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "8f8ba2bafc078532febde367544b573ff226fb7bb77abc431aea8167d94ee672",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2018-12",
+    "frequency": "monthly",
+    "value": 145.09,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123866+00:00",
+    "source_record_id": "nso_iip_total_index:2018-12",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2018-12",
+        "OBS_VALUE": "145.09"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "805a0187b02b10d1d1ac9b479cfbacd4d4625f52e2469b23b3842411fd6b48d5",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2019-01",
+    "frequency": "monthly",
+    "value": 134.05,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123892+00:00",
+    "source_record_id": "nso_iip_total_index:2019-01",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2019-01",
+        "OBS_VALUE": "134.05"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "95ab3d968a3ad4b83d510e955f8f9a363026a691ebc8a2b1fee44ac37b55129c",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2019-02",
+    "frequency": "monthly",
+    "value": 108.37,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.123918+00:00",
+    "source_record_id": "nso_iip_total_index:2019-02",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2019-02",
+        "OBS_VALUE": "108.37"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "f435f941fdd868d5d9ac8a634f391c2e90217b6fa9d393134616eab9fe915426",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2019-03",
+    "frequency": "monthly",
+    "value": 134.77,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124036+00:00",
+    "source_record_id": "nso_iip_total_index:2019-03",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2019-03",
+        "OBS_VALUE": "134.77"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "e17683a0e1437308a72dd7d323a3e8dbf17484eea18776f39bcf3f4f3fa68e40",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2019-04",
+    "frequency": "monthly",
+    "value": 134.56,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124063+00:00",
+    "source_record_id": "nso_iip_total_index:2019-04",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2019-04",
+        "OBS_VALUE": "134.56"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "333199e4c010c8124dd855cb1693458acff54c1aca895d0e8e294a5c7efb18c7",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2019-05",
+    "frequency": "monthly",
+    "value": 138.69,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124099+00:00",
+    "source_record_id": "nso_iip_total_index:2019-05",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2019-05",
+        "OBS_VALUE": "138.69"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "d22792a7b519b824b75da313c59a706c8b852d331dda2d0c3cf8680ad3416b2c",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2019-06",
+    "frequency": "monthly",
+    "value": 134.1,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124126+00:00",
+    "source_record_id": "nso_iip_total_index:2019-06",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2019-06",
+        "OBS_VALUE": "134.1"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "e1f615ddad69639790218f255d869a46e32602f155fb4498fe3133b62e93d608",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2019-07",
+    "frequency": "monthly",
+    "value": 141.57,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124156+00:00",
+    "source_record_id": "nso_iip_total_index:2019-07",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2019-07",
+        "OBS_VALUE": "141.57"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "9597e33a435d366b35afff6103a856b0e173a3b33cd24395607b3b06f3d50529",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2019-08",
+    "frequency": "monthly",
+    "value": 149.27,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124184+00:00",
+    "source_record_id": "nso_iip_total_index:2019-08",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2019-08",
+        "OBS_VALUE": "149.27"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "4e39a7b94a5f62e9b6adfe3e826c6fa5908fff75a0b7d052f797d25426c79420",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2019-09",
+    "frequency": "monthly",
+    "value": 148.62,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124214+00:00",
+    "source_record_id": "nso_iip_total_index:2019-09",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2019-09",
+        "OBS_VALUE": "148.62"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "841b2ffb3f4ac802308e68339f480f4dd481d2d3de8faa52d20be2ea8f9421b2",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2019-10",
+    "frequency": "monthly",
+    "value": 152.9,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124239+00:00",
+    "source_record_id": "nso_iip_total_index:2019-10",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2019-10",
+        "OBS_VALUE": "152.9"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "b0ce9dbed4dd3cdf9451160345a322fd5458d1be6e8ed0a86c77759d8bf1c72b",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2019-11",
+    "frequency": "monthly",
+    "value": 146.74,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124264+00:00",
+    "source_record_id": "nso_iip_total_index:2019-11",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2019-11",
+        "OBS_VALUE": "146.74"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "9fa82874d2dfb5926dfce7b8a995bc117da7add822b201e8908b516afd7726e0",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2019-12",
+    "frequency": "monthly",
+    "value": 147.4,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124289+00:00",
+    "source_record_id": "nso_iip_total_index:2019-12",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2019-12",
+        "OBS_VALUE": "147.4"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "f29dfa9f61106995d5a6c913af0f36b844cd6747e626ec8b9a54fa5d5ab30f41",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2020-01",
+    "frequency": "monthly",
+    "value": 123.31,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124314+00:00",
+    "source_record_id": "nso_iip_total_index:2020-01",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2020-01",
+        "OBS_VALUE": "123.31"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "e49e034437d9cd5f99a1af3f13ba1b5a723fc9b38de50d33e1115e19e2891c33",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2020-02",
+    "frequency": "monthly",
+    "value": 128.9,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124339+00:00",
+    "source_record_id": "nso_iip_total_index:2020-02",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2020-02",
+        "OBS_VALUE": "128.9"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "97d6fe15fbc7638bf19705929780ad74d7515bd2e6180ca72695f3bb70a55bf2",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2020-03",
+    "frequency": "monthly",
+    "value": 137.63,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124427+00:00",
+    "source_record_id": "nso_iip_total_index:2020-03",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2020-03",
+        "OBS_VALUE": "137.63"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "052bedb1d102c92201e5c4104c26b442e59527d0f2906cd159b96490c46dac51",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2020-04",
+    "frequency": "monthly",
+    "value": 116.48,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124460+00:00",
+    "source_record_id": "nso_iip_total_index:2020-04",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2020-04",
+        "OBS_VALUE": "116.48"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "eeacad4cd6e0820b1d0eaa95564ff0c720cd95a023f313ee35853f64a8cb6f3e",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2020-05",
+    "frequency": "monthly",
+    "value": 130.64,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124527+00:00",
+    "source_record_id": "nso_iip_total_index:2020-05",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2020-05",
+        "OBS_VALUE": "130.64"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "f979b283d9611b2d1839ac38559c0d123cf59118b61050032a7432dc869eb77e",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2020-06",
+    "frequency": "monthly",
+    "value": 140.09,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124558+00:00",
+    "source_record_id": "nso_iip_total_index:2020-06",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2020-06",
+        "OBS_VALUE": "140.09"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "0f584b649c233d7e25cd74e64fd05055bc9269f206f953d4d04bbca9459299a2",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2020-07",
+    "frequency": "monthly",
+    "value": 147.27,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124583+00:00",
+    "source_record_id": "nso_iip_total_index:2020-07",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2020-07",
+        "OBS_VALUE": "147.27"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "4fba441758f89f038c9b389492c09381b86ac6910f5a8244feaaa8ded021b0b8",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2020-08",
+    "frequency": "monthly",
+    "value": 152.36,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124651+00:00",
+    "source_record_id": "nso_iip_total_index:2020-08",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2020-08",
+        "OBS_VALUE": "152.36"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "5a4db58ca1927ac4b7d8b5dd1066ef3a01443b8f1d9a4dd3b9171b5ac80e5d00",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2020-09",
+    "frequency": "monthly",
+    "value": 157.33,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124691+00:00",
+    "source_record_id": "nso_iip_total_index:2020-09",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2020-09",
+        "OBS_VALUE": "157.33"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "9611c20b2aa90cda9eae5b212ceb107403b31c64d8cea3896bcd909d3f7a4c85",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2020-10",
+    "frequency": "monthly",
+    "value": 160.97,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124718+00:00",
+    "source_record_id": "nso_iip_total_index:2020-10",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2020-10",
+        "OBS_VALUE": "160.97"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "661c32d1be29c691c3ed9f711fe4a0ebb8c2d2d54ea79af681296c16a95013e8",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2020-11",
+    "frequency": "monthly",
+    "value": 156.86,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124743+00:00",
+    "source_record_id": "nso_iip_total_index:2020-11",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2020-11",
+        "OBS_VALUE": "156.86"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "bf1e0035db3742643c8d834a2895941a05f2041194dac5d94944c87ab6c1ccd5",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2020-12",
+    "frequency": "monthly",
+    "value": 158.62,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124768+00:00",
+    "source_record_id": "nso_iip_total_index:2020-12",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2020-12",
+        "OBS_VALUE": "158.62"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "4146f137372ec220b4b3ae614482c83b0e39f03b1a1c5061c75cfa7da71db7f1",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2021-01",
+    "frequency": "monthly",
+    "value": 154.1,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124799+00:00",
+    "source_record_id": "nso_iip_total_index:2021-01",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2021-01",
+        "OBS_VALUE": "154.1"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "493206d46a919397480b06b713847957aca2878ece3ac6cf4a8649f8d6e45a74",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2021-02",
+    "frequency": "monthly",
+    "value": 119.65,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124864+00:00",
+    "source_record_id": "nso_iip_total_index:2021-02",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2021-02",
+        "OBS_VALUE": "119.65"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "62db06554ce7f73dad913e7220c16741eb4d11acb18ff9b0d3b962a9bd72d2b9",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2021-03",
+    "frequency": "monthly",
+    "value": 143.6,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124896+00:00",
+    "source_record_id": "nso_iip_total_index:2021-03",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2021-03",
+        "OBS_VALUE": "143.6"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "17666e64a7c7d529676b289626cc20b86e3177cdfb5c2705a68b5c246054af48",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2021-04",
+    "frequency": "monthly",
+    "value": 142.93,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124927+00:00",
+    "source_record_id": "nso_iip_total_index:2021-04",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2021-04",
+        "OBS_VALUE": "142.93"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "d91234015ce708b60c33f5e914f31847bc6138927fc2c32454b306820ba92c15",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2021-05",
+    "frequency": "monthly",
+    "value": 145.71,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124952+00:00",
+    "source_record_id": "nso_iip_total_index:2021-05",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2021-05",
+        "OBS_VALUE": "145.71"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "9475cf267ecc7c1bf0c529efed01b970e9797fca343e5be6046ff919d311fe8f",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2021-06",
+    "frequency": "monthly",
+    "value": 143.77,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.124979+00:00",
+    "source_record_id": "nso_iip_total_index:2021-06",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2021-06",
+        "OBS_VALUE": "143.77"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "d0d6e738346a9bb9f777a221c67dbd64fe127945b4283373d78fda83b9327200",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2021-07",
+    "frequency": "monthly",
+    "value": 143.25,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125004+00:00",
+    "source_record_id": "nso_iip_total_index:2021-07",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2021-07",
+        "OBS_VALUE": "143.25"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "b48888c873d577680d441cebe63eb0e1a935c69e3cc4e2789cbdc1f80ec377fb",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2021-08",
+    "frequency": "monthly",
+    "value": 137.71,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125041+00:00",
+    "source_record_id": "nso_iip_total_index:2021-08",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2021-08",
+        "OBS_VALUE": "137.71"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "6ec6c7b738e8507a3f1cf9a5849bfe35622a22d9e3b9d68fc6097378d88e3019",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2021-09",
+    "frequency": "monthly",
+    "value": 144.65,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125071+00:00",
+    "source_record_id": "nso_iip_total_index:2021-09",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2021-09",
+        "OBS_VALUE": "144.65"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "29674b68bb289b99ef8c13422aea2b3123e21a08e41fcd50009fe907d637e4d7",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2021-10",
+    "frequency": "monthly",
+    "value": 151.2,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125098+00:00",
+    "source_record_id": "nso_iip_total_index:2021-10",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2021-10",
+        "OBS_VALUE": "151.2"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "e287b9a489a87612055255eec7af7f2082be1626e78d237fc90fbc4d12f8fcbd",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2021-11",
+    "frequency": "monthly",
+    "value": 159.68,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125194+00:00",
+    "source_record_id": "nso_iip_total_index:2021-11",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2021-11",
+        "OBS_VALUE": "159.68"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "1822e23f8ebbb3acc946ccb4d7d87834f7994c2f17c5ed0bb3282f6553687d5f",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2021-12",
+    "frequency": "monthly",
+    "value": 163.49,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125237+00:00",
+    "source_record_id": "nso_iip_total_index:2021-12",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2021-12",
+        "OBS_VALUE": "163.49"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "f449c6810c25bd548fb2296c716a9cd75fea94b31dab7949381572ae020dd99b",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2022-01",
+    "frequency": "monthly",
+    "value": 159.65,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125267+00:00",
+    "source_record_id": "nso_iip_total_index:2022-01",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2022-01",
+        "OBS_VALUE": "159.65"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "95d70b9ab3205fc8c25816c8c897e708cfde18bed302262155ad6b432a110431",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2022-02",
+    "frequency": "monthly",
+    "value": 141.44,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125293+00:00",
+    "source_record_id": "nso_iip_total_index:2022-02",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2022-02",
+        "OBS_VALUE": "141.44"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "d2acadaec58c472a9729a72bae2262d202ec02533b41972c669e332d40f2fcbb",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2022-03",
+    "frequency": "monthly",
+    "value": 165.37,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125318+00:00",
+    "source_record_id": "nso_iip_total_index:2022-03",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2022-03",
+        "OBS_VALUE": "165.37"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "c813b5128a1642bef00f151acd74c262cf99f7942fc044cff2ac416504a8ca0e",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2022-04",
+    "frequency": "monthly",
+    "value": 169.5,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125343+00:00",
+    "source_record_id": "nso_iip_total_index:2022-04",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2022-04",
+        "OBS_VALUE": "169.5"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "e178307ae79b11063ca9f0e8deafab55c0805dd47fb52dc94495fd7dd77dd840",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2022-05",
+    "frequency": "monthly",
+    "value": 174.91,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125369+00:00",
+    "source_record_id": "nso_iip_total_index:2022-05",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2022-05",
+        "OBS_VALUE": "174.91"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "5ef5182f2d43d9fa05ed9138b004121b2c7f34abf5737601b61fca56813a08ad",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2022-06",
+    "frequency": "monthly",
+    "value": 172.91,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125428+00:00",
+    "source_record_id": "nso_iip_total_index:2022-06",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2022-06",
+        "OBS_VALUE": "172.91"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "d07e8ff268a73a67c6eb3a87995b137880296963caaa43121be99ccd1e6f89a3",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2022-07",
+    "frequency": "monthly",
+    "value": 173.64,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125458+00:00",
+    "source_record_id": "nso_iip_total_index:2022-07",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2022-07",
+        "OBS_VALUE": "173.64"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "df0ea2b7f143025c4a845a5cf0a2fd5e7678b8a84565918fad97fa5dbb1b8c77",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2022-08",
+    "frequency": "monthly",
+    "value": 175.22,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125484+00:00",
+    "source_record_id": "nso_iip_total_index:2022-08",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2022-08",
+        "OBS_VALUE": "175.22"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "4b446c1ea4f5cf715750aa59aa0c126e94af3895f408c2aff318e15487efad05",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2022-09",
+    "frequency": "monthly",
+    "value": 172.11,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125550+00:00",
+    "source_record_id": "nso_iip_total_index:2022-09",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2022-09",
+        "OBS_VALUE": "172.11"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "39d8aefe0a049abba215fcc6e11207260bbaf2c84775360d0b465ed2a6af45fe",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2022-10",
+    "frequency": "monthly",
+    "value": 176.22,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125588+00:00",
+    "source_record_id": "nso_iip_total_index:2022-10",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2022-10",
+        "OBS_VALUE": "176.22"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "9c62517f7efb6d4758754f17b9f94e194e9005b6bc188f25cbe1be86dc273fc2",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2022-11",
+    "frequency": "monthly",
+    "value": 171.14,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125615+00:00",
+    "source_record_id": "nso_iip_total_index:2022-11",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2022-11",
+        "OBS_VALUE": "171.14"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "cfdbed8b076fe860c6d9166b06d3055c3673e5a017b5f681afd69affdb65c96c",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2022-12",
+    "frequency": "monthly",
+    "value": 166.03,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125642+00:00",
+    "source_record_id": "nso_iip_total_index:2022-12",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2022-12",
+        "OBS_VALUE": "166.03"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "63638581b713f9eedc45e4e5993863870afb8c578b86bb3c1a2355e7464d60f2",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2023-01",
+    "frequency": "monthly",
+    "value": 128.34,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125667+00:00",
+    "source_record_id": "nso_iip_total_index:2023-01",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2023-01",
+        "OBS_VALUE": "128.34"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "b1bd9f97659f7693a75cbdc19d0c66bfa375fdf10aa5e78fd5afd39c71e03d49",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2023-02",
+    "frequency": "monthly",
+    "value": 132.86,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125692+00:00",
+    "source_record_id": "nso_iip_total_index:2023-02",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2023-02",
+        "OBS_VALUE": "132.86"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "55668cd8bf7e2af89d977400a6ff27a822fd71b21882c1da9c8416b8eac0e6ee",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2023-03",
+    "frequency": "monthly",
+    "value": 145.4,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125754+00:00",
+    "source_record_id": "nso_iip_total_index:2023-03",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2023-03",
+        "OBS_VALUE": "145.4"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "d281d77db0e7e7d19a23f82539439bd92641d31caa633d3f6b8c4be7d334a8f8",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2023-04",
+    "frequency": "monthly",
+    "value": 144.0,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125823+00:00",
+    "source_record_id": "nso_iip_total_index:2023-04",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2023-04",
+        "OBS_VALUE": "144"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "365be928f45c5bde33f6dc90173307039122fabb6853b2cdc0c1f428e3708758",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2023-05",
+    "frequency": "monthly",
+    "value": 146.35,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125861+00:00",
+    "source_record_id": "nso_iip_total_index:2023-05",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2023-05",
+        "OBS_VALUE": "146.35"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "31c7d31969e86cff60f3cdd716eb7832b81bd46f794eb230d689e535afff8cfe",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2023-06",
+    "frequency": "monthly",
+    "value": 147.07,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125899+00:00",
+    "source_record_id": "nso_iip_total_index:2023-06",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2023-06",
+        "OBS_VALUE": "147.07"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "1ba87ad484b1a4ed3c94f96fdd5057c1521f26812e8ae95af327793289829597",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2023-07",
+    "frequency": "monthly",
+    "value": 150.67,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125929+00:00",
+    "source_record_id": "nso_iip_total_index:2023-07",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2023-07",
+        "OBS_VALUE": "150.67"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "180bf928252d200ecdfca64112c3e8e895a09d04b53a6adae61f5195eedc2441",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2023-08",
+    "frequency": "monthly",
+    "value": 155.95,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125960+00:00",
+    "source_record_id": "nso_iip_total_index:2023-08",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2023-08",
+        "OBS_VALUE": "155.95"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "da1659298ef65ba9a3750ec59d12d64143651d8b8c2435810ba99460baee5d09",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2023-09",
+    "frequency": "monthly",
+    "value": 152.3,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.125986+00:00",
+    "source_record_id": "nso_iip_total_index:2023-09",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2023-09",
+        "OBS_VALUE": "152.3"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "18658819267c6f5ff59bc9eb255728cb12dc854d68e62ec5bb40d57ce11c63d2",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2023-10",
+    "frequency": "monthly",
+    "value": 162.38,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126012+00:00",
+    "source_record_id": "nso_iip_total_index:2023-10",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2023-10",
+        "OBS_VALUE": "162.38"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "db09bbe41f7abfcd192502bee4d38ea1df26f827372d161642db810d88c6d0c3",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2023-11",
+    "frequency": "monthly",
+    "value": 162.42,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126038+00:00",
+    "source_record_id": "nso_iip_total_index:2023-11",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2023-11",
+        "OBS_VALUE": "162.42"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "c3ad5c890850ba713f3311289b77f5deeb344f57839e1d02e4415a3fd0102d40",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2023-12",
+    "frequency": "monthly",
+    "value": 161.23,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126062+00:00",
+    "source_record_id": "nso_iip_total_index:2023-12",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2023-12",
+        "OBS_VALUE": "161.23"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "e897eb0e588834977f9b54fd3bdbbcfbaba9845c7e43373473f264dbe0ed89e1",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2024-01",
+    "frequency": "monthly",
+    "value": 155.98,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126088+00:00",
+    "source_record_id": "nso_iip_total_index:2024-01",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2024-01",
+        "OBS_VALUE": "155.98"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "597a25bd9ec07b0bf3af64d7665d5cf71eff2e3ddb67ceab9e107bcbc7692ca5",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2024-02",
+    "frequency": "monthly",
+    "value": 128.3,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126113+00:00",
+    "source_record_id": "nso_iip_total_index:2024-02",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2024-02",
+        "OBS_VALUE": "128.3"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "a3b3f7c4aa071f9661e40d9c7f8fc0842520a261c3f508a32e0ee056f252b55f",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2024-03",
+    "frequency": "monthly",
+    "value": 155.5,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126187+00:00",
+    "source_record_id": "nso_iip_total_index:2024-03",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2024-03",
+        "OBS_VALUE": "155.5"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "61e3335491af7677ba95a26b5f7aea0750d48203a534c2288606f7eefb22cc02",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2024-04",
+    "frequency": "monthly",
+    "value": 158.28,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126218+00:00",
+    "source_record_id": "nso_iip_total_index:2024-04",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2024-04",
+        "OBS_VALUE": "158.28"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "b8275dd8d57e708a940cede0c4c6a9a3313a32383e8d07b749cd95903dacaaf7",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2024-05",
+    "frequency": "monthly",
+    "value": 165.12,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126290+00:00",
+    "source_record_id": "nso_iip_total_index:2024-05",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2024-05",
+        "OBS_VALUE": "165.12"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "d323a047442db0606137267ff738c611f0c696df00287da95330f0354d958ec6",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2024-06",
+    "frequency": "monthly",
+    "value": 168.38,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126321+00:00",
+    "source_record_id": "nso_iip_total_index:2024-06",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2024-06",
+        "OBS_VALUE": "168.38"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "ced5281da0b6223f84013516679f0b3d50d66e7c0e8d62eb45ec31474e4147e5",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2024-07",
+    "frequency": "monthly",
+    "value": 169.53,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126353+00:00",
+    "source_record_id": "nso_iip_total_index:2024-07",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2024-07",
+        "OBS_VALUE": "169.53"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "e4267d9e843de4e039c87be5a401f6448460627d0c69f4ef02a18051d825199b",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2024-08",
+    "frequency": "monthly",
+    "value": 171.15,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126383+00:00",
+    "source_record_id": "nso_iip_total_index:2024-08",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2024-08",
+        "OBS_VALUE": "171.15"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "8f4daa728f1bd9d080fb5c5c4fe6e385f8ecc0159d895f91db5e488e4bf500b4",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2024-09",
+    "frequency": "monthly",
+    "value": 165.34,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126409+00:00",
+    "source_record_id": "nso_iip_total_index:2024-09",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2024-09",
+        "OBS_VALUE": "165.34"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "762c839d3b6c4a796cdfe4ff7d1c1708b1f41eb38a5bb6e8ae4919081fc2e319",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2024-10",
+    "frequency": "monthly",
+    "value": 171.97,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126435+00:00",
+    "source_record_id": "nso_iip_total_index:2024-10",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2024-10",
+        "OBS_VALUE": "171.97"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "c815f2fcfb68e3f7c691f7de18116335ba3fc50228d013c80bcf1e1735d3d587",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2024-11",
+    "frequency": "monthly",
+    "value": 173.78,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126465+00:00",
+    "source_record_id": "nso_iip_total_index:2024-11",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2024-11",
+        "OBS_VALUE": "173.78"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "5727930cbd05d8847c62b6d6789431e72b62cfec205574f5d74aac5e4a443b58",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2024-12",
+    "frequency": "monthly",
+    "value": 175.15,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126491+00:00",
+    "source_record_id": "nso_iip_total_index:2024-12",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2024-12",
+        "OBS_VALUE": "175.15"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "ce0b7d1ee1b59626c042d62439d2711f92ffe26b98c13cec7100ee9247d0a39f",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2025-01",
+    "frequency": "monthly",
+    "value": 155.44,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126516+00:00",
+    "source_record_id": "nso_iip_total_index:2025-01",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2025-01",
+        "OBS_VALUE": "155.44"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "65da3c1300345a1139e7fddc4c887f23d6111ccbbbbd70d81a3b6341342cc08e",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2025-02",
+    "frequency": "monthly",
+    "value": 151.67,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126542+00:00",
+    "source_record_id": "nso_iip_total_index:2025-02",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2025-02",
+        "OBS_VALUE": "151.67"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "fb07e3edc8056f52a9af6aa718ac47807bef350c544f5a903788392b1ba0875c",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2025-03",
+    "frequency": "monthly",
+    "value": 172.1,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126581+00:00",
+    "source_record_id": "nso_iip_total_index:2025-03",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2025-03",
+        "OBS_VALUE": "172.1"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "d1038d4a4bb590984cf113db86c14294e8dbac0580c889fced2c0a7b75533b86",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2025-04",
+    "frequency": "monthly",
+    "value": 175.75,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126607+00:00",
+    "source_record_id": "nso_iip_total_index:2025-04",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2025-04",
+        "OBS_VALUE": "175.75"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "bd4a76f3f3c2199328837da631ff1471caefe2f6fae44f6f74a84d43f66e4b28",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2025-05",
+    "frequency": "monthly",
+    "value": 184.68,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126644+00:00",
+    "source_record_id": "nso_iip_total_index:2025-05",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2025-05",
+        "OBS_VALUE": "184.68"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "ad192919df0f3737f7645af5d390c0f84626fe742dc2063a038d2318dd2ba3d3",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2025-06",
+    "frequency": "monthly",
+    "value": 186.57,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126675+00:00",
+    "source_record_id": "nso_iip_total_index:2025-06",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2025-06",
+        "OBS_VALUE": "186.57"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "5ff3cfcdf81634ebf46c3f527716e138996ee547ae176a49a4ee37b63a8eaf4e",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2025-07",
+    "frequency": "monthly",
+    "value": 185.33,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126700+00:00",
+    "source_record_id": "nso_iip_total_index:2025-07",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2025-07",
+        "OBS_VALUE": "185.33"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "abd02a1883690a4fccccc0cd8a378e0e6dfd9a934fdf55ed3adb88376ce55047",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2025-08",
+    "frequency": "monthly",
+    "value": 189.16,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126725+00:00",
+    "source_record_id": "nso_iip_total_index:2025-08",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2025-08",
+        "OBS_VALUE": "189.16"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "11a1ab5d9c0b42f86768c491892ca58dc9a4269b12d36f556c230e51e0d5e1f4",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2025-09",
+    "frequency": "monthly",
+    "value": 188.35,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126759+00:00",
+    "source_record_id": "nso_iip_total_index:2025-09",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2025-09",
+        "OBS_VALUE": "188.35"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "344edf936878915e104aa45320d30a2013f76d06b1f37cfaea71bbdb11776a44",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2025-10",
+    "frequency": "monthly",
+    "value": 191.77,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126785+00:00",
+    "source_record_id": "nso_iip_total_index:2025-10",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2025-10",
+        "OBS_VALUE": "191.77"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "96c88f6efc6be287d7530dd4bcdc689f46ef8a9f9bad88d85245efe34dc8c650",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2025-11",
+    "frequency": "monthly",
+    "value": 192.43,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126811+00:00",
+    "source_record_id": "nso_iip_total_index:2025-11",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2025-11",
+        "OBS_VALUE": "192.43"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "09c7d51d630a1e738e812b616a2a93321b5e2525094a9e8038dd66c03ae14f34",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2025-12",
+    "frequency": "monthly",
+    "value": 196.73,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126842+00:00",
+    "source_record_id": "nso_iip_total_index:2025-12",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2025-12",
+        "OBS_VALUE": "196.73"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "b255d68356e1c9e5c2d62d9524542b0a61cd8df142dd89798ed88c9d504b9a30",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2026-01",
+    "frequency": "monthly",
+    "value": 194.68,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126875+00:00",
+    "source_record_id": "nso_iip_total_index:2026-01",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2026-01",
+        "OBS_VALUE": "194.68"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "a3e5b7cc34ac50c6632bfd33c2d894f986bcc469b2f52df5918d6f3faf91b349",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2026-02",
+    "frequency": "monthly",
+    "value": 157.2,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126902+00:00",
+    "source_record_id": "nso_iip_total_index:2026-02",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2026-02",
+        "OBS_VALUE": "157.19999999999999"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "165d82a2a9eda61e0f6938b59744750ad7eaebf39ae5c2ca1d61c10a815142f9",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2026-03",
+    "frequency": "monthly",
+    "value": 186.72,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126928+00:00",
+    "source_record_id": "nso_iip_total_index:2026-03",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2026-03",
+        "OBS_VALUE": "186.72"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "1ca69620f08d38ee0556af1ddb87ba9544d1c6a28d9142281cfa0413f1fcc710",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2026-04",
+    "frequency": "monthly",
+    "value": 191.38,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126953+00:00",
+    "source_record_id": "nso_iip_total_index:2026-04",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2026-04",
+        "OBS_VALUE": "191.38"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "49ccfe6ded3c604ff56ede2ccbceca99bd1a6008c7a2987b6080428d66455fc7",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2026-05",
+    "frequency": "monthly",
+    "value": 204.45,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.126980+00:00",
+    "source_record_id": "nso_iip_total_index:2026-05",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2026-05",
+        "OBS_VALUE": "204.45"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "a67d77a8bbb68262ecc95e7bcd538236945de1de078a0e9ccff59aa21d18bd67",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2026-06",
+    "frequency": "monthly",
+    "value": 212.09,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.127006+00:00",
+    "source_record_id": "nso_iip_total_index:2026-06",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2026-06",
+        "OBS_VALUE": "212.09"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "c07d87d50aa4497ee95327d68396922aa921ebca5d2cd79689cce346756e6b7d",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2026-07",
+    "frequency": "monthly",
+    "value": 216.27,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.127031+00:00",
+    "source_record_id": "nso_iip_total_index:2026-07",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2026-07",
+        "OBS_VALUE": "216.27"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "4f4a7944020e212fd1cb5e078ebe3d94fbd8a09195017a8719c57867b2aa17a9",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2026-08",
+    "frequency": "monthly",
+    "value": 216.92,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.127056+00:00",
+    "source_record_id": "nso_iip_total_index:2026-08",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2026-08",
+        "OBS_VALUE": "216.92"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "bd85b87c8c2a2c6e4d75bffac0ae7c2fa37e57844762109a3c1f755f1cffd8a4",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2026-09",
+    "frequency": "monthly",
+    "value": 223.99,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T18:42:10.127083+00:00",
+    "source_record_id": "nso_iip_total_index:2026-09",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2026-09",
+        "OBS_VALUE": "223.99"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  }
+]

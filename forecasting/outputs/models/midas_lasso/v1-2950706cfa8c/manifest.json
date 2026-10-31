@@ -1,0 +1,49 @@
+{
+  "model_name": "midas_lasso",
+  "model_version": "v1-2950706cfa8c",
+  "evaluation_run_id": "20261031T080133Z",
+  "generated_at_utc": "2026-10-31T08:01:33.781451+00:00",
+  "source_code_sha256": "6ff26ecd230d4a4bbc85fb3456d4466be244d4304e11c65772acb70a9638d7f4",
+  "role": "method_ablation",
+  "model_family": "Lasso",
+  "predictors": [
+    "cpi_mom_lag_1",
+    "brent_weekly_log_return_lag_12",
+    "brent_weekly_log_return_lag_11",
+    "brent_weekly_log_return_lag_10",
+    "brent_weekly_log_return_lag_9",
+    "brent_weekly_log_return_lag_8",
+    "brent_weekly_log_return_lag_7",
+    "brent_weekly_log_return_lag_6",
+    "brent_weekly_log_return_lag_5",
+    "brent_weekly_log_return_lag_4",
+    "brent_weekly_log_return_lag_3",
+    "brent_weekly_log_return_lag_2",
+    "brent_weekly_log_return_lag_1"
+  ],
+  "hyperparameters": {
+    "alpha_grid": [
+      0.1,
+      1.0
+    ],
+    "l1_ratio": 1.0
+  },
+  "prediction_file": "predictions.csv",
+  "metrics_file": "metrics.csv",
+  "runtime_file": "runtime.csv",
+  "ineligible_folds_file": "ineligible_folds.csv",
+  "failures_file": "failures.csv",
+  "operational_metrics": {
+    "model": "midas_lasso",
+    "fit_predict_seconds": 6.923666795001736,
+    "failed_folds": 0,
+    "ineligible_folds": 1,
+    "completed_folds": 130,
+    "max_fit_predict_seconds": 0.09243743200022436,
+    "max_rss_kb": 153488,
+    "script_wall_seconds": 65.815,
+    "strict_vintage_available": false
+  },
+  "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",
+  "point_in_time_claim": "historical source vintages are incomplete; diagnostic only"
+}

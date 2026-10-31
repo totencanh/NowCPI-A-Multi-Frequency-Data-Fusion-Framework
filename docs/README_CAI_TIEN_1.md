@@ -24,22 +24,22 @@ DAG `nowcpi_daily_pipeline`, run `manual__nso_release_calendar_20261030`, hoàn 
 | Naive giữ CPI gần nhất | 0,3645 | 0,4705 | 77,78% |
 | AR(1) | 0,2729 | 0,3643 | 86,11% |
 | Brent-only U-MIDAS | 0,1952 | 0,2765 | 91,67% |
-| AR-MIDAS cố định — production | 0,2028 | 0,2871 | 91,67% |
+| AR-MIDAS cố định — benchmark comparison | 0,2028 | 0,2871 | 91,67% |
 | AR-MIDAS validation-selected | 0,2155 | 0,2942 | 91,67% |
 | AR-MIDAS validation blend | 0,2105 | 0,2952 | 91,67% |
 
-AR-MIDAS cố định so với naive giảm MAE **44,35%** và RMSE **38,98%**; paired MAE CI 95% là **[-0,2110; -0,1131] điểm %**, DM `p=0,00000044`. So với AR(1), giảm MAE **25,66%**, RMSE **21,19%**; CI MAE **[-0,1083; -0,0329]**, DM `p=0,000337`.
+Kết quả AR-MIDAS cố định so với naive trong báo cáo benchmark lịch sử giảm MAE **44,35%** và RMSE **38,98%**; paired MAE CI 95% là **[-0,2110; -0,1131] điểm %**, DM `p=0,00000044`. So với AR(1), giảm MAE **25,66%**, RMSE **21,19%**; CI MAE **[-0,1083; -0,0329]**, DM `p=0,000337`. Đây là kết quả đối chứng của phiên bản benchmark đó, không phải lý do giữ AR-MIDAS làm production model hiện tại.
 
 ### Độ bền trên 24 mốc
 
 AR-MIDAS giảm MAE **48,09%** và RMSE **40,78%** so với naive (DM MAE `p=0,000072`); so với AR(1), giảm MAE **36,66%**, RMSE **31,40%** (DM MAE `p=0,000003`). Đúng chiều trên cửa sổ 24 mốc là 95,83%, so với naive 83,33%.
 
-AR-MIDAS validation blend **không được chứng minh tốt hơn** AR-MIDAS cố định: trên 36 mốc blend có MAE cao hơn 0,0077 điểm %, khoảng tin cậy chứa 0, DM `p=0,0715`; trên 24 mốc blend cũng kém hơn nhẹ. Vì vậy production vẫn giữ AR-MIDAS cố định. Brent-only có MAE thấp nhất ở các cửa sổ gần nhất, nhưng đây là kết quả chẩn đoán trên mẫu pseudo-vintage; chưa đủ căn cứ để thay mô hình CPI autoregressive chính.
+AR-MIDAS validation blend **không được chứng minh tốt hơn** AR-MIDAS cố định: trên 36 mốc blend có MAE cao hơn 0,0077 điểm %, khoảng tin cậy chứa 0, DM `p=0,0715`; trên 24 mốc blend cũng kém hơn nhẹ. NowCPI hiện chọn Full multi-source Ridge làm primary model theo định hướng nghiên cứu; AR-MIDAS là mô hình so sánh. Brent-only có MAE thấp nhất ở một số cửa sổ, nhưng đây là kết quả chẩn đoán trên mẫu pseudo-vintage.
 
 ### Nowcast trong lần chạy
 
 - CPI thực tế mới nhất: **09/2026**; mục tiêu một bước kế tiếp: **10/2026**.
-- AR-MIDAS: **0,6415% MoM**.
+- AR-MIDAS comparison estimate: **0,6415% MoM** trong snapshot benchmark lịch sử này; không dùng giá trị này để mô tả primary model hiện tại.
 - Đây là nowcast tháng tiếp theo sau CPI thực tế mới nhất, không phải CPI tháng đã được công bố. Kết quả là một điểm ước lượng, không phải xác nhận giá trị thực.
 - Thời gian xử lý model/backtest trong lần chạy: **36,292 giây** (backtest 35,202 giây).
 
@@ -89,7 +89,7 @@ Raw batch append-only hiện giữ các lần thu thập kể từ khi dự án 
 - [Audit source release timestamp](../forecasting/outputs/release_timestamp_audit.csv)
 - [Audit batch/event revisions](../forecasting/outputs/raw_event_version_audit.csv)
 - [Protocol và giới hạn backtest](../forecasting/outputs/backtest_protocol.json)
-- [Mã nowcast](../forecasting/midas_nowcast.py)
+- [Mã nowcast đa nguồn](../forecasting/multisource_nowcast.py)
 - [DAG](../infra/airflow/dags/nowcpi_daily_pipeline_dag.py)
 
 ## Nguồn chính thức

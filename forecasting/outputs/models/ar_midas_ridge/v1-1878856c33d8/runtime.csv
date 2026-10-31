@@ -1,0 +1,2 @@
+model,fit_predict_seconds,failed_folds,ineligible_folds,completed_folds,max_fit_predict_seconds,max_rss_kb,script_wall_seconds,strict_vintage_available
+ar_midas_ridge,0.423499059999358,0,1,130,0.007125643999984277,166640,58.872,False

@@ -1,0 +1,49 @@
+{
+  "model_name": "full_multisource_ridge",
+  "model_version": "v1-32d792b86a8f",
+  "evaluation_run_id": "20261030T194925Z",
+  "generated_at_utc": "2026-10-30T19:49:25.563722+00:00",
+  "source_code_sha256": "5765e9ed62f3314782c8a5eb48208e4c6d4d88d8ce1e5d3f5eaea884a989b56e",
+  "role": "primary_production_candidate",
+  "model_family": "Full multi-source Ridge",
+  "predictors": [
+    "cpi_mom_lag_1",
+    "brent_weekly_log_return_lag_12",
+    "brent_weekly_log_return_lag_11",
+    "brent_weekly_log_return_lag_10",
+    "brent_weekly_log_return_lag_9",
+    "brent_weekly_log_return_lag_8",
+    "brent_weekly_log_return_lag_7",
+    "brent_weekly_log_return_lag_6",
+    "brent_weekly_log_return_lag_5",
+    "brent_weekly_log_return_lag_4",
+    "brent_weekly_log_return_lag_3",
+    "brent_weekly_log_return_lag_2",
+    "brent_weekly_log_return_lag_1",
+    "brent_monthly",
+    "usd_vnd",
+    "fuel_ron95",
+    "fuel_e10",
+    "iip_yoy_growth",
+    "missing_brent_asof_eligible",
+    "missing_fx_asof_eligible",
+    "missing_fuel_asof_eligible",
+    "missing_iip_asof_eligible"
+  ],
+  "hyperparameters": {
+    "alpha": 10.0,
+    "missingness_indicators": true
+  },
+  "sources": [
+    "CPI",
+    "Brent",
+    "USD/VND",
+    "RON95",
+    "E10 RON95",
+    "NSO IIP"
+  ],
+  "prediction_file": "predictions.csv",
+  "metrics_file": "metrics.csv",
+  "metrics_protocol": "paired common rolling-origin folds; MAE primary, RMSE guardrail",
+  "point_in_time_claim": "historical source vintages are incomplete; diagnostic only"
+}

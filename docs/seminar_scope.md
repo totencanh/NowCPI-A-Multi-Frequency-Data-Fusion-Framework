@@ -2,13 +2,14 @@
 
 ## Recommended title
 
-**NowCPI: A Streaming Lakehouse for Asynchronous Multi-Frequency CPI Nowcasting
-in Vietnam: An AR-MIDAS Application with Weekly Brent and Monthly CPI**
+**NowCPI: A Multi-Frequency Data Fusion Framework for Real-Time Inflation
+Nowcasting in Vietnam via Streaming Lakehouse Architecture under Asynchronous
+Multi-Source Data**
 
 Vietnamese working title:
 
-**NowCPI: Lakehouse streaming cho nowcasting CPI tại Việt Nam với dữ liệu đa
-tần suất đến bất đồng bộ — ứng dụng AR-MIDAS với Brent tuần và CPI tháng**
+**NowCPI: Khung hợp nhất dữ liệu đa tần suất cho dự báo nhanh lạm phát tại Việt
+Nam qua kiến trúc Streaming Lakehouse với nhiều nguồn dữ liệu đến bất đồng bộ**
 
 This title keeps the lakehouse and asynchronous-data contribution while naming
 the actual forecasting target and predictor block. “Real-time” is avoided as a
@@ -27,18 +28,18 @@ be a delayed historical month when publication data arrive late.
 
 | Data | Frequency | Role in the current work |
 |---|---|---|
-| Vietnam headline CPI | Monthly | Target label and training outcome; latest released monthly CPI MoM is the autoregressive lag in AR-MIDAS |
-| Brent front-month price | Daily source, converted to weekly log returns | The 12 high-frequency MIDAS predictors in the current nowcast |
-| USD/VND and domestic fuel prices | Daily | Gold/Power BI analysis; not current MIDAS predictors |
-| CPI components | Monthly | Gold/Power BI analysis; not current MIDAS predictors |
-| World Bank industrial value-added growth | Annual | Annual industrial activity proxy in Gold; not monthly IIP and not current MIDAS input |
+| Vietnam headline CPI | Monthly | Target label and training outcome; latest released monthly CPI MoM is a predictor in the primary model and AR-MIDAS comparison |
+| Brent price | Daily source, converted to weekly log returns | High-frequency predictors in the multi-source model; also used by AR-MIDAS comparison |
+| USD/VND and domestic fuel prices | Daily | Multi-source model features when eligible at the point-in-time cutoff; also Gold/Power BI analysis |
+| CPI components | Monthly | Gold/Power BI analysis; not currently a primary-model feature |
+| Vietnam NSO industrial production index | Monthly | Multi-source model feature when eligible; YoY growth is derived from the index |
 | News | Not collected | NLP/news features are outside the implemented seminar scope |
 
-The current nowcast therefore uses **CPI MoM as the forecast target, the latest
-available CPI MoM lag, and weekly Brent returns as predictors**. The CPI-only
-model is the fallback; the Brent-only model is diagnostic. Do not describe the
-forecast as using every collected source. The other structured sources
-demonstrate multi-source lakehouse ingestion and support dashboard analysis.
+The primary model is **Full multi-source Ridge**. AR-MIDAS, CPI-only, naive,
+AR(1), U-MIDAS, and alternative estimators are comparison models or fallbacks.
+The primary-model policy does not mean every source has enough historical
+point-in-time coverage to demonstrate incremental predictive value; report
+that limitation alongside model results.
 
 ## Asynchronous availability and forecast timing
 

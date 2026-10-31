@@ -1,23 +1,33 @@
 {
-  "protocol_version": 1,
+  "protocol_version": 3,
+  "evaluation_run_id": "20261031T080133Z",
+  "primary_model": "full_multisource_ridge",
+  "model_registry": "feature_ablation_model_registry.csv",
+  "per_model_artifacts": "models/<model_name>/<model_version>/",
   "configs": [
     "naive_last_cpi",
     "ar1_ols",
     "cpi_only_ridge",
     "u_midas_brent_ridge",
-    "fixed_ar_midas_ridge",
+    "ar_midas_ridge",
     "midas_elastic_net",
     "midas_lasso",
     "midas_huber",
     "full_multisource_ridge",
-    "full_multisource_elastic_net"
+    "full_multisource_elastic_net",
+    "multisource_without_brent",
+    "multisource_without_usd_vnd",
+    "multisource_without_fuel",
+    "multisource_without_iip"
   ],
+  "sourcewise_ablation": "for each source, compare base AR-MIDAS against base plus one source on paired folds where the source is point-in-time available; require at least 8 prior training rows containing that source; otherwise mark not estimable",
+  "leave_one_source_out_ablation": "compare Full multi-source Ridge with four configurations that remove the full Brent block (weekly returns and monthly Brent), USD/VND, Vietnam fuel (RON95 and E10 together), or monthly IIP plus that source's missingness indicator; use paired common folds and report not-estimable when point-in-time coverage is absent",
   "full_sources": [
     "Brent",
     "USD/VND",
     "RON95 fuel",
     "E10 RON95 fuel",
-    "annual IIP"
+    "monthly Vietnam IIP YoY growth"
   ],
   "elastic_net_grid": {
     "alpha": [
@@ -54,8 +64,15 @@
   "missingness": "train-only median imputation plus explicit per-source availability indicators",
   "primary_metric": "MAE CPI MoM percentage points",
   "guardrail_metric": "RMSE CPI MoM percentage points",
-  "operational_metrics": "per-model fit/predict seconds, max fold seconds, failures, completed folds, process peak RSS",
-  "nso_calendar_snapshot": "snapshot_b3a2bdc81d5ae6d3.json",
+  "supplementary_metrics": [
+    "MAPE excluding abs(actual_cpi_mom_percent) < 0.05 percentage points",
+    "sMAPE"
+  ],
+  "mape_near_zero_exclusion_threshold_pp": 0.05,
+  "operational_metrics": "per-model fit/predict seconds, max fold seconds, runtime failures, data-ineligible folds, completed folds, process peak RSS",
+  "fold_status_policy": "insufficient training history or unavailable point-in-time predictors are ineligible, not runtime failures",
+  "primary_model_policy": "full_multisource_ridge is the primary model; naive, CPI-only, AR-MIDAS and alternative estimators are baselines/ablations",
+  "nso_calendar_snapshot": "snapshot_d0b13806ed499691.json",
   "source_vintages": "not archived before first raw collection; results are pseudo-vintage diagnostics",
   "real_time_performance_claim_allowed": false
 }

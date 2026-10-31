@@ -15,7 +15,7 @@ from pyspark.sql.window import Window
 SOURCES = {
     "cpi": "imf_cpi_vietnam.json",
     "cpi_components": "imf_cpi_components_vietnam.json",
-    "ppi_iip": "worldbank_ppi_iip_vietnam.json",
+    "ppi_iip": "nso_iip_vietnam.json",
 }
 
 

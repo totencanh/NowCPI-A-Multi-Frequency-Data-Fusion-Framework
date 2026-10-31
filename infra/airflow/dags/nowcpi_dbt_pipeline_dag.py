@@ -89,11 +89,11 @@ with DAG(
         append_env=True,
     )
 
-    midas_nowcast = BashOperator(
-        task_id="midas_inflation_nowcast",
-        bash_command="python -u /opt/airflow/forecasting/midas_nowcast.py",
+    multisource_nowcast = BashOperator(
+        task_id="multisource_inflation_nowcast",
+        bash_command="python -u /opt/airflow/forecasting/multisource_nowcast.py",
         env={"TRINO_HOST": "trino", "TRINO_PORT": "8080", "TRINO_USER": "nowcpi"},
         append_env=True,
     )
 
-    start >> dbt_deps >> staging >> drop_legacy_gold >> gold >> midas_nowcast >> end
+    start >> dbt_deps >> staging >> drop_legacy_gold >> gold >> multisource_nowcast >> end

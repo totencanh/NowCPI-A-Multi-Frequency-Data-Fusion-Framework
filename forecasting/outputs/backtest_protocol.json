@@ -6,7 +6,9 @@
     "last_cpi_naive",
     "ar1_ols"
   ],
+  "primary_model": "full_multisource_ridge",
   "proposed_models": [
+    "full_multisource_ridge",
     "fixed_ar_midas_ridge",
     "validation_selected_ar_midas",
     "validation_selected_cpi_preserving_blend"
@@ -36,6 +38,18 @@
   "feature_selection": "expanding inner validation only; outer target excluded",
   "primary_metric": "MAE in CPI MoM percentage points",
   "guardrail_metric": "RMSE in CPI MoM percentage points",
+  "primary_model_hyperparameters": {
+    "ridge_alpha": 10.0,
+    "training_only_median_imputation": true,
+    "source_missingness_indicators": true
+  },
+  "primary_model_sources": [
+    "CPI",
+    "Brent weekly and monthly",
+    "USD/VND",
+    "Vietnam RON95/E10 fuel",
+    "NSO monthly IIP"
+  ],
   "supplementary_metrics": [
     "MAPE excluding abs(actual)<0.05pp; report scored/excluded counts",
     "sMAPE"

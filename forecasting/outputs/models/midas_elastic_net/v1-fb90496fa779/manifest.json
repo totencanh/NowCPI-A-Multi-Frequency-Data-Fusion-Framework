@@ -1,0 +1,52 @@
+{
+  "model_name": "midas_elastic_net",
+  "model_version": "v1-fb90496fa779",
+  "evaluation_run_id": "20261030T201236Z",
+  "generated_at_utc": "2026-10-30T20:12:36.660270+00:00",
+  "source_code_sha256": "8ccbe23c12bff198e96fe60c83c17be4af1b745f9b9ee426348ac6bc1433a956",
+  "role": "method_ablation",
+  "model_family": "Elastic Net",
+  "predictors": [
+    "cpi_mom_lag_1",
+    "brent_weekly_log_return_lag_12",
+    "brent_weekly_log_return_lag_11",
+    "brent_weekly_log_return_lag_10",
+    "brent_weekly_log_return_lag_9",
+    "brent_weekly_log_return_lag_8",
+    "brent_weekly_log_return_lag_7",
+    "brent_weekly_log_return_lag_6",
+    "brent_weekly_log_return_lag_5",
+    "brent_weekly_log_return_lag_4",
+    "brent_weekly_log_return_lag_3",
+    "brent_weekly_log_return_lag_2",
+    "brent_weekly_log_return_lag_1"
+  ],
+  "hyperparameters": {
+    "alpha_grid": [
+      0.1,
+      1.0
+    ],
+    "l1_ratio_grid": [
+      0.2,
+      0.8
+    ]
+  },
+  "prediction_file": "predictions.csv",
+  "metrics_file": "metrics.csv",
+  "runtime_file": "runtime.csv",
+  "ineligible_folds_file": "ineligible_folds.csv",
+  "failures_file": "failures.csv",
+  "operational_metrics": {
+    "model": "midas_elastic_net",
+    "fit_predict_seconds": 13.556377754008281,
+    "failed_folds": 0,
+    "ineligible_folds": 1,
+    "completed_folds": 130,
+    "max_fit_predict_seconds": 0.15034475999982533,
+    "max_rss_kb": 137552,
+    "script_wall_seconds": 56.248,
+    "strict_vintage_available": false
+  },
+  "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",
+  "point_in_time_claim": "historical source vintages are incomplete; diagnostic only"
+}

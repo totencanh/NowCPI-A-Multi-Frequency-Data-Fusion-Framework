@@ -1,0 +1,25 @@
+[
+  {
+    "schema_version": 1,
+    "event_id": "8db982045690d696c8d9eacadef724814d02a92f7592211bea574cae40c3a5bc",
+    "source": "yahoo_finance",
+    "series_id": "usd_vnd",
+    "country": "VNM",
+    "observation_period": "2026-10-30",
+    "frequency": "daily",
+    "value": 25799.0,
+    "unit": "VND/USD",
+    "release_ts": null,
+    "ingested_at": "2026-10-31T07:56:07.707890+00:00",
+    "source_record_id": "usd_vnd:2026-10-30",
+    "raw_payload": {
+      "Date": "2026-10-30T00:00:00.000",
+      "Adj Close": 25799.0,
+      "Close": 25799.0,
+      "High": 25836.0,
+      "Low": 25784.0,
+      "Open": 25799.0,
+      "Volume": 0
+    }
+  }
+]

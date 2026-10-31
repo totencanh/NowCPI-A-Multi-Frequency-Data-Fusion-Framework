@@ -6,6 +6,7 @@ x-airflow-common: &airflow-common
   environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+    AIRFLOW__OPENLINEAGE__NAMESPACE: nowcpi
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
     AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_SECRET_KEY:-nowcpi-local-development-key}
     AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY:-}
@@ -18,6 +19,7 @@ x-airflow-common: &airflow-common
     TRINO_PORT: "8080"
     TRINO_USER: nowcpi
     SPARK_HOME: /home/airflow/.local/lib/python3.11/site-packages/pyspark
+    HADOOP_CONF_DIR: /home/airflow/.local/lib/python3.11/site-packages/pyspark/conf
     PYTHONPATH: /opt/spark/app:/home/airflow/.local/lib/python3.11/site-packages
     MINIO_ENDPOINT: ${MINIO_ENDPOINT:-http://minio:9000}
     MINIO_ROOT_USER: ${MINIO_ROOT_USER:-nowcpi}
@@ -28,6 +30,7 @@ x-airflow-common: &airflow-common
   volumes:
     - ./infra/airflow/dags:/opt/airflow/dags
     - ./infra/airflow/scripts:/opt/airflow/scripts:ro
+    - ./infra/spark/conf/hadoop-metrics2.properties:/home/airflow/.local/lib/python3.11/site-packages/pyspark/conf/hadoop-metrics2.properties:ro
     - ./infra/airflow/logs:/opt/airflow/logs
     - ./infra/dbt:/opt/airflow/dbt
     - ./ingestion:/opt/airflow/ingestion:ro
@@ -246,6 +249,7 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       MINIO_BUCKET: ${MINIO_BUCKET:-nowcpi}
+      HADOOP_CONF_DIR: /opt/bitnami/spark/conf
     ports:
       - "7077:7077"
       - "8088:8080"
@@ -253,6 +257,7 @@ services:
       - ./workspace:/opt/spark/work-dir
       - ./processing:/opt/spark/app:ro
       - ./data/raw:/opt/spark/data/raw:ro
+      - ./infra/spark/conf/hadoop-metrics2.properties:/opt/bitnami/spark/conf/hadoop-metrics2.properties:ro
     depends_on:
       kafka:
         condition: service_healthy
@@ -281,6 +286,7 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       MINIO_BUCKET: ${MINIO_BUCKET:-nowcpi}
+      HADOOP_CONF_DIR: /opt/bitnami/spark/conf
     depends_on:
       spark-master:
         condition: service_started
@@ -290,6 +296,7 @@ services:
       - ./workspace:/opt/spark/work-dir
       - ./processing:/opt/spark/app:ro
       - ./data/raw:/opt/spark/data/raw:ro
+      - ./infra/spark/conf/hadoop-metrics2.properties:/opt/bitnami/spark/conf/hadoop-metrics2.properties:ro
     networks:
       - nowcpi_network
 
@@ -326,6 +333,7 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       MINIO_BUCKET: ${MINIO_BUCKET:-nowcpi}
+      HADOOP_CONF_DIR: /opt/bitnami/spark/conf
       KAFKA_BROKER: kafka:9092
       SPARK_DRIVER_HOST: spark-bronze-streaming
       # New checkpoint replays retained Kafka offsets into the offset-keyed,
@@ -334,6 +342,7 @@ services:
     volumes:
       - ./workspace:/opt/spark/work-dir
       - ./processing:/opt/spark/app:ro
+      - ./infra/spark/conf/hadoop-metrics2.properties:/opt/bitnami/spark/conf/hadoop-metrics2.properties:ro
     depends_on:
       kafka-init:
         condition: service_completed_successfully
@@ -376,6 +385,7 @@ services:
       - -c
       - |
         airflow db migrate
+        airflow pools set nowcpi_spark_pool 1 "Serialize Spark jobs submitted by the NowCPI DAGs" || true
         airflow users create \
           --username "$${AIRFLOW_ADMIN_USERNAME:-admin}" \
           --password "$${AIRFLOW_ADMIN_PASSWORD:-admin}" \

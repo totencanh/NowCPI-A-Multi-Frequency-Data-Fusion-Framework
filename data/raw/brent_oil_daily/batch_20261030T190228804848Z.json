@@ -1,0 +1,25 @@
+[
+  {
+    "schema_version": 1,
+    "event_id": "296abc14409a372257d3e428d5d4568841c3d07a4ed4ffcbcf2010a8552eb616",
+    "source": "yahoo_finance",
+    "series_id": "brent_front_month",
+    "country": "VNM",
+    "observation_period": "2026-10-30T00:00:00",
+    "frequency": "daily",
+    "value": 113.36000061035156,
+    "unit": "USD/barrel",
+    "release_ts": null,
+    "ingested_at": "2026-10-30T19:02:28.670097+00:00",
+    "source_record_id": "brent_front_month:2026-10-30T00:00:00",
+    "raw_payload": {
+      "Date": "2026-10-30T00:00:00",
+      "Adj Close": 113.36000061035156,
+      "Close": 113.36000061035156,
+      "High": 114.29000091552734,
+      "Low": 111.05000305175781,
+      "Open": 111.27999877929688,
+      "Volume": 35578
+    }
+  }
+]

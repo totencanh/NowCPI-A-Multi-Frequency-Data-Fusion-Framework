@@ -1,0 +1,63 @@
+{
+  "model_name": "full_multisource_ridge",
+  "model_version": "v1-e6877653c3ef",
+  "evaluation_run_id": "20261031T073702Z",
+  "generated_at_utc": "2026-10-31T07:37:03.456611+00:00",
+  "source_code_sha256": "9973215bee07e0de62167ea5f1fc6251592ab82d3763c642afbd3ea5a760371b",
+  "role": "primary_production_candidate",
+  "model_family": "Full multi-source Ridge",
+  "predictors": [
+    "cpi_mom_lag_1",
+    "brent_weekly_log_return_lag_12",
+    "brent_weekly_log_return_lag_11",
+    "brent_weekly_log_return_lag_10",
+    "brent_weekly_log_return_lag_9",
+    "brent_weekly_log_return_lag_8",
+    "brent_weekly_log_return_lag_7",
+    "brent_weekly_log_return_lag_6",
+    "brent_weekly_log_return_lag_5",
+    "brent_weekly_log_return_lag_4",
+    "brent_weekly_log_return_lag_3",
+    "brent_weekly_log_return_lag_2",
+    "brent_weekly_log_return_lag_1",
+    "brent_monthly",
+    "usd_vnd",
+    "fuel_ron95",
+    "fuel_e10",
+    "iip_yoy_growth",
+    "missing_brent_asof_eligible",
+    "missing_fx_asof_eligible",
+    "missing_fuel_asof_eligible",
+    "missing_iip_asof_eligible"
+  ],
+  "hyperparameters": {
+    "alpha": 10.0,
+    "missingness_indicators": true
+  },
+  "sources": [
+    "CPI",
+    "Brent",
+    "USD/VND",
+    "RON95",
+    "E10 RON95",
+    "NSO IIP"
+  ],
+  "prediction_file": "predictions.csv",
+  "metrics_file": "metrics.csv",
+  "runtime_file": "runtime.csv",
+  "ineligible_folds_file": "ineligible_folds.csv",
+  "failures_file": "failures.csv",
+  "operational_metrics": {
+    "model": "full_multisource_ridge",
+    "fit_predict_seconds": 0.8076276619997316,
+    "failed_folds": 0,
+    "ineligible_folds": 0,
+    "completed_folds": 131,
+    "max_fit_predict_seconds": 0.021990727999991577,
+    "max_rss_kb": 137276,
+    "script_wall_seconds": 58.451,
+    "strict_vintage_available": false
+  },
+  "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",
+  "point_in_time_claim": "historical source vintages are incomplete; diagnostic only"
+}

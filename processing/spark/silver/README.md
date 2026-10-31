@@ -15,7 +15,8 @@ metadata, and ingestion timestamps for replay and audit.
 
 - `cpi_observations`
 - `cpi_component_observations`
-- `iip_observations` (annual IIP growth only; PPI is excluded)
+- `iip_observations` (monthly NSO Vietnam aggregate IIP index; legacy annual World Bank growth events are rejected)
+- `observation_versions` (append-only normalized revisions with first-seen availability and Kafka coordinates)
 - `brent_oil_observations`
 - `usd_vnd_observations`
 - `vn_fuel_observations`
@@ -33,6 +34,14 @@ counts and stage start/commit timestamps. The audit write completes before the
 offset checkpoint advances, so a failed audit does not silently skip a Bronze
 batch.
 
+Every valid new Bronze observation version is also merged into
+`silver.observation_versions` using `(business_key, payload_hash)` as its version
+identity. The table retains the first `available_at` for each content version;
+source release time is preferred, then collector `source_ingested_at`, Kafka
+receipt time, and Bronze ingestion time. The current curated tables still expose
+the latest value by business key, while the version table preserves revisions
+for point-in-time joins.
+
 The Silver jobs bootstrap a table from full Bronze history when the table is
 missing or has the old schema. A transform-version checkpoint also triggers a
 one-time full reconciliation after the historical-date policy changes, restoring
@@ -40,14 +49,12 @@ older records from Bronze and replacing stale reject records. Later runs use
 the Kafka-offset checkpoint at
 `s3a://<MINIO_BUCKET>/silver/_checkpoints/kafka_offsets`; set
 `SILVER_FULL_REFRESH=1` to force another rebuild from Bronze.
-Normal scheduled jobs set `SILVER_DEFER_MIGRATION_REBUILD=1`; when a schema or
-transform-version migration requires a full rebuild, they fail clearly and
-direct the operator to trigger `nowcpi_full_history_rebuild` explicitly.
-That DAG is manual and unscheduled: it is **not** automatically invoked when
-the daily pipeline fails. Ordinary task failures use Airflow retries and must
-be investigated from that task's log. The full-history DAG reprocesses Bronze
-history, then rebuilds Gold and refreshes the forecast; use it for an intentional
-backfill or migration, not as the default retry button.
+The daily DAG lets Silver perform this migration rebuild automatically when it
+detects a schema or transform-version change. This prevents the first scheduled
+run after a code change from failing only to request a separate manual rebuild.
+The manual `nowcpi_full_history_rebuild` DAG remains available for deliberate
+backfills; ordinary execution errors still use Airflow retries and should be
+diagnosed from the task log.
 
 ## Jobs
 

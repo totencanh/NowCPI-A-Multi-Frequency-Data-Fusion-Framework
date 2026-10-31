@@ -12,3 +12,4 @@ sources:
       - name: brent_oil_observations
       - name: usd_vnd_observations
       - name: vn_fuel_observations
+      - name: observation_versions

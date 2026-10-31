@@ -10,4 +10,5 @@ nowcpi:
       database: delta
       schema: staging
       http_scheme: http
+      cert: true
       threads: 4

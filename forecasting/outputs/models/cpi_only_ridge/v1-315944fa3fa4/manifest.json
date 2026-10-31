@@ -1,0 +1,19 @@
+{
+  "model_name": "cpi_only_ridge",
+  "model_version": "v1-315944fa3fa4",
+  "evaluation_run_id": "20261030T194500Z",
+  "generated_at_utc": "2026-10-30T19:45:00.172117+00:00",
+  "source_code_sha256": "87ea597ac57dff4303629c412fce30e192da881042a601aaff942062dd939ca6",
+  "role": "method_ablation",
+  "model_family": "Ridge",
+  "predictors": [
+    "cpi_mom_lag_1"
+  ],
+  "hyperparameters": {
+    "alpha": 10.0
+  },
+  "prediction_file": "predictions.csv",
+  "metrics_file": "metrics.csv",
+  "metrics_protocol": "paired common rolling-origin folds; MAE primary, RMSE guardrail",
+  "point_in_time_claim": "historical source vintages are incomplete; diagnostic only"
+}

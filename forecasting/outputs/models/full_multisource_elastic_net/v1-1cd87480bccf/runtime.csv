@@ -1,0 +1,2 @@
+model,fit_predict_seconds,failed_folds,ineligible_folds,completed_folds,max_fit_predict_seconds,max_rss_kb,script_wall_seconds,strict_vintage_available
+full_multisource_elastic_net,19.477651872000024,0,0,131,0.21622309299993958,166640,58.872,False

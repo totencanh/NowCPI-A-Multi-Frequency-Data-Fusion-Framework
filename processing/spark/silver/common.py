@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import os
 import re
+import json
 import uuid
 from collections.abc import Iterable
 from datetime import datetime, timezone
 
+from pyspark import StorageLevel
 from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
 
@@ -37,11 +39,20 @@ SILVER_COLUMNS = [
     "event_id", "source", "source_record_id", "source_release_ts",
     "source_event_time", "business_key", "payload_hash",
     "source_ingested_at", "available_at", "bronze_ingested_at",
+    "available_at_basis",
     "kafka_topic", "kafka_partition", "kafka_offset", "kafka_timestamp",
     "series_id", "country", "observation_date", "frequency", "value", "unit",
 ]
+VERSION_COLUMNS = [
+    "version_id", "event_id", "source", "source_record_id",
+    "source_release_ts", "source_event_time", "business_key", "payload_hash",
+    "source_ingested_at", "available_at", "available_at_basis",
+    "bronze_ingested_at", "kafka_topic", "kafka_partition", "kafka_offset",
+    "kafka_timestamp",
+    "series_id", "country", "observation_date", "frequency", "value", "unit",
+]
 SILVER_BUSINESS_KEY = ["series_id", "country", "frequency", "observation_date", "unit"]
-SILVER_TRANSFORM_VERSION = 4
+SILVER_TRANSFORM_VERSION = 6
 
 OBSOLETE_SILVER_TABLES = [
     "cpi_observations_quarantine",
@@ -144,7 +155,7 @@ def _is_positive_series():
     """Return the series predicate whose measurements must be positive."""
     return F.col("series_id").isin(
         "cpi_headline", "brent_front_month", "usd_vnd", "vn_fuel_ron95",
-        "vn_fuel_e10_ron95"
+        "vn_fuel_e10_ron95", "iip_total_index"
     ) | F.col("series_id").startswith("cpi_component_")
 
 
@@ -225,16 +236,22 @@ def normalize_bronze_events(events: DataFrame, topic: str) -> DataFrame:
         "available_at",
         F.coalesce(
             F.col("source_release_ts"),
+            F.col("source_ingested_at"),
             F.col("kafka_timestamp"),
             F.col("bronze_ingested_at"),
-            F.col("source_ingested_at"),
         ),
+    ).withColumn(
+        "available_at_basis",
+        F.when(F.col("source_release_ts").isNotNull(), "source_release_ts")
+        .when(F.col("source_ingested_at").isNotNull(), "source_ingested_at")
+        .when(F.col("kafka_timestamp").isNotNull(), "kafka_timestamp")
+        .when(F.col("bronze_ingested_at").isNotNull(), "bronze_ingested_at"),
     )
 
     topic_series = {
         "nowcpi.cpi": F.col("series_id") == "cpi_headline",
         "nowcpi.cpi_components": F.col("series_id").startswith("cpi_component_"),
-        "nowcpi.ppi_iip": F.col("series_id") == "iip_growth",
+        "nowcpi.ppi_iip": F.col("series_id") == "iip_total_index",
         "nowcpi.brent_oil": F.col("series_id") == "brent_front_month",
         "nowcpi.usd_vnd": F.col("series_id") == "usd_vnd",
         "nowcpi.vn_fuel": F.col("series_id").isin("vn_fuel_ron95", "vn_fuel_e10_ron95"),
@@ -242,7 +259,7 @@ def normalize_bronze_events(events: DataFrame, topic: str) -> DataFrame:
     expected_frequency = (
         F.when(F.col("series_id").startswith("cpi_component_"), "monthly")
         .when(F.col("series_id") == "cpi_headline", "monthly")
-        .when(F.col("series_id") == "iip_growth", "annual")
+        .when(F.col("series_id") == "iip_total_index", "monthly")
         .when(F.col("series_id").isin("brent_front_month", "usd_vnd", "vn_fuel_ron95", "vn_fuel_e10_ron95"), "daily")
     )
     numeric_invalid = (
@@ -328,12 +345,123 @@ def upsert_silver_observations(
     return count
 
 
+def persist_observation_versions(
+    spark: SparkSession, bucket: str, frame: DataFrame
+) -> int:
+    """Keep the first point-in-time receipt of every distinct valid observation version."""
+    path = f"s3a://{bucket}/silver/observation_versions"
+    versioned = (
+        frame.withColumn(
+            "version_id",
+            F.sha2(
+                F.concat_ws("|", F.col("business_key"), F.col("payload_hash")),
+                256,
+            ),
+        )
+        .select(*VERSION_COLUMNS)
+        .withColumn(
+            "_version_rank",
+            F.row_number().over(
+                Window.partitionBy("version_id").orderBy(
+                    F.col("available_at").asc_nulls_last(),
+                    F.col("kafka_timestamp").asc_nulls_last(),
+                    F.col("kafka_offset").asc_nulls_last(),
+                )
+            ),
+        )
+        .filter(F.col("_version_rank") == 1)
+        .drop("_version_rank")
+    )
+    count = versioned.count()
+    path_exists = _delta_exists(spark, path)
+    escaped_path = _quote_sql_path(path)
+    if not path_exists:
+        versioned.write.format("delta").mode("overwrite").save(path)
+        spark.sql(
+            "CREATE TABLE IF NOT EXISTS silver.observation_versions "
+            f"USING DELTA LOCATION '{escaped_path}'"
+        )
+        return count
+
+    existing_columns = spark.read.format("delta").load(path).columns
+    if existing_columns != VERSION_COLUMNS:
+        raise RuntimeError(
+            "silver.observation_versions schema changed; rebuild the version table "
+            "from Bronze history before continuing."
+        )
+    spark.sql(
+        "CREATE TABLE IF NOT EXISTS silver.observation_versions "
+        f"USING DELTA LOCATION '{escaped_path}'"
+    )
+    if count == 0:
+        return 0
+
+    view = "silver_observation_versions_incoming"
+    versioned.createOrReplaceTempView(view)
+    try:
+        spark.sql(
+            f"""MERGE INTO delta.`{escaped_path}` AS target
+                USING `{view}` AS incoming
+                ON target.version_id = incoming.version_id
+                WHEN NOT MATCHED THEN INSERT *"""
+        )
+    finally:
+        spark.catalog.dropTempView(view)
+    return count
+
+
 def _silver_offsets_path(bucket: str) -> str:
     return f"s3a://{bucket}/silver/_checkpoints/kafka_offsets"
 
 
 def _silver_transform_versions_path(bucket: str) -> str:
-    return f"s3a://{bucket}/silver/_checkpoints/transform_versions"
+    # This is tiny control-plane state, so keep it as a JSON object rather
+    # than creating a Delta table for one integer per topic.
+    return f"s3a://{bucket}/silver/_checkpoints/transform_versions.json"
+
+
+def _read_json_object(spark: SparkSession, path: str) -> dict:
+    """Read a small JSON control object through Hadoop's configured S3A FS."""
+    target = spark._jvm.org.apache.hadoop.fs.Path(path)
+    filesystem = target.getFileSystem(spark._jsc.hadoopConfiguration())
+    if not filesystem.exists(target):
+        return {}
+    stream = filesystem.open(target)
+    reader = spark._jvm.java.io.BufferedReader(
+        spark._jvm.java.io.InputStreamReader(stream, "UTF-8")
+    )
+    try:
+        lines = []
+        line = reader.readLine()
+        while line is not None:
+            lines.append(str(line))
+            line = reader.readLine()
+        value = json.loads("\n".join(lines))
+        if not isinstance(value, dict):
+            raise ValueError(f"Expected a JSON object at {path}")
+        return value
+    finally:
+        reader.close()
+
+
+def _write_json_object(spark: SparkSession, path: str, value: dict) -> None:
+    """Atomically replace a small JSON control object in the same S3A bucket."""
+    target = spark._jvm.org.apache.hadoop.fs.Path(path)
+    temp = spark._jvm.org.apache.hadoop.fs.Path(path + ".tmp")
+    filesystem = target.getFileSystem(spark._jsc.hadoopConfiguration())
+    if filesystem.exists(temp):
+        filesystem.delete(temp, False)
+    stream = filesystem.create(temp, True)
+    writer = spark._jvm.java.io.OutputStreamWriter(stream, "UTF-8")
+    try:
+        writer.write(json.dumps(value, sort_keys=True))
+        writer.flush()
+    finally:
+        writer.close()
+    if filesystem.exists(target):
+        filesystem.delete(target, False)
+    if not filesystem.rename(temp, target):
+        raise RuntimeError(f"Could not publish Silver control object {path}")
 
 
 def _silver_policy_requires_rebuild(
@@ -341,41 +469,17 @@ def _silver_policy_requires_rebuild(
 ) -> bool:
     """Reconcile old checkpoints once when Silver inclusion rules change."""
     path = _silver_transform_versions_path(bucket)
-    if not _delta_exists(spark, path):
-        return True
-    version = (
-        spark.read.format("delta").load(path)
-        .filter(F.col("kafka_topic") == topic)
-        .select("transform_version")
-        .first()
-    )
-    return version is None or version["transform_version"] != SILVER_TRANSFORM_VERSION
+    versions = _read_json_object(spark, path)
+    return versions.get(topic) != SILVER_TRANSFORM_VERSION
 
 
 def _save_silver_transform_version(
     spark: SparkSession, bucket: str, topic: str
 ) -> None:
     path = _silver_transform_versions_path(bucket)
-    version = spark.createDataFrame(
-        [(topic, SILVER_TRANSFORM_VERSION)],
-        "kafka_topic STRING, transform_version INT",
-    )
-    escaped_path = _quote_sql_path(path)
-    if not _delta_exists(spark, path):
-        version.write.format("delta").mode("overwrite").save(path)
-        return
-    view = "silver_transform_version_update"
-    version.createOrReplaceTempView(view)
-    try:
-        spark.sql(
-            f"""MERGE INTO delta.`{escaped_path}` AS target
-                USING `{view}` AS incoming
-                ON target.kafka_topic = incoming.kafka_topic
-                WHEN MATCHED THEN UPDATE SET transform_version = incoming.transform_version
-                WHEN NOT MATCHED THEN INSERT *"""
-        )
-    finally:
-        spark.catalog.dropTempView(view)
+    versions = _read_json_object(spark, path)
+    versions[topic] = SILVER_TRANSFORM_VERSION
+    _write_json_object(spark, path, versions)
 
 
 def _write_silver_run_audit(
@@ -562,7 +666,9 @@ def process_topic(
     rejected_path = f"s3a://{bucket}/silver/{rejected_table}"
     _prune_silver_date_range(spark, good_path)
 
-    topic_events = bronze.filter(F.col("kafka_topic") == topic)
+    # run_domain passes a cached topic slice so the repeated validation/count/
+    # merge actions do not rescan the full Bronze Delta table.
+    topic_events = bronze
     if topic_events.limit(1).count() == 0:
         print(
             f"No Bronze rows for {topic}; registering the Silver table if needed.",
@@ -576,15 +682,6 @@ def process_topic(
     schema_changed = table_exists and (
         spark.read.format("delta").load(good_path).columns != SILVER_COLUMNS
     )
-    defer_rebuild = os.getenv("SILVER_DEFER_MIGRATION_REBUILD", "0").lower() in {
-        "1", "true", "yes"
-    }
-    if defer_rebuild and (policy_rebuild or schema_changed) and not full_refresh:
-        raise RuntimeError(
-            f"{table_name}: Silver schema/policy migration requires a full-history "
-            "rebuild. Trigger the nowcpi_full_history_rebuild DAG once, then resume "
-            "the scheduled daily pipeline."
-        )
     rebuild = full_refresh or policy_rebuild or not table_exists or schema_changed
     if policy_rebuild and table_exists and not full_refresh:
         print(
@@ -605,6 +702,25 @@ def process_topic(
         print(f"{topic}: no new Bronze offsets; Silver is already current.", flush=True)
     input_event_count = source.count()
 
+    normalized_versions = normalize_bronze_events(source, topic)
+    version_numeric_valid = (
+        F.col("value").isNotNull()
+        & ~F.isnan("value")
+        & (F.abs(F.col("value")) != F.lit(float("inf")))
+    )
+    version_positive_valid = ~_is_positive_series() | (F.col("value") > 0)
+    version_future_valid = (
+        F.col("observation_date").isNull()
+        | (F.col("observation_date") <= F.current_date())
+    )
+    valid_versions = normalized_versions.filter(
+        (F.col("_metadata_rejection_reason") == "")
+        & version_numeric_valid
+        & version_positive_valid
+        & version_future_valid
+    )
+    version_count = persist_observation_versions(spark, bucket, valid_versions)
+
     latest = Window.partitionBy(
         F.coalesce(
             F.col("event_id"),
@@ -621,7 +737,7 @@ def process_topic(
         F.col("kafka_offset").desc_nulls_last(),
     )
     normalized = (
-        normalize_bronze_events(source, topic)
+        normalized_versions
         .withColumn("_row_num", F.row_number().over(latest))
         .filter(F.col("_row_num") == 1)
         .drop("_row_num")
@@ -723,6 +839,7 @@ def process_topic(
     _save_silver_checkpoint(spark, source, bucket, topic)
     print(
         f"{topic}: upserted {good_count} valid observation(s); "
+        f"recorded {version_count} source-version candidate(s); "
         f"persisted {persisted_rejections} rejected event(s); "
         f"{rejected_count} invalid and {future_dated_count} future-dated.",
         flush=True,
@@ -747,18 +864,31 @@ def run_domain(
             raise RuntimeError(f"Bronze Delta table does not exist at {bronze_path}")
         spark.sql(f"CREATE DATABASE IF NOT EXISTS bronze LOCATION 's3a://{bucket}/bronze'")
         spark.sql(f"CREATE DATABASE IF NOT EXISTS silver LOCATION 's3a://{bucket}/silver'")
-        bronze = spark.read.format("delta").load(bronze_path)
+        bronze = spark.read.format("delta").load(bronze_path).persist(
+            StorageLevel.MEMORY_AND_DISK
+        )
         missing = sorted(REQUIRED_BRONZE_COLUMNS - set(bronze.columns))
         if missing:
             raise ValueError(f"Bronze table is missing required columns: {', '.join(missing)}")
+        cached_rows = bronze.count()
+        print(f"Cached {cached_rows} Bronze event(s) for this Silver domain run.", flush=True)
         for topic in selected:
-            process_topic(spark, bucket, bronze, topic, TOPIC_TABLES[topic])
+            topic_events = bronze.filter(F.col("kafka_topic") == topic).persist(
+                StorageLevel.MEMORY_AND_DISK
+            )
+            try:
+                topic_events.count()
+                process_topic(spark, bucket, topic_events, topic, TOPIC_TABLES[topic])
+            finally:
+                topic_events.unpersist(blocking=False)
         _drop_obsolete_silver_tables(
             spark,
             bucket,
             drop_legacy_ppi_iip="nowcpi.ppi_iip" in selected,
         )
     finally:
+        if "bronze" in locals():
+            bronze.unpersist(blocking=False)
         spark.stop()
 
 

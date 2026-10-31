@@ -46,7 +46,10 @@ select
     country,
     max(case when series_id = 'cpi_headline' then available_at end) as cpi_available_at,
     max(case when series_id = 'cpi_headline' then source_release_ts end) as cpi_source_release_ts,
-    max(case when series_id = 'cpi_headline' then available_at_basis end) as cpi_available_at_basis,
+    max_by(
+        case when series_id = 'cpi_headline' then available_at_basis end,
+        case when series_id = 'cpi_headline' then available_at end
+    ) as cpi_available_at_basis,
     max(case when series_id = 'cpi_headline' then cpi_index end) as cpi_headline,
     max(case when series_id = 'cpi_headline' then mom_percent end) as cpi_headline_mom_percent,
     max(case when series_id = 'cpi_headline' then yoy_percent end) as cpi_headline_yoy_percent,

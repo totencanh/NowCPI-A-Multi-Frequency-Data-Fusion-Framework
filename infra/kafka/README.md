@@ -26,7 +26,7 @@ docker compose exec airflow-scheduler sh -lc 'RAW_DATA_DIR=/opt/airflow/data/raw
 ```
 
 Supported source names are `imf_cpi_vietnam`,
-`imf_cpi_components_vietnam`, `worldbank_iip_vietnam`,
+`imf_cpi_components_vietnam`, `nso_iip_vietnam`,
 `brent_oil_daily`, `usd_vnd_daily`, and `vn_fuel_e10_ron95`. Use
 `--force-replay` without `--source` to replay every source. Only use forced
 replay to recover or backfill data: Kafka can contain repeated messages, while

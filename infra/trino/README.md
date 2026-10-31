@@ -15,6 +15,6 @@ MinIO. Spark Silver jobs register source-oriented tables such as
 Silver keeps a compact observation schema; use Bronze for raw payload and
 Kafka-level lineage. dbt publishes separate dashboard tables in `delta.gold`:
 `gold_cpi_monthly`, `gold_brent_daily`, `gold_usd_vnd_daily`,
-`gold_fuel_daily`, and `gold_iip_annual`.
+`gold_fuel_daily`, and `gold_iip_monthly`.
 The file-based CPI and market jobs remain available for development and
 backfills.

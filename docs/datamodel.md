@@ -37,23 +37,24 @@ Each collector wraps one source observation in a common event envelope:
   invalid and out-of-scope events are persisted in topic-specific
   `silver.*_rejected` tables. Only observation dates from 2025-01-01 through
   the current Vietnam date are included in the curated observation tables.
-  PPI is excluded; annual IIP growth remains. Silver does not pivot or
+  PPI is excluded; monthly NSO IIP index is retained. Legacy annual World Bank
+  growth events are rejected. Silver does not pivot or
   aggregate indicators.
 - **Gold:** dbt publishes subject-specific analytical tables, monthly CPI
   labels, and a separate nowcasting feature table. The feature table uses
   target-month market-to-date observations and applies an `available_at`
   cutoff to market data and lagged CPI/IIP inputs. CPI labels are kept out of
-  model features. Annual IIP remains annual and is not interpolated into
-  monthly data. Additional Power BI models expose a monthly multi-source
+  model features. NSO IIP stays monthly, with year-over-year growth derived by
+  comparing the same month across years. Additional Power BI models expose a monthly multi-source
   overview, long-form monthly CPI components with exact prior-month/prior-year
   comparisons, and long-form daily market values. These reporting models do not
   imply that all sources are predictors in the current forecast.
 
 The current forecasting script reads the monthly CPI labels and daily Brent
 Gold tables through Trino. It predicts headline CPI MoM using 12 weekly Brent
-log returns in a Ridge U-MIDAS model. USD/VND, fuel, CPI components, and annual
-IIP are currently dashboard/analysis inputs, not active MIDAS predictors.
+log returns in a Ridge U-MIDAS model. USD/VND, fuel, CPI components, and monthly
+IIP are currently dashboard/analysis inputs, not active production MIDAS predictors.
 
 Do not combine observations at different frequencies before a temporal
-alignment policy is defined. The current annual World Bank industrial value
-added growth series is an activity proxy, not a monthly IIP series.
+alignment policy is defined. Monthly NSO IIP is represented as an index, with
+YoY growth derived only when the same month from the previous year is present.

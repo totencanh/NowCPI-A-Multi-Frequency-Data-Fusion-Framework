@@ -1,0 +1,1 @@
+configuration,evaluation_window,origins,mae_pp,rmse_pp,mape_pct_excluding_near_zero,mape_scored_origins,mape_excluded_near_zero_origins,smape_pct,directional_accuracy_pct,point_in_time_mode,real_time_performance_claim_allowed

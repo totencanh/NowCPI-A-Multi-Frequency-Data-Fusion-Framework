@@ -29,12 +29,13 @@ they are not part of the scheduled path.
   annual industrial-activity observations; PPI is not part of the current flow.
 - dbt builds Gold subject tables, monthly nowcasting datasets, and
   Power BI-oriented daily/monthly marts. The actual grains remain separate.
-- Forecasting currently runs AR-MIDAS Ridge for monthly headline CPI MoM,
-  combining the latest actual CPI lag available by the run cutoff with up to 12
-  weekly Brent log returns. A CPI-only model is the fallback; the Brent-only
-  model is diagnostic and is not reported as the main NowCPI forecast.
-- USD/VND, fuel, CPI components, and annual industrial activity are available
-  for analysis and dashboarding, but are not current MIDAS predictors. News
+- Forecasting uses Full multi-source Ridge as the primary model for monthly
+  headline CPI MoM. Eligible features include CPI lags, weekly Brent returns,
+  USD/VND, domestic fuel, monthly NSO IIP, and source-missingness indicators.
+  AR-MIDAS and CPI-only remain comparison/fallback models.
+- Historical source vintages remain incomplete; selecting the multi-source
+  architecture does not prove that each additional source improves accuracy.
+  CPI components remain available for analysis and dashboarding. News
   collection and NLP are not implemented.
 
 Airflow schedules collection, transformation, and nowcasting daily at 08:00
@@ -50,6 +51,6 @@ pseudo-out-of-sample because archived publication-time vintages are unavailable.
 
 The latest verified full daily-pipeline run completed successfully on
 2026-10-17. CPI was available through 2026-07, so the model's one-step target
-was 2026-08 and its AR-MIDAS Ridge estimate was **0.181355% MoM**. This is a
-delayed estimate for August, not a forecast for October; see
+was 2026-08. The current production policy uses Full multi-source Ridge when
+eligible, with AR-MIDAS as a comparison/fallback; see
 `forecasting/README.md` for the run cutoff and interpretation.

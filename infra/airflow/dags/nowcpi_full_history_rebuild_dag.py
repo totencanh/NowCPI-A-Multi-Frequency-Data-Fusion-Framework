@@ -1,4 +1,4 @@
-"""Manually rebuild Silver, Gold, and the current MIDAS nowcast from Bronze."""
+"""Manually rebuild Silver, Gold, and the current multi-source CPI nowcast from Bronze."""
 
 from datetime import timedelta
 
@@ -35,7 +35,7 @@ with DAG(
     dag_id="nowcpi_full_history_rebuild",
     description=(
         "Manually rebuild Silver and dbt Gold from the existing Bronze lake, "
-        "then refresh the current MIDAS nowcast. Does not collect or publish data."
+        "then refresh the current full multi-source nowcast. Does not collect or publish data."
     ),
     schedule=None,
     start_date=pendulum.datetime(2026, 1, 1, tz="Asia/Ho_Chi_Minh"),
@@ -51,11 +51,13 @@ with DAG(
     wait_for_bronze = BashOperator(
         task_id="wait_for_bronze_catchup",
         bash_command=spark_submit_command("wait_for_bronze", 17178),
+        pool="nowcpi_spark_pool",
         execution_timeout=timedelta(minutes=35),
     )
     silver_cpi = BashOperator(
         task_id="silver_cpi_full_refresh",
         bash_command=spark_submit_command("cpi", 17180),
+        pool="nowcpi_spark_pool",
         env={"SILVER_FULL_REFRESH": "1"},
         append_env=True,
         execution_timeout=timedelta(hours=2),
@@ -63,6 +65,7 @@ with DAG(
     silver_market = BashOperator(
         task_id="silver_market_full_refresh",
         bash_command=spark_submit_command("market", 17182),
+        pool="nowcpi_spark_pool",
         env={"SILVER_FULL_REFRESH": "1"},
         append_env=True,
         execution_timeout=timedelta(hours=2),
@@ -88,13 +91,13 @@ with DAG(
         ),
         execution_timeout=timedelta(minutes=45),
     )
-    midas_nowcast = BashOperator(
-        task_id="midas_inflation_nowcast",
-        bash_command="python -u /opt/airflow/forecasting/midas_nowcast.py",
+    multisource_nowcast = BashOperator(
+        task_id="multisource_inflation_nowcast",
+        bash_command="python -u /opt/airflow/forecasting/multisource_nowcast.py",
         env={"TRINO_HOST": "trino", "TRINO_PORT": "8080", "TRINO_USER": "nowcpi"},
         append_env=True,
         execution_timeout=timedelta(minutes=45),
     )
 
     wait_for_bronze >> silver_cpi >> silver_market
-    silver_market >> dbt_staging >> dbt_gold >> midas_nowcast
+    silver_market >> dbt_staging >> dbt_gold >> multisource_nowcast

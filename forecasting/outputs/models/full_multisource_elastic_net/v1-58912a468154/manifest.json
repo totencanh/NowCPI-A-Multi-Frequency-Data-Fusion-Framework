@@ -1,0 +1,70 @@
+{
+  "model_name": "full_multisource_elastic_net",
+  "model_version": "v1-58912a468154",
+  "evaluation_run_id": "20261030T200737Z",
+  "generated_at_utc": "2026-10-30T20:07:37.836807+00:00",
+  "source_code_sha256": "e2aba21e5f17ad501f953ae8a57eef1d0c391d3ca8e72771d07dedea4e9a8ea4",
+  "role": "method_ablation",
+  "model_family": "Full multi-source Elastic Net",
+  "predictors": [
+    "cpi_mom_lag_1",
+    "brent_weekly_log_return_lag_12",
+    "brent_weekly_log_return_lag_11",
+    "brent_weekly_log_return_lag_10",
+    "brent_weekly_log_return_lag_9",
+    "brent_weekly_log_return_lag_8",
+    "brent_weekly_log_return_lag_7",
+    "brent_weekly_log_return_lag_6",
+    "brent_weekly_log_return_lag_5",
+    "brent_weekly_log_return_lag_4",
+    "brent_weekly_log_return_lag_3",
+    "brent_weekly_log_return_lag_2",
+    "brent_weekly_log_return_lag_1",
+    "brent_monthly",
+    "usd_vnd",
+    "fuel_ron95",
+    "fuel_e10",
+    "iip_yoy_growth",
+    "missing_brent_asof_eligible",
+    "missing_fx_asof_eligible",
+    "missing_fuel_asof_eligible",
+    "missing_iip_asof_eligible"
+  ],
+  "hyperparameters": {
+    "alpha_grid": [
+      0.1,
+      1.0
+    ],
+    "l1_ratio_grid": [
+      0.2,
+      0.8
+    ],
+    "inner_validation_origins_max": 6
+  },
+  "sources": [
+    "CPI",
+    "Brent",
+    "USD/VND",
+    "RON95",
+    "E10 RON95",
+    "NSO IIP"
+  ],
+  "prediction_file": "predictions.csv",
+  "metrics_file": "metrics.csv",
+  "runtime_file": "runtime.csv",
+  "ineligible_folds_file": "ineligible_folds.csv",
+  "failures_file": "failures.csv",
+  "operational_metrics": {
+    "model": "full_multisource_elastic_net",
+    "fit_predict_seconds": 18.05224996800007,
+    "failed_folds": 0,
+    "ineligible_folds": 0,
+    "completed_folds": 131,
+    "max_fit_predict_seconds": 0.21368747700034874,
+    "max_rss_kb": 138132,
+    "script_wall_seconds": 53.294,
+    "strict_vintage_available": false
+  },
+  "metrics_protocol": "paired common rolling-origin folds; MAE primary, RMSE guardrail",
+  "point_in_time_claim": "historical source vintages are incomplete; diagnostic only"
+}

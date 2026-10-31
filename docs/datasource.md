@@ -17,14 +17,16 @@ uses a persistent batch-hash manifest to avoid replaying unchanged files.
 | `brent_oil_daily.json` | Yahoo Finance | Brent front-month futures (`BZ=F`) | Daily |
 | `usd_vnd_daily.json` | Yahoo Finance | USD/VND (`VND=X`) | Daily |
 | `vn_fuel_e10_ron95.json` | giaxanghomnay API | All current-day fuel product records and source price fields | Daily when reported |
-| `worldbank_iip_vietnam.json` | World Bank Indicators API | Industrial production growth proxy | Annual |
+| `nso_iip_vietnam.json` | Vietnam NSO NSDP SDMX dataset `IIPVNM.xml` | Aggregate industrial production index level (`iip_total_index`) | Monthly; Vietnam (`VNM`) |
 
-The World Bank collector labels `NV.IND.TOTL.KD.ZG` as IIP growth, but the
-[World Bank defines it](https://data.worldbank.org/indicator/NV.IND.TOTL.KD.ZG?view=chart)
-as industry (including construction) value-added annual growth. Treat it as an
-annual industrial activity proxy, not as an industrial production index. The
-pipeline keeps this growth proxy under the existing IIP series name; PPI
-collection has been removed.
+The monthly NSO series is an index level. Gold derives the year-over-year
+growth rate by comparing each observation with the same month 12 months earlier.
+The NSDP SDMX payload does not include per-observation release timestamps or
+historical vintages; `available_at` is therefore based on actual pipeline
+receipt, and imported historical values are not eligible for past real-time
+backtest cutoffs. The former World Bank annual-growth collector has been
+removed from the pipeline. Its old raw batches, if present, are no longer
+published and are rejected by the new Silver IIP contract.
 
 News collection is intentionally unimplemented. Each event retains its source
 row/object in `raw_payload`; the domestic fuel collector keeps current-day

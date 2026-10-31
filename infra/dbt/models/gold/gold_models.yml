@@ -35,3 +35,36 @@ models:
       - name: label_available_at
         data_tests:
           - not_null
+
+  - name: gold_nowcasting_feature_vintages
+    description: >-
+      Append-only point-in-time feature snapshots for the current CPI target.
+      One snapshot is retained for each Gold build so later evaluation can select
+      only features known before the target CPI release.
+    columns:
+      - name: feature_snapshot_id
+        data_tests:
+          - not_null
+          - unique
+      - name: snapshot_recorded_at
+        data_tests:
+          - not_null
+      - name: asof_cutoff_ts
+        data_tests:
+          - not_null
+      - name: target_month
+        data_tests:
+          - not_null
+
+  - name: stg_observation_versions
+    description: >-
+      Immutable normalized source revisions with the first time NowCPI could use
+      each version, source release time when supplied, and Kafka lineage.
+    columns:
+      - name: version_id
+        data_tests:
+          - not_null
+          - unique
+      - name: available_at
+        data_tests:
+          - not_null

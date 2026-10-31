@@ -1,0 +1,7 @@
+"measured_at","source","frequency","last_check_status","last_check_completed_at","check_age_hours","latest_observation_period","observation_period_end","observation_age_days","freshness_slo_days","freshness_slo_met","changed_records","check_duration_seconds","warnings"
+"2026-10-31T03:07:43+07:00","brent_oil_daily","daily","success","10/30/2026 7:02:28 PM","1.09","10/30/2026 12:00:00 AM","2026-10-30","0","3","True","1","3.988",""
+"2026-10-31T03:07:43+07:00","imf_cpi_components_vietnam","monthly","success","10/30/2026 7:02:40 PM","1.08","2026-09","2026-09-30","30","75","True","0","15.667",""
+"2026-10-31T03:07:43+07:00","imf_cpi_vietnam","monthly","success","10/30/2026 7:02:27 PM","1.09","2026-09","2026-09-30","30","75","True","0","2.484",""
+"2026-10-31T03:07:43+07:00","nso_iip_vietnam","monthly","success","10/30/2026 7:02:26 PM","1.09","2026-09","2026-09-30","30","75","True","0","1.553",""
+"2026-10-31T03:07:43+07:00","usd_vnd_daily","daily","degraded","10/30/2026 7:02:31 PM","1.09","2026-10-30","2026-10-30","0","3","False","0","6.186","1 Failed download:; ['VND=X']: YFRateLimitError('Too Many Requests. Rate limited. Try after a while.')"
+"2026-10-31T03:07:43+07:00","vn_fuel_e10_ron95","daily","success","10/30/2026 7:02:26 PM","1.09","2026-10-30","2026-10-30","0","3","True","0","1.667",""
