@@ -46,6 +46,15 @@ Với archive có vintage date (ALFRED), chọn đúng bản vintage mới nhấ
 
 ## Tác động lên backtest hiện tại
 
+### Hai luồng đánh giá sau khi bổ sung proxy
+
+- **Strict PIT** vẫn yêu cầu vintage được lưu trước cutoff. Kết quả 0/140 trước đây không bị thay đổi hoặc “sửa” bằng cách bỏ điều kiện.
+- **Pseudo-vintage proxy** được chạy riêng ở `feature_ablation_sourcewise_proxy.csv`, predictions và `feature_ablation_proxy_asof_audit.csv`. Brent, USD/VND và xăng dùng `source_release_ts` nếu có; nếu thiếu thì giả định observation date + 1 ngày UTC. IIP dùng timestamp nguồn nếu có; nếu thiếu thì giả định cuối tháng quan sát + 15 ngày theo giờ Việt Nam. Các mốc cũ được dựng từ chuỗi quan sát hiện có nên có thể chứa giá trị đã sửa đổi về sau; đây là phân tích độ nhạy, không phải tái tạo lịch sử phát hành.
+- Báo cáo pipeline đọc bảng proxy riêng nhưng ghi rõ không phải strict PIT. Chỉ số proxy có thể giúp xem kết luận thay đổi thế nào dưới giả định khả dụng; không được dùng để tuyên bố đã chứng minh giá trị đa nguồn tại thời điểm thực.
+- DAG hàng ngày tiếp tục append snapshot từ lúc pipeline nhìn thấy dữ liệu. Các snapshot tích lũy về sau tạo được origin quan sát thực của pipeline, nhưng không tự tạo vintage lịch sử và không chứng minh ngày công bố của nhà phát hành.
+
+Để chuyển từ proxy sang bằng chứng lịch sử, cần nhập archive gốc có ngày vintage/phát hành đã xác minh cho từng nguồn. Nếu không có archive cho một nguồn, giữ strict PIT là “chưa đủ dữ liệu” và chỉ báo proxy như một phân tích phụ.
+
 Rerun `nowcpi_daily_pipeline` ngày 31/10/2026 thành công. Sau run, Trino có **9.338 phiên bản quan sát**, **142 hàng** trong PIT feature view, và **5 snapshot Gold** cho target `2026-10`. Cả 5 snapshot đều có Brent, USD/VND, xăng và IIP eligible (cùng snapshot CPI thì coverage 5/5); timestamp availability hiện chủ yếu dựa trên `source_ingested_at`. Benchmark vẫn có **0/140 mốc lịch sử** với macro source PIT: các snapshot mới được ghi từ cuối tháng 10/2026, sau cutoff phát hành của phần lớn CPI target lịch sử. Việc backtest gắn snapshot mới vào cutoff cũ sẽ là leakage.
 
 Primary nowcast và ablation hiện cùng chọn snapshot append-only theo `target_month`, `asof_cutoff_ts`, `snapshot_recorded_at` và `available_at`. Snapshot October 2026 chỉ có thể thành một origin huấn luyện sau khi CPI October được công bố; lần phát hành CPI tiếp theo sẽ là cơ hội đầu tiên kiểm chứng tăng coverage. Để tăng coverage nhanh hơn mà vẫn đúng PIT, cần nhập archive có vintage/release date kiểm chứng được cho lịch sử (ví dụ ALFRED/FRED cho Brent; archive NSO/Petrolimex cho IIP/xăng; nguồn FX có lịch sử phiên bản). Không tự gán lại `available_at` của dữ liệu backfill về ngày quan sát.

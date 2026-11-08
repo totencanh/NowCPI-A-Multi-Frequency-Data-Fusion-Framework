@@ -1,0 +1,93 @@
+{
+  "annotations": {"list": []},
+  "editable": false,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {"type": "prometheus", "uid": "nowcpi-prometheus"},
+      "fieldConfig": {"defaults": {"unit": "percent", "min": 0, "max": 100}, "overrides": []},
+      "gridPos": {"h": 7, "w": 12, "x": 0, "y": 0},
+      "id": 1,
+      "options": {"displayMode": "gradient", "orientation": "horizontal", "showUnfilled": true},
+      "targets": [{"expr": "nowcpi_stage_metric{metric=\"task_success_percent\",source=\"all\"}", "legendFormat": "{{stage}}", "refId": "A"}],
+      "title": "Task success by stage",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "nowcpi-prometheus"},
+      "fieldConfig": {"defaults": {"unit": "s"}, "overrides": []},
+      "gridPos": {"h": 7, "w": 12, "x": 12, "y": 0},
+      "id": 2,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"}},
+      "targets": [{"expr": "nowcpi_stage_metric{metric=\"stage_wall_seconds\",source=\"all\"}", "legendFormat": "{{stage}}", "refId": "A"}],
+      "title": "Latest stage wall time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "nowcpi-prometheus"},
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 7},
+      "id": 3,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"}},
+      "targets": [
+        {"expr": "nowcpi_stage_metric{metric=\"records_in\",source=\"all\"}", "legendFormat": "{{stage}} input", "refId": "A"},
+        {"expr": "nowcpi_stage_metric{metric=\"records_out\",source=\"all\"}", "legendFormat": "{{stage}} output", "refId": "B"},
+        {"expr": "nowcpi_stage_metric{metric=\"rejected_records\",source=\"all\"}", "legendFormat": "{{stage}} rejected", "refId": "C"}
+      ],
+      "title": "Latest records in, out, rejected",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "nowcpi-prometheus"},
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 7},
+      "id": 4,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"}},
+      "targets": [
+        {"expr": "nowcpi_stage_metric{metric=\"throughput_records_per_second\",source=\"all\"}", "legendFormat": "{{stage}} records/s", "refId": "A"},
+        {"expr": "nowcpi_stage_metric{metric=\"p95_latency_seconds\",source=\"all\"}", "legendFormat": "{{stage}} P95 seconds", "refId": "B"}
+      ],
+      "title": "Latest throughput and P95 latency",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "nowcpi-prometheus"},
+      "fieldConfig": {"defaults": {"unit": "s"}, "overrides": []},
+      "gridPos": {"h": 7, "w": 12, "x": 0, "y": 15},
+      "id": 5,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"}},
+      "targets": [{"expr": "histogram_quantile(0.95, sum by (le) (rate(nowcpi_bronze_batch_processing_seconds_bucket[15m])))", "legendFormat": "Bronze micro-batch P95", "refId": "A"}],
+      "title": "Live Bronze micro-batch P95",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "nowcpi-prometheus"},
+      "fieldConfig": {"defaults": {"unit": "percentunit", "min": 0, "max": 1}, "overrides": []},
+      "gridPos": {"h": 7, "w": 12, "x": 12, "y": 15},
+      "id": 6,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"}},
+      "targets": [{"expr": "nowcpi_bronze_latest_batch_acceptance_ratio", "legendFormat": "Bronze latest batch", "refId": "A"}],
+      "title": "Live Bronze acceptance ratio",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "nowcpi-prometheus"},
+      "fieldConfig": {"defaults": {"unit": "short", "min": -2, "max": 1, "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": -2}, {"color": "orange", "value": -1}, {"color": "red", "value": 0}, {"color": "green", "value": 1}]}}, "overrides": []},
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 22},
+      "id": 7,
+      "options": {"displayMode": "gradient", "orientation": "horizontal", "showUnfilled": true},
+      "targets": [{"expr": "nowcpi_stage_last_status{component=\"airflow_task\",source=\"all\"}", "legendFormat": "{{stage}}", "refId": "A"}],
+      "title": "Live Airflow task state (1 success, 0 failed, -1 running/retrying)",
+      "type": "bargauge"
+    }
+  ],
+  "refresh": "15s",
+  "schemaVersion": 39,
+  "tags": ["nowcpi", "pipeline", "observability"],
+  "time": {"from": "now-24h", "to": "now"},
+  "title": "NowCPI Pipeline Observability",
+  "uid": "nowcpi-pipeline-observability",
+  "version": 1
+}

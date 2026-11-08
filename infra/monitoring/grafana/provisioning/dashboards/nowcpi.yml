@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: NowCPI
+    orgId: 1
+    folder: NowCPI
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 30
+    options:
+      path: /var/lib/grafana/dashboards

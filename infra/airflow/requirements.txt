@@ -1,4 +1,6 @@
 apache-airflow==2.9.2
+statsd==4.0.1
+prometheus-client==0.22.1
 typing_extensions>=4.15.0,<5
 apache-airflow-providers-trino
 astronomer-cosmos

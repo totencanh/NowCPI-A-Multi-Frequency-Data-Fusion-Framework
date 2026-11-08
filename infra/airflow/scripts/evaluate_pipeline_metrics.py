@@ -21,6 +21,11 @@ from typing import Any
 from trino.dbapi import connect
 from confluent_kafka import Consumer, TopicPartition
 
+try:
+    from spark.common.prometheus_metrics import push_stage_metrics
+except ImportError:
+    push_stage_metrics = None
+
 
 SILVER_TABLES = {
     "cpi": "cpi_observations",
@@ -46,6 +51,17 @@ TOPIC_SOURCES = {
     "nowcpi.usd_vnd": "usd_vnd",
     "nowcpi.vn_fuel": "vn_fuel",
     "nowcpi.ppi_iip": "iip",
+}
+STAGE_TASKS = {
+    "ingestion": [
+        "collect_cpi", "collect_cpi_components", "collect_iip", "collect_brent",
+        "collect_vn_fuel", "collect_usd_vnd", "collect_nso_cpi_release_calendar",
+    ],
+    "kafka": ["publish_to_kafka"],
+    "bronze": ["wait_for_bronze_catchup"],
+    "silver": ["silver_cpi_sources", "silver_market_sources"],
+    "gold": ["dbt_staging", "dbt_gold", "dbt_pit_feature_tests"],
+    "forecasting": ["multisource_inflation_nowcast", "feature_ablation_evaluation"],
 }
 SOURCE_FREQUENCIES = {
     "imf_cpi_vietnam": "monthly",
@@ -268,17 +284,59 @@ def airflow_reliability_metrics(now: datetime) -> dict[str, Any]:
             task_rows = [
                 {
                     "task_id": task.task_id,
+                    "run_id": task.run_id,
                     "state": str(task.state).lower(),
                     "duration_seconds": float(task.duration)
                     if task.duration is not None
                     else None,
-                    "try_number": int(task.try_number or 0),
+                    # Airflow 2.9's public try_number property reports the
+                    # *next* try for non-running tasks. Read the stored count
+                    # so successful first attempts are not mislabeled retries.
+                    "try_number": int(getattr(task, "_try_number", task.try_number) or 0),
                     "start_date": task.start_date,
+                    "end_date": task.end_date,
                 }
                 for task in task_instances
             ]
+            latest_db_run = (
+                session.query(DagRun)
+                .filter(DagRun.dag_id == "nowcpi_daily_pipeline")
+                .filter(DagRun.start_date.isnot(None))
+                .order_by(DagRun.start_date.desc())
+                .first()
+            )
+            latest_task_rows = []
+            if latest_db_run is not None:
+                latest_instances = (
+                    session.query(TaskInstance)
+                    .filter(TaskInstance.dag_id == "nowcpi_daily_pipeline")
+                    .filter(TaskInstance.run_id == latest_db_run.run_id)
+                    .all()
+                )
+                latest_task_rows = [
+                    {
+                        "task_id": task.task_id,
+                        "run_id": task.run_id,
+                        "state": str(task.state).lower() if task.state else "not_started",
+                        "duration_seconds": float(task.duration)
+                        if task.duration is not None
+                        else None,
+                        "try_number": int(getattr(task, "_try_number", task.try_number) or 0),
+                        "start_date": task.start_date,
+                        "end_date": task.end_date,
+                    }
+                    for task in latest_instances
+                ]
+            latest_db_run_id = latest_db_run.run_id if latest_db_run else None
     except Exception as exc:  # Airflow DB visibility may depend on runtime role.
-        return {"available": False, "error": str(exc), "windows": {}, "tasks_30d": []}
+        return {
+            "available": False,
+            "error": str(exc),
+            "windows": {},
+            "tasks_30d": [],
+            "latest_run_id": None,
+            "latest_run_tasks": [],
+        }
 
     windows: dict[str, Any] = {}
     for days in (7, 30):
@@ -337,7 +395,409 @@ def airflow_reliability_metrics(now: datetime) -> dict[str, Any]:
                 "duration_p95_seconds": _percentile(durations, 0.95),
             }
         )
-    return {"available": True, "windows": windows, "tasks_30d": task_metrics}
+    return {
+        "available": True,
+        "windows": windows,
+        "tasks_30d": task_metrics,
+        "latest_run_id": latest_db_run_id,
+        "latest_run_tasks": latest_task_rows,
+    }
+
+
+def _read_json_if_present(path: Path) -> dict[str, Any]:
+    if not path.is_file():
+        return {}
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return value if isinstance(value, dict) else {}
+
+
+def _read_csv_records_if_present(path: Path) -> list[dict[str, Any]]:
+    if not path.is_file():
+        return []
+    try:
+        with path.open("r", encoding="utf-8", newline="") as handle:
+            return list(csv.DictReader(handle))
+    except OSError:
+        return []
+
+
+def _json_default(value: Any) -> str | float:
+    """Serialize values returned by Airflow/Trino into report-safe JSON."""
+    if isinstance(value, (datetime, date)):
+        return value.isoformat()
+    if isinstance(value, Decimal):
+        return float(value)
+    if isinstance(value, Path):
+        return str(value)
+    raise TypeError(f"Object of type {type(value).__name__} is not JSON serializable")
+
+
+def build_pipeline_stage_metrics(
+    *,
+    now: datetime,
+    dag_run: dict[str, Any] | None,
+    airflow_reliability: dict[str, Any],
+    audit_records: list[dict[str, Any]],
+    silver_stage_runs: list[dict[str, Any]],
+    kafka_bronze_latency: list[dict[str, Any]],
+    kafka_publish_record: dict[str, Any],
+    bronze_batch_metrics: dict[str, Any],
+    bronze_events_24h: int | None,
+    bronze_quarantine: dict[str, Any],
+    kafka_lag: dict[str, Any],
+    gold_cpi: dict[str, Any],
+    gold_features: dict[str, Any],
+    nowcast: dict[str, Any],
+    ablation: dict[str, Any],
+) -> dict[str, Any]:
+    """Build one run-scoped metric row per pipeline stage plus task detail.
+
+    Counts are populated only when they can be joined to this DAG run. Metrics
+    with a wider observation window are explicitly labeled as such.
+    """
+    run_id = (dag_run or {}).get("run_id") or airflow_reliability.get("latest_run_id")
+    task_rows = [
+        row for row in airflow_reliability.get("latest_run_tasks", [])
+        if not run_id or row.get("run_id") == run_id
+    ]
+    by_task = {row["task_id"]: row for row in task_rows}
+    nowcast_timestamp = parse_time(nowcast.get("processing_completed_at_utc"))
+    ablation_timestamp = parse_time(ablation.get("generated_at_utc"))
+    artifact_freshness = {
+        "nowcast_artifact_matches_latest_run": bool(
+            nowcast_timestamp
+            and dag_run
+            and parse_time(dag_run.get("start_date"))
+            and nowcast_timestamp >= parse_time(dag_run["start_date"])
+        ),
+        "ablation_artifact_matches_latest_run": bool(
+            ablation_timestamp
+            and dag_run
+            and parse_time(dag_run.get("start_date"))
+            and ablation_timestamp >= parse_time(dag_run["start_date"])
+        ),
+    }
+
+    collector_by_task = {
+        "collect_cpi": "imf_cpi_vietnam",
+        "collect_cpi_components": "imf_cpi_components_vietnam",
+        "collect_iip": "nso_iip_vietnam",
+        "collect_brent": "brent_oil_daily",
+        "collect_vn_fuel": "vn_fuel_e10_ron95",
+        "collect_usd_vnd": "usd_vnd_daily",
+        "collect_nso_cpi_release_calendar": "nso_cpi_release_calendar",
+    }
+    audit_by_source = {
+        row.get("source"): row
+        for row in audit_records
+        if row.get("dag_run_id") == run_id and row.get("source")
+    }
+    run_silver = [row for row in silver_stage_runs if row.get("run_id") == run_id]
+    silver_input = sum(int(row.get("input_events") or 0) for row in run_silver)
+    silver_accepted = sum(int(row.get("accepted_events") or 0) for row in run_silver)
+    silver_rejected = sum(int(row.get("rejected_events") or 0) for row in run_silver)
+    silver_duration = sum(
+        float(row.get("duration_seconds") or 0)
+        for row in run_silver
+        if row.get("duration_seconds") is not None
+    )
+
+    stage_rows = []
+    task_details = []
+    for stage, expected_tasks in STAGE_TASKS.items():
+        stage_tasks = [by_task.get(task_id, {
+            "task_id": task_id,
+            "run_id": run_id,
+            "state": "not_started",
+            "duration_seconds": None,
+            "try_number": 0,
+            "start_date": None,
+            "end_date": None,
+        }) for task_id in expected_tasks]
+        for task in stage_tasks:
+            start = task.get("start_date")
+            end = task.get("end_date")
+            elapsed = task.get("duration_seconds")
+            if elapsed is None and start:
+                started = parse_time(start)
+                ended = parse_time(end) if end else now
+                elapsed = round((ended - started).total_seconds(), 3) if started else None
+            task_details.append({
+                "run_id": run_id,
+                "stage": stage,
+                "task_id": task["task_id"],
+                "state": task.get("state", "not_started"),
+                "start_date": task.get("start_date"),
+                "end_date": task.get("end_date"),
+                "duration_seconds": elapsed,
+                "try_number": task.get("try_number", 0),
+            })
+
+        states = [str(task.get("state") or "not_started").lower() for task in stage_tasks]
+        started_tasks = [task for task in stage_tasks if task.get("start_date")]
+        successful = sum(state == "success" for state in states)
+        failed = sum(state == "failed" for state in states)
+        retried = sum(int(task.get("try_number") or 0) > 1 for task in stage_tasks)
+        if failed:
+            stage_status = "failed"
+        elif any(state in {"running", "queued", "up_for_retry", "scheduled"} for state in states):
+            stage_status = "running"
+        elif successful == len(expected_tasks):
+            stage_status = "success"
+        elif not started_tasks:
+            stage_status = "not_started"
+        else:
+            stage_status = "partial"
+
+        starts = [parse_time(task.get("start_date")) for task in started_tasks]
+        starts = [value for value in starts if value]
+        ends = [parse_time(task.get("end_date")) for task in started_tasks]
+        stage_end = max((value for value in ends if value), default=now)
+        stage_wall = round((stage_end - min(starts)).total_seconds(), 3) if starts else None
+        task_duration_sum = sum(
+            float(task["duration_seconds"])
+            for task in task_details[-len(stage_tasks):]
+            if task["duration_seconds"] is not None
+        )
+
+        row = {
+            "run_id": run_id,
+            "stage": stage,
+            "status": stage_status,
+            "task_count": len(expected_tasks),
+            "succeeded_tasks": successful,
+            "failed_tasks": failed,
+            "not_started_tasks": sum(state == "not_started" for state in states),
+            "retried_tasks": retried,
+            "task_success_percent": round(100 * successful / len(expected_tasks), 2)
+            if expected_tasks else None,
+            "stage_wall_seconds": stage_wall,
+            "task_duration_sum_seconds": round(task_duration_sum, 3),
+            "records_in": None,
+            "records_out": None,
+            "rejected_records": None,
+            "acceptance_rate_percent": None,
+            "throughput_records_per_second": None,
+            "p95_latency_seconds": None,
+            "p95_latency_sample_count": 0,
+            "p95_latency_basis": None,
+            "metric_scope": "latest_dag_run",
+            "metric_notes": {},
+            "details": {},
+        }
+        if stage == "ingestion":
+            collector_records = []
+            for task_id, source in collector_by_task.items():
+                audit = audit_by_source.get(source)
+                if audit:
+                    changed = int(audit.get("changed_records_written") or 0)
+                    collector_records.append({"task_id": task_id, **audit})
+                    row["records_out"] = (row["records_out"] or 0) + changed
+            row["metric_scope"] = "collector_audit_joined_by_dag_run_id"
+            row["details"] = {
+                "measured_collectors": len(collector_records),
+                "collector_checks": collector_records,
+                "records_out_definition": "sum(changed_records_written); unchanged records excluded",
+            }
+            if row["records_out"] is not None and stage_wall and stage_wall > 0:
+                row["throughput_records_per_second"] = round(row["records_out"] / stage_wall, 3)
+            collector_durations = [
+                float(item["check_duration_seconds"])
+                for item in collector_records
+                if item.get("check_duration_seconds") is not None
+            ]
+            row["p95_latency_seconds"] = _percentile(collector_durations, 0.95)
+            row["p95_latency_sample_count"] = len(collector_durations)
+            row["p95_latency_basis"] = "per-collector check duration"
+            row["details"]["p95_sample_count"] = len(collector_durations)
+            row["metric_notes"]["acceptance_rate_percent"] = (
+                "Not measured: raw ingestion preserves source rows and does not audit fetched/rejected counts."
+            )
+            row["metric_notes"]["rejected_records"] = (
+                "Not applicable to raw capture; source rows are retained before Silver validation."
+            )
+            if not collector_durations:
+                row["metric_notes"]["p95_latency_seconds"] = "Collector duration samples are unavailable."
+        elif stage == "kafka":
+            candidate_events = kafka_publish_record.get("attempted_events")
+            delivered_events = kafka_publish_record.get("delivered_events")
+            row["records_in"] = candidate_events
+            row["records_out"] = delivered_events
+            row["rejected_records"] = kafka_publish_record.get("rejected_events")
+            row["acceptance_rate_percent"] = kafka_publish_record.get("acceptance_rate_percent")
+            row["throughput_records_per_second"] = kafka_publish_record.get(
+                "throughput_events_per_second"
+            )
+            row["p95_latency_seconds"] = kafka_publish_record.get(
+                "p95_delivery_latency_seconds"
+            )
+            row["p95_latency_sample_count"] = int(
+                kafka_publish_record.get("delivery_latency_samples") or 0
+            )
+            row["p95_latency_basis"] = "producer send-to-ack latency per message"
+            row["details"] = {
+                "kafka_to_bronze_p95_by_topic_seconds": kafka_bronze_latency,
+                "consumer_lag_events_current": kafka_lag.get("total_lag_events"),
+                "publisher_run": kafka_publish_record,
+                "measurement_scope": "publisher counts and send-to-ack latency joined by dag_run_id",
+            }
+            row["metric_scope"] = "publisher_run_joined_by_dag_run_id"
+            if not kafka_publish_record:
+                row["metric_notes"].update({
+                    "records_in": "Publisher per-run audit is missing; available after the instrumented publisher runs.",
+                    "records_out": "Publisher per-run audit is missing; available after the instrumented publisher runs.",
+                    "rejected_records": "Publisher per-run audit is missing.",
+                    "acceptance_rate_percent": "No per-run attempted/delivered counts are available.",
+                    "throughput_records_per_second": "No per-run delivered count and duration are available.",
+                    "p95_latency_seconds": "No per-message producer acknowledgement samples are available.",
+                })
+            elif not candidate_events:
+                row["metric_notes"]["acceptance_rate_percent"] = "Undefined for this run: no messages were sent (0/0)."
+                row["metric_notes"]["p95_latency_seconds"] = "No messages were sent in this run, so no latency sample exists."
+        elif stage == "bronze":
+            row["records_in"] = bronze_batch_metrics.get("input_events_24h")
+            row["records_out"] = bronze_batch_metrics.get("persisted_candidates_24h", bronze_events_24h)
+            row["rejected_records"] = bronze_batch_metrics.get("rejected_events_24h")
+            row["acceptance_rate_percent"] = bronze_batch_metrics.get("acceptance_rate_percent")
+            row["throughput_records_per_second"] = bronze_batch_metrics.get(
+                "throughput_records_per_second"
+            )
+            row["p95_latency_seconds"] = bronze_batch_metrics.get("p95_processing_seconds")
+            row["p95_latency_sample_count"] = int(bronze_batch_metrics.get("batch_count_24h") or 0)
+            row["p95_latency_basis"] = "Bronze micro-batch processing duration"
+            row["metric_scope"] = "Bronze audit over last 24h; not isolated to one DAG run"
+            row["details"] = {
+                "persisted_events_24h": bronze_events_24h,
+                "quarantined_events_24h": bronze_quarantine.get("rejected_events_24h"),
+                "batch_audit_24h": bronze_batch_metrics,
+                "acceptance_definition": "sum(valid_events) / sum(input_events) across non-empty Bronze micro-batches",
+                "throughput_definition": "sum(persisted_candidates) / sum(batch processing seconds) across the 24-hour window",
+                "kafka_lag_events_current": kafka_lag.get("total_lag_events"),
+                "quarantine_by_reason": bronze_quarantine.get("by_reason", []),
+            }
+            if not bronze_batch_metrics.get("available"):
+                row["metric_notes"].update({
+                    "records_in": "Bronze micro-batch audit is not present yet; it starts recording after the Bronze stream restarts with the new instrumentation.",
+                    "rejected_records": "Bronze micro-batch rejection counts are not yet audited.",
+                    "acceptance_rate_percent": "Requires Bronze per-batch valid/input counts.",
+                    "throughput_records_per_second": "Requires Bronze per-batch counts and processing duration.",
+                    "p95_latency_seconds": "Requires Bronze per-batch processing duration samples.",
+                })
+            elif not bronze_batch_metrics.get("batch_count_24h"):
+                row["metric_notes"]["acceptance_rate_percent"] = "Undefined: no non-empty Bronze micro-batches in the last 24 hours."
+                row["metric_notes"]["p95_latency_seconds"] = "No non-empty Bronze micro-batch duration samples in the last 24 hours."
+        elif stage == "silver":
+            row["records_in"] = silver_input if run_silver else None
+            row["records_out"] = silver_accepted if run_silver else None
+            row["rejected_records"] = silver_rejected if run_silver else None
+            row["acceptance_rate_percent"] = round(100 * silver_accepted / silver_input, 2) if silver_input else None
+            row["throughput_records_per_second"] = round(silver_input / silver_duration, 3) if silver_duration > 0 else None
+            silver_durations = [
+                float(item["duration_seconds"])
+                for item in run_silver
+                if item.get("duration_seconds") is not None
+            ]
+            row["p95_latency_seconds"] = _percentile(silver_durations, 0.95)
+            row["p95_latency_sample_count"] = len(silver_durations)
+            row["p95_latency_basis"] = "per-topic Silver processing duration"
+            row["metric_scope"] = "silver.stage_run_audit joined by exact Airflow dag_run_id"
+            row["details"] = {
+                "topic_runs": run_silver,
+                "audit_available": bool(run_silver),
+                "p95_sample_count": len(silver_durations),
+            }
+            if not silver_input:
+                row["metric_notes"]["acceptance_rate_percent"] = "Undefined for this run: Silver received 0 events (0/0)."
+            if not run_silver:
+                row["metric_notes"].update({
+                    "records_in": "Silver run audit is missing for this dag_run_id.",
+                    "records_out": "Silver run audit is missing for this dag_run_id.",
+                    "rejected_records": "Silver run audit is missing for this dag_run_id.",
+                    "acceptance_rate_percent": "No run-scoped Silver input/output counts are available.",
+                    "throughput_records_per_second": "No run-scoped Silver counts and duration are available.",
+                })
+            elif silver_duration <= 0:
+                row["metric_notes"]["throughput_records_per_second"] = "Silver processing duration is unavailable or zero."
+            if not silver_durations:
+                row["metric_notes"]["p95_latency_seconds"] = "No per-topic Silver duration samples were recorded."
+        elif stage == "gold":
+            row["records_out"] = gold_features.get("feature_rows")
+            row["metric_scope"] = "current Gold table counts; not per-model row deltas"
+            row["details"] = {
+                "gold_cpi_rows": gold_cpi.get("gold_cpi_rows"),
+                "gold_nowcasting_feature_rows": gold_features.get("feature_rows"),
+                "dbt_test_task_state": by_task.get("dbt_pit_feature_tests", {}).get("state"),
+                "gold_source_coverage_percent": gold_features.get("latest_target_source_coverage_pct"),
+            }
+            gold_task_durations = [
+                float(task["duration_seconds"])
+                for task in stage_tasks
+                if task.get("duration_seconds") is not None
+            ]
+            row["p95_latency_seconds"] = _percentile(gold_task_durations, 0.95)
+            row["p95_latency_sample_count"] = len(gold_task_durations)
+            row["p95_latency_basis"] = "within-run dbt task duration (descriptive sample)"
+            row["details"]["p95_sample_count"] = len(gold_task_durations)
+            if not gold_task_durations:
+                row["metric_notes"]["p95_latency_seconds"] = "Airflow task duration samples are unavailable."
+            row["metric_notes"].update({
+                "records_in": "dbt source-row counts are not captured per model run yet.",
+                "rejected_records": "dbt tests are reported as task status; they do not provide a record rejection count.",
+                "acceptance_rate_percent": "Not a record-level stage; use dbt test/task success rate instead.",
+                "throughput_records_per_second": "Requires dbt per-run row deltas; current Gold row count is a table snapshot, not rows produced by this run.",
+            })
+        elif stage == "forecasting":
+            row["records_in"] = nowcast.get("training_months")
+            row["records_out"] = 1 if nowcast.get("nowcast_mom_percent") is not None else None
+            row["metric_scope"] = "latest forecast/ablation artifacts; timestamp checked against DAG start"
+            row["details"] = {
+                "forecast_target_month": nowcast.get("target_month"),
+                "latest_actual_cpi_month": nowcast.get("latest_actual_cpi_month"),
+                "model": nowcast.get("nowcast_model"),
+                "nowcast_mom_percent": nowcast.get("nowcast_mom_percent"),
+                "training_rows": nowcast.get("full_multisource_ridge_training_rows"),
+                "training_origins_with_macro_pit": nowcast.get("full_multisource_ridge_training_origins_with_any_macro_source"),
+                "current_macro_source_coverage_percent": nowcast.get("multisource_current_feature_coverage_pct"),
+                "model_processing_seconds": nowcast.get("processing_duration_seconds"),
+                "ablation_run_id": ablation.get("evaluation_run_id"),
+                "artifact_freshness": artifact_freshness,
+            }
+            forecast_task_durations = [
+                float(task["duration_seconds"])
+                for task in stage_tasks
+                if task.get("duration_seconds") is not None
+            ]
+            row["p95_latency_seconds"] = _percentile(forecast_task_durations, 0.95)
+            row["p95_latency_sample_count"] = len(forecast_task_durations)
+            row["p95_latency_basis"] = "within-run forecasting task duration (descriptive sample)"
+            row["details"]["p95_sample_count"] = len(forecast_task_durations)
+            if not forecast_task_durations:
+                row["metric_notes"]["p95_latency_seconds"] = "Airflow task duration samples are unavailable."
+            if row["records_out"] and stage_wall and stage_wall > 0:
+                row["throughput_records_per_second"] = round(row["records_out"] / stage_wall, 6)
+            row["metric_notes"].update({
+                "rejected_records": "Forecasting produces model outputs; it does not reject source records at this stage.",
+                "acceptance_rate_percent": "Not applicable to model inference; forecast validation is reported separately.",
+            })
+        stage_rows.append(row)
+
+    return {
+        "available": bool(task_rows),
+        "run_id": run_id,
+        "dag_state_at_measurement": (dag_run or {}).get("state"),
+        "generated_at": isoformat_now(now),
+        "artifact_freshness": artifact_freshness,
+        "stages": stage_rows,
+        "tasks": task_details,
+        "definitions": {
+            "stage_wall_seconds": "min(task start) to max(task end); active stage ends at report time",
+            "records_out": "null means unavailable/not attributable, not zero",
+            "throughput": "only computed when numerator and duration share a measurement scope",
+        },
+    }
 
 
 def measure_kafka_bronze_lag(
@@ -580,10 +1040,22 @@ def read_nowcast_backtest(output_dir: Path) -> dict[str, Any]:
     }
 
 
-def latest_collector_group(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def latest_collector_group(
+    records: list[dict[str, Any]], dag_run_id: str | None = None
+) -> list[dict[str, Any]]:
     """Group the most recent parallel collector checks for one DAG run."""
     if not records:
         return []
+    if dag_run_id:
+        exact = [row for row in records if row.get("dag_run_id") == dag_run_id]
+        if exact:
+            return exact
+        # Only use the legacy time-window fallback when these rows predate
+        # run-id audit fields; never attach a different known run's collectors.
+        legacy_records = [row for row in records if not row.get("dag_run_id")]
+        if not legacy_records:
+            return []
+        records = legacy_records
     latest = max(records, key=lambda row: str(row.get("check_completed_at") or ""))
     run_id = latest.get("dag_run_id")
     if run_id:
@@ -727,6 +1199,9 @@ def duration_seconds(start: Any, end: Any) -> float | None:
 
 
 def markdown_report(report: dict[str, Any]) -> str:
+    def cell(value: Any, suffix: str = "") -> str:
+        return "N/A" if value is None else f"{value}{suffix}"
+
     lines = [
         "# NowCPI Pipeline Metrics",
         "",
@@ -774,6 +1249,49 @@ def markdown_report(report: dict[str, Any]) -> str:
             f"| {row['kafka_topic']} | {row['persisted_events']} "
             f"| {row['avg_kafka_to_bronze_seconds']} | {row['p95_kafka_to_bronze_seconds']} |"
         )
+    stage_metrics = report["pipeline_latency"].get("stage_metrics", {})
+    lines += ["", "## Metrics by pipeline stage", ""]
+    if stage_metrics.get("available"):
+        lines += [
+            f"Run: `{stage_metrics.get('run_id')}`; Airflow state at measurement: `{stage_metrics.get('dag_state_at_measurement')}`.",
+            "Stage duration is wall time from its first task start to its last task end. Counts are joined to the run where the source audit supports it; wider-window values are labeled in the scope column.",
+            "",
+            "| Stage | Status | Tasks successful/total | Retries | Wall (s) | Task time sum (s) | Input | Output | Rejected | Acceptance | Throughput/s | P95 latency (s) | Scope |",
+            "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|",
+        ]
+        for row in stage_metrics.get("stages", []):
+            lines.append(
+                f"| {row['stage']} | {row['status']} | {row['succeeded_tasks']}/{row['task_count']} "
+                f"| {row['retried_tasks']} | {row['stage_wall_seconds']} | {row['task_duration_sum_seconds']} "
+                f"| {cell(row['records_in'])} | {cell(row['records_out'])} | {cell(row['rejected_records'])} "
+                f"| {cell(row['acceptance_rate_percent'], '%')} | {cell(row['throughput_records_per_second'])} "
+                f"| {cell(row['p95_latency_seconds'])} | {row['metric_scope']} |"
+            )
+        notes = [
+            f"- **{row['stage']}**: {field} — {reason}"
+            for row in stage_metrics.get("stages", [])
+            for field, reason in row.get("metric_notes", {}).items()
+        ]
+        p95_specs = [
+            f"- **{row['stage']}**: {row['p95_latency_seconds']}s from "
+            f"{row['p95_latency_sample_count']} sample(s), basis: {row['p95_latency_basis']}"
+            for row in stage_metrics.get("stages", [])
+            if row.get("p95_latency_seconds") is not None
+        ]
+        lines += [
+            "",
+            "P95 includes its sample basis in the JSON/CSV details; within-run task samples are descriptive and are not long-run SLO estimates. `N/A` means the metric is undefined or has no instrumented sample, not zero. Wider-window values are labeled and must not be read as exact run deltas.",
+            "",
+            "P95 sample basis:",
+            *p95_specs,
+            "",
+            "Unavailable or inapplicable metrics:",
+            *notes,
+            "",
+            "Task-level start/end, state, duration and retry count are exported separately.",
+        ]
+    else:
+        lines.append("Stage task metrics are unavailable because Airflow metadata for a latest run could not be read.")
     lag = report["metric_slo_attainment"]["kafka_consumer_lag"]
     lines += ["", "## Kafka consumer lag", ""]
     if lag.get("available"):
@@ -874,6 +1392,28 @@ def markdown_report(report: dict[str, Any]) -> str:
         lines.append(backtest["evaluation_note"])
     else:
         lines.append(f"Backtest comparison unavailable: {backtest.get('reason')}.")
+    proxy_rows = report.get("sourcewise_ablation_proxy", [])
+    lines += [
+        "",
+        "## Sourcewise pseudo-vintage proxy ablation",
+        "",
+        "These observation-date proxy results are diagnostic only: they do not reconstruct historical source revisions and are not strict PIT evidence.",
+    ]
+    if proxy_rows:
+        lines += [
+            "",
+            "| Source | Status | Paired origins | Baseline MAE (pp) | Added-source MAE (pp) | MAE delta (pp) | Strict PIT claim |",
+            "|---|---|---:|---:|---:|---:|---|",
+        ]
+        for row in proxy_rows:
+            lines.append(
+                f"| {row.get('source')} | {row.get('status')} | {row.get('paired_origins')} "
+                f"| {row.get('baseline_mae_pp')} | {row.get('source_added_mae_pp')} "
+                f"| {row.get('mae_delta_pp_source_minus_baseline')} "
+                f"| {row.get('strict_vintage_performance_claim_allowed')} |"
+            )
+    else:
+        lines.append("Proxy artifact is not present yet; the next feature-ablation task run will generate it.")
     throughput = report["throughput"]
     lines += [
         "",
@@ -975,6 +1515,11 @@ def markdown_report(report: dict[str, Any]) -> str:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--audit-file", type=Path, default=Path("/opt/airflow/audit/source_checks.jsonl"))
+    parser.add_argument(
+        "--kafka-publish-audit-file",
+        type=Path,
+        default=Path("/opt/airflow/audit/kafka_publish_runs.jsonl"),
+    )
     parser.add_argument("--output-dir", type=Path, default=Path("/opt/airflow/audit/reports"))
     parser.add_argument("--trino-host", default=os.getenv("TRINO_HOST", "trino"))
     parser.add_argument("--trino-port", type=int, default=int(os.getenv("TRINO_PORT", "8080")))
@@ -1143,6 +1688,40 @@ def main() -> None:
             )
             bronze_quarantine_metrics["by_reason"] = rows_as_dicts(cursor)
             bronze_quarantine_metrics["available"] = True
+        bronze_batch_metrics = {"available": False, "window_hours": 24}
+        if "kafka_batch_audit" in bronze_tables:
+            cursor.execute(
+                """SELECT count(*) AS batch_count_24h,
+                    sum(input_events) AS input_events_24h,
+                    sum(valid_events) AS valid_events_24h,
+                    sum(rejected_events) AS rejected_events_24h,
+                    sum(persisted_candidates) AS persisted_candidates_24h,
+                    sum(processing_duration_seconds) AS processing_seconds_24h,
+                    approx_percentile(processing_duration_seconds, 0.95)
+                        AS p95_processing_seconds
+                  FROM delta.bronze.kafka_batch_audit
+                  WHERE batch_committed_at >= current_timestamp - INTERVAL '24' HOUR"""
+            )
+            bronze_batch_metrics.update(rows_as_dicts(cursor)[0])
+            bronze_batch_metrics["available"] = True
+            input_events_24h = bronze_batch_metrics.get("input_events_24h")
+            processing_seconds_24h = bronze_batch_metrics.get("processing_seconds_24h")
+            valid_events_24h = bronze_batch_metrics.get("valid_events_24h")
+            if input_events_24h:
+                bronze_batch_metrics["acceptance_rate_percent"] = round(
+                    100 * float(valid_events_24h or 0) / float(input_events_24h), 2
+                )
+            else:
+                bronze_batch_metrics["acceptance_rate_percent"] = None
+            bronze_batch_metrics["throughput_records_per_second"] = (
+                round(
+                    float(bronze_batch_metrics.get("persisted_candidates_24h") or 0)
+                    / float(processing_seconds_24h),
+                    3,
+                )
+                if processing_seconds_24h and float(processing_seconds_24h) > 0
+                else None
+            )
         cursor.execute("SHOW TABLES FROM delta.silver")
         silver_tables = {str(row[0]).lower() for row in cursor.fetchall()}
         silver_stage_metrics = {"available": False, "latest_runs": []}
@@ -1154,7 +1733,7 @@ def main() -> None:
                         AS duration_seconds
                   FROM delta.silver.stage_run_audit
                   ORDER BY stage_committed_at DESC
-                  LIMIT 30"""
+                  LIMIT 200"""
             )
             silver_stage_metrics = {
                 "available": True,
@@ -1173,6 +1752,18 @@ def main() -> None:
     kafka_bronze_lag = measure_kafka_bronze_lag(args.kafka_broker, bronze_offsets)
     airflow_reliability = airflow_reliability_metrics(now)
     nowcast_backtest = read_nowcast_backtest(args.forecasting_output_dir)
+    nowcast_artifact = _read_json_if_present(
+        args.forecasting_output_dir
+        / "production_models"
+        / "full_multisource_ridge"
+        / "latest.json"
+    )
+    ablation_manifest = _read_json_if_present(
+        args.forecasting_output_dir / "feature_ablation_run_manifest.json"
+    )
+    proxy_sourcewise_ablation = _read_csv_records_if_present(
+        args.forecasting_output_dir / "feature_ablation_sourcewise_proxy.csv"
+    )
 
     event_count, bursts = summarize_bursts(recent_event_rows)
     latest_burst = max(bursts, key=lambda row: row["last_bronze_commit_at"], default=None)
@@ -1184,7 +1775,10 @@ def main() -> None:
         key=lambda row: row["effective_persisted_events_per_second"],
         default=None,
     )
-    collector_group = latest_collector_group(audit_records)
+    latest_dag = get_latest_dag_run()
+    collector_group = latest_collector_group(
+        audit_records, (latest_dag or {}).get("run_id")
+    )
     changed_records = sum(int(row.get("changed_records_written") or 0) for row in collector_group)
     collector_starts = [parse_time(row.get("check_started_at")) for row in collector_group]
     collector_ends = [parse_time(row.get("check_completed_at")) for row in collector_group]
@@ -1200,7 +1794,6 @@ def main() -> None:
         if collector_window and collector_window > 0
         else None
     )
-    latest_dag = get_latest_dag_run()
     source_freshness = latest_source_checks(audit_records, now)
     freshness_measured = [
         row for row in source_freshness
@@ -1215,6 +1808,29 @@ def main() -> None:
         and scheduled_dag.get("state") == "success"
         and dag_duration is not None
         and dag_duration <= DAG_LATENCY_SLO_SECONDS
+    )
+    pipeline_stage_metrics = build_pipeline_stage_metrics(
+        now=now,
+        dag_run=latest_dag,
+        airflow_reliability=airflow_reliability,
+        audit_records=audit_records,
+        silver_stage_runs=silver_stage_metrics.get("latest_runs", []),
+        kafka_bronze_latency=latencies,
+        kafka_publish_record=next(
+            (
+                record for record in reversed(read_audit(args.kafka_publish_audit_file))
+                if record.get("dag_run_id") == (latest_dag or {}).get("run_id")
+            ),
+            {},
+        ),
+        bronze_batch_metrics=bronze_batch_metrics,
+        bronze_events_24h=event_count,
+        bronze_quarantine=bronze_quarantine_metrics,
+        kafka_lag=kafka_bronze_lag,
+        gold_cpi=gold_quality,
+        gold_features=gold_feature_coverage,
+        nowcast=nowcast_artifact,
+        ablation=ablation_manifest,
     )
     latency_measured = [
         row for row in latencies if row.get("p95_kafka_to_bronze_seconds") is not None
@@ -1353,6 +1969,7 @@ def main() -> None:
             "kafka_to_bronze_by_topic": latencies,
             "airflow_task_durations_30d": airflow_reliability.get("tasks_30d", []),
             "silver_stage_runs": silver_stage_metrics,
+            "stage_metrics": pipeline_stage_metrics,
         },
         "throughput": {
             "window": "last_24_hours",
@@ -1382,10 +1999,11 @@ def main() -> None:
         "airflow_reliability": airflow_reliability,
         "gold_feature_coverage": gold_feature_coverage,
         "nowcast_backtest": nowcast_backtest,
+        "sourcewise_ablation_proxy": proxy_sourcewise_ablation,
         "recommended_additional_metrics": [
             "Source release-calendar/SLO checks: freshness now includes age since the latest observation period end and expected frequency, but publication lag needs release timestamps.",
             "Separate source-scope filtering from data-quality failures; a large out-of-scope share can be expected when collectors keep broad raw history.",
-            "Stage-level commit timestamps and run IDs on Silver/Gold tables for record-level lineage; current report measures task durations from Airflow metadata.",
+        "Run-scoped Silver row counts are recorded by stage audit; dbt model-level row deltas and source publication timestamps remain useful additions.",
             "Source publication timestamp or release calendar; current IMF CPI events have no release_ts, so publication delay cannot be calculated yet.",
             "Nowcast MAE/RMSE and prediction interval coverage against subsequently published CPI values.",
         ],
@@ -1394,10 +2012,66 @@ def main() -> None:
     args.output_dir.mkdir(parents=True, exist_ok=True)
     json_path = args.output_dir / "pipeline_metrics_latest.json"
     markdown_path = args.output_dir / "pipeline_metrics_latest.md"
-    json_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    stage_csv_path = args.output_dir / "pipeline_stage_metrics_latest.csv"
+    task_csv_path = args.output_dir / "pipeline_stage_tasks_latest.csv"
+    json_path.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2, default=_json_default),
+        encoding="utf-8",
+    )
     markdown_path.write_text(markdown_report(report), encoding="utf-8")
+    stage_columns = [
+        "run_id", "stage", "status", "task_count", "succeeded_tasks", "failed_tasks",
+        "not_started_tasks", "retried_tasks", "task_success_percent", "stage_wall_seconds",
+        "task_duration_sum_seconds", "records_in", "records_out", "rejected_records",
+        "acceptance_rate_percent", "throughput_records_per_second", "p95_latency_seconds",
+        "p95_latency_sample_count", "p95_latency_basis", "metric_scope", "metric_notes", "details",
+    ]
+    with stage_csv_path.open("w", encoding="utf-8-sig", newline="") as stage_file:
+        writer = csv.DictWriter(stage_file, fieldnames=stage_columns, extrasaction="ignore")
+        writer.writeheader()
+        for row in pipeline_stage_metrics.get("stages", []):
+            writer.writerow({
+                **row,
+                "metric_notes": json.dumps(row.get("metric_notes", {}), ensure_ascii=False),
+                "details": json.dumps(
+                    row.get("details", {}), ensure_ascii=False, default=_json_default
+                ),
+            })
+    task_columns = [
+        "run_id", "stage", "task_id", "state", "start_date", "end_date",
+        "duration_seconds", "try_number",
+    ]
+    with task_csv_path.open("w", encoding="utf-8-sig", newline="") as task_file:
+        writer = csv.DictWriter(task_file, fieldnames=task_columns, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(pipeline_stage_metrics.get("tasks", []))
+    if push_stage_metrics is not None:
+        for stage_row in pipeline_stage_metrics.get("stages", []):
+            push_stage_metrics(
+                component="pipeline_summary",
+                stage=stage_row["stage"],
+                source="all",
+                status=stage_row["status"],
+                values={
+                    key: stage_row.get(key)
+                    for key in (
+                        "task_success_percent",
+                        "stage_wall_seconds",
+                        "task_duration_sum_seconds",
+                        "records_in",
+                        "records_out",
+                        "rejected_records",
+                        "acceptance_rate_percent",
+                        "throughput_records_per_second",
+                        "p95_latency_seconds",
+                        "p95_latency_sample_count",
+                    )
+                },
+            )
     print(f"JSON report: {json_path}")
     print(f"Markdown report: {markdown_path}")
+    print(f"Stage metrics CSV: {stage_csv_path}")
+    print(f"Task metrics CSV: {task_csv_path}")
     print(markdown_report(report))
 
 

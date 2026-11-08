@@ -21,6 +21,8 @@ Key outputs:
 - `outputs/midas_backtest_predictions.csv` and `outputs/midas_backtest_metrics.csv`: rolling-origin predictions and model comparison metrics.
 - `outputs/midas_paired_comparisons.csv`: paired error differences, confidence intervals, and Diebold–Mariano results.
 - `outputs/feature_ablation_*`: PIT source coverage, ablation results, model runtime/memory, and ineligible-fold records.
+- `outputs/feature_ablation_sourcewise_proxy.csv` and `outputs/feature_ablation_sourcewise_proxy_predictions.csv`: separate pseudo-vintage sourcewise diagnostics using explicit availability assumptions. These do not replace strict PIT results and are not real-time performance evidence.
+- `outputs/feature_ablation_proxy_asof_audit.csv`: per-origin cutoff and proxy-policy audit for the diagnostic track.
 - `outputs/release_timestamp_audit.csv` and `outputs/raw_event_version_audit.csv`: release timestamp coverage and collected raw event revisions.
 
 ## Evaluation limits
@@ -50,3 +52,9 @@ when historical PIT source coverage is missing; the code does not fabricate
 scores for unavailable vintages.
 
 For source vintage details, see [`docs/POINT_IN_TIME_SOURCE_REVIEW.md`](../docs/POINT_IN_TIME_SOURCE_REVIEW.md). For model comparison protocol and current evidence, see [`docs/README_CAI_TIEN_2.md`](../docs/README_CAI_TIEN_2.md).
+
+## Strict PIT and proxy sourcewise evidence
+
+The feature-ablation task writes two separate sourcewise tracks. Strict PIT remains vintage-only in `feature_ablation_sourcewise.csv`; missing historical vintages remain not estimable and are not filled with current values. The pseudo-vintage proxy artifacts are separately named and labeled. Daily Brent/USD-VND/fuel observations use a source release timestamp when supplied, otherwise observation date + one UTC day. IIP uses a source release timestamp when supplied, otherwise observation month-end + 15 Vietnam-local days. These assumptions support sensitivity diagnostics only: they do not recover historical source revisions or prove real-time performance. The pipeline metrics report displays proxy results with this caveat and never merges them into strict PIT scores.
+
+For real historical evidence, ingest verified source archives (such as ALFRED vintage dates for Brent, dated NSO/Petrolimex publications, and versioned Vietnam FX records) as immutable source vintages. If an archive is unavailable, continue append-only snapshots prospectively; never backdate today's downloaded values.

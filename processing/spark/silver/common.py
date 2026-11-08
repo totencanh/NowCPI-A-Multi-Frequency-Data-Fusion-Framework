@@ -13,6 +13,11 @@ from pyspark import StorageLevel
 from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
 
+try:
+    from spark.common.prometheus_metrics import push_stage_metrics
+except ImportError:
+    push_stage_metrics = None
+
 
 # Silver keeps each economic indicator in its own table. These mappings are
 # topic-level contracts from ingestion/common.py and bronze/kafka_stream.py.
@@ -519,6 +524,26 @@ def _write_silver_run_audit(
         "CREATE TABLE IF NOT EXISTS silver.stage_run_audit "
         f"USING DELTA LOCATION '{_quote_sql_path(path)}'"
     )
+    if push_stage_metrics is not None:
+        duration_seconds = max(
+            0.0, (datetime.now(timezone.utc) - stage_started_at).total_seconds()
+        )
+        push_stage_metrics(
+            component="silver",
+            stage="silver",
+            source=topic,
+            status="success",
+            values={
+                "records_in": input_events,
+                "records_accepted": accepted_events,
+                "records_rejected": rejected_events,
+                "acceptance_rate_percent": round(100 * accepted_events / input_events, 2)
+                if input_events else None,
+                "throughput_records_per_second": round(input_events / duration_seconds, 3)
+                if duration_seconds > 0 else None,
+                "stage_duration_seconds": duration_seconds,
+            },
+        )
 
 
 def _after_silver_checkpoint(

@@ -68,7 +68,36 @@ docker compose --profile airflow exec -T airflow-scheduler python /opt/airflow/s
 ```
 
 The report is written to `workspace/pipeline-audit/reports/` in JSON and
-Markdown formats. Its source freshness section measures the age of the latest
+Markdown formats. The daily DAG also runs `pipeline_stage_metrics` after the
+nowcast and ablation branches finish (including when either branch fails), so
+the reports are refreshed automatically at the end of each run. In addition to
+the JSON/Markdown report, `pipeline_stage_metrics_latest.csv` summarizes each
+stage and `pipeline_stage_tasks_latest.csv` lists task status, retries, and
+duration for the measured run. Stages are ingestion, Kafka, Bronze, Silver,
+Gold/dbt, and forecasting. Run-specific collector and Silver counts are joined
+by Airflow DAG run ID; Kafka/Bronze 24-hour observations and current Gold row
+counts are labeled with their measurement scope instead of being presented as
+run-level deltas. A `null` metric means it was unavailable, not zero.
+
+The Kafka publisher writes one `kafka_publish_runs.jsonl` audit row per DAG run
+with candidate/delivered event counts, send-to-ack latency samples, acceptance,
+and throughput. The Bronze stream writes idempotent per-microbatch counts and
+processing durations to `bronze.kafka_batch_audit`; these Bronze figures use a
+rolling 24-hour scope because the consumer is a continuous service rather than
+a task started by each DAG run. Restart `spark-bronze-streaming` after updating
+its code; the new Bronze metrics become available after it processes a
+non-empty Kafka microbatch. P95 rows identify their basis and sample count;
+task-duration P95 for Gold and forecasting is descriptive with only a few tasks,
+not a long-run latency SLO. `N/A` in Markdown means undefined or uninstrumented.
+
+For live monitoring during execution, use the optional Prometheus/Grafana stack
+documented in [`infra/monitoring/README.md`](../monitoring/README.md). Airflow
+task metrics flow through StatsD; collector/Kafka/Silver summaries are pushed
+after each short-lived stage; the continuous Bronze consumer exposes a scrape
+endpoint and histogram. Run IDs remain in the durable audit files/tables rather
+than Prometheus labels.
+
+Its source freshness section measures the age of the latest
 stored observation and the latest collector-check status; it does not claim
 publication-to-ingestion lag without a reliable source release timestamp. It
 also measures Kafka-to-Bronze latency,

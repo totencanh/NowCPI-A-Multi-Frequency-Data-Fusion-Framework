@@ -231,6 +231,24 @@ def main() -> int:
         "latest_stored_release_ts": latest_release_ts,
     }
     append_jsonl(args.audit_file, record)
+    try:
+        from spark.common.prometheus_metrics import push_stage_metrics
+
+        push_stage_metrics(
+            component="collector",
+            stage="ingestion",
+            source=args.source,
+            status=record["status"],
+            values={
+                "check_duration_seconds": collector_duration,
+                "changed_records_written": len(changed_events),
+                "stored_unique_records": stored_event_count,
+                "batch_files_written": len(changed_paths),
+                "collector_success": exit_code == 0,
+            },
+        )
+    except ImportError:
+        pass
     print("SOURCE_CHECK_AUDIT " + json.dumps(record, ensure_ascii=False), flush=True)
     return exit_code
 

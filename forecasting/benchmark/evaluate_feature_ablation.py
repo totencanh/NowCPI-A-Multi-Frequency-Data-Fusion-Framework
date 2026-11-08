@@ -175,7 +175,9 @@ def persist_model_artifacts(
     return run_id, registry_rows
 
 
-def fetch_features() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def fetch_features() -> tuple[
+    pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame
+]:
     conn = connect(
         host=os.getenv("TRINO_HOST", "trino"),
         port=int(os.getenv("TRINO_PORT", "8080")),
@@ -186,6 +188,9 @@ def fetch_features() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     try:
         labels = read_table(conn, "gold_nowcasting_labels")
         brent = read_table(conn, "gold_brent_daily")
+        usd_vnd = read_table(conn, "gold_usd_vnd_daily")
+        fuel = read_table(conn, "gold_fuel_daily")
+        iip = read_table(conn, "gold_iip_monthly")
         # The PIT projection is a single current Gold build. Historical folds
         # must instead select immutable snapshots captured no later than each
         # forecast cutoff; otherwise using the current row either leaks future
@@ -193,7 +198,158 @@ def fetch_features() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         features = read_table(conn, "gold_nowcasting_feature_vintages")
     finally:
         conn.close()
-    return labels, brent, features
+    return labels, brent, usd_vnd, fuel, iip, features
+
+
+def _daily_proxy_rows(
+    frame: pd.DataFrame,
+    date_column: str,
+    value_column: str,
+    cutoff: pd.Timestamp,
+    source_release_column: str | None = None,
+) -> pd.DataFrame:
+    """Apply an explicit observation-to-availability proxy for daily inputs.
+
+    Source release timestamps win when present. Otherwise, a daily observation
+    is assumed available at 00:00 UTC on the next calendar day. This is a
+    diagnostic assumption, not evidence of the historical publication time.
+    """
+    if frame.empty or date_column not in frame or value_column not in frame:
+        return pd.DataFrame(columns=["observation_date", "value", "proxy_available_at"])
+    rows = frame.copy()
+    rows["observation_date"] = pd.to_datetime(
+        rows[date_column], errors="coerce", utc=True
+    ).dt.tz_convert(None)
+    rows["value"] = pd.to_numeric(rows[value_column], errors="coerce")
+    rows = rows.dropna(subset=["observation_date", "value"])
+    assumed = pd.to_datetime(
+        rows["observation_date"].dt.normalize() + pd.Timedelta(days=1), utc=True
+    )
+    release = (
+        pd.to_datetime(rows[source_release_column], errors="coerce", utc=True)
+        if source_release_column and source_release_column in rows
+        else pd.Series(pd.NaT, index=rows.index, dtype="datetime64[ns, UTC]")
+    )
+    rows["proxy_available_at"] = release.where(release.notna(), assumed)
+    return rows.loc[rows["proxy_available_at"] <= as_utc(cutoff)].copy()
+
+
+def build_proxy_history(
+    history: pd.DataFrame,
+    brent: pd.DataFrame,
+    usd_vnd: pd.DataFrame,
+    fuel: pd.DataFrame,
+    iip: pd.DataFrame,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Build a separate pseudo-vintage history using source-specific assumptions.
+
+    This track intentionally does not use collector ingest timestamps to
+    backdate current source values. Its outputs are diagnostics only.
+    """
+    proxy = history.copy()
+    audit = []
+    daily_inputs = {
+        "brent": _daily_proxy_rows(brent, "observation_date", "brent_usd_per_barrel", pd.Timestamp.max.tz_localize("UTC"), "source_release_ts"),
+        "usd_vnd": _daily_proxy_rows(usd_vnd, "observation_date", "vnd_per_usd", pd.Timestamp.max.tz_localize("UTC")),
+        "fuel": _daily_proxy_rows(fuel, "observation_date", "vnd_per_liter", pd.Timestamp.max.tz_localize("UTC")),
+    }
+    # Keep per-source values and apply the historical cutoff independently for
+    # every CPI release origin. Each daily source is bounded to target month.
+    for idx, target in proxy.iterrows():
+        month = pd.Timestamp(target["target_month"]).to_period("M").to_timestamp()
+        cutoff = as_utc(pd.Timestamp(target["target_cutoff_at"]))
+        next_month = month + pd.DateOffset(months=1)
+        source_audit = {}
+        for source, frame in daily_inputs.items():
+            subset = frame.loc[
+                (frame["observation_date"] >= month)
+                & (frame["observation_date"] < next_month)
+                & (frame["proxy_available_at"] <= cutoff)
+            ]
+            release_count = int(
+                pd.to_datetime(subset.get("source_release_ts"), errors="coerce", utc=True)
+                .notna().sum()
+            ) if "source_release_ts" in subset else 0
+            source_audit[source] = {
+                f"{source}_observations_available": int(len(subset)),
+                f"{source}_observations_with_source_release_ts": release_count,
+                f"{source}_observations_using_proxy": int(len(subset) - release_count),
+            }
+            if source == "brent":
+                # The weekly Brent predictors are already built with the same
+                # observation-date/next-day policy in historical_weekly_returns.
+                value_names = ["brent_monthly"]
+                values = [float(subset["value"].mean()) if not subset.empty else np.nan]
+                flag = "brent_asof_eligible"
+            elif source == "usd_vnd":
+                value_names = ["usd_vnd"]
+                values = [float(subset["value"].mean()) if not subset.empty else np.nan]
+                flag = "fx_asof_eligible"
+            else:
+                value_names = ["fuel_ron95", "fuel_e10"]
+                fuel_rows = fuel.loc[
+                    pd.to_datetime(
+                        fuel["observation_date"], errors="coerce", utc=True
+                    ).dt.tz_convert(None).between(
+                        month, next_month - pd.Timedelta(days=1)
+                    )
+                ].copy() if not fuel.empty else fuel
+                if not fuel_rows.empty:
+                    fuel_rows = _daily_proxy_rows(fuel_rows, "observation_date", "vnd_per_liter", cutoff)
+                    fuel_rows = fuel_rows.loc[
+                        (fuel_rows["observation_date"] >= month)
+                        & (fuel_rows["observation_date"] < next_month)
+                    ]
+                fuel_type = fuel_rows.get("fuel_type", pd.Series(index=fuel_rows.index, dtype=object))
+                values = [
+                    float(fuel_rows.loc[fuel_type.eq("RON95"), "value"].mean()) if fuel_type.eq("RON95").any() else np.nan,
+                    float(fuel_rows.loc[fuel_type.eq("E10_RON95"), "value"].mean()) if fuel_type.eq("E10_RON95").any() else np.nan,
+                ]
+                flag = "fuel_asof_eligible"
+            for name, value in zip(value_names, values):
+                proxy.at[idx, name] = value
+            proxy.at[idx, f"missing_{flag}"] = 0.0 if any(pd.notna(v) for v in values) else 1.0
+
+        # IIP has monthly observations; absent a source release date, use a
+        # deliberately conservative month-end + 15-day Vietnam-local proxy.
+        if not iip.empty and {"month_start", "iip_yoy_growth_percent"}.issubset(iip.columns):
+            iip_rows = iip.copy()
+            iip_rows["month_start"] = pd.to_datetime(
+                iip_rows["month_start"], errors="coerce", utc=True
+            ).dt.tz_convert(None)
+            iip_rows["value"] = pd.to_numeric(iip_rows["iip_yoy_growth_percent"], errors="coerce")
+            iip_rows = iip_rows.dropna(subset=["month_start", "value"])
+            month_end = iip_rows["month_start"] + pd.offsets.MonthEnd(0)
+            assumed = pd.to_datetime(month_end + pd.Timedelta(days=15)).dt.tz_localize("Asia/Ho_Chi_Minh").dt.tz_convert("UTC")
+            release = pd.to_datetime(iip_rows.get("source_release_ts"), errors="coerce", utc=True) if "source_release_ts" in iip_rows else pd.Series(pd.NaT, index=iip_rows.index, dtype="datetime64[ns, UTC]")
+            iip_rows["proxy_available_at"] = release.where(release.notna(), assumed)
+            eligible_iip = iip_rows.loc[
+                (iip_rows["month_start"] < month)
+                & (iip_rows["proxy_available_at"] <= cutoff)
+            ].sort_values(["month_start", "proxy_available_at"])
+        else:
+            eligible_iip = pd.DataFrame()
+        iip_value = float(eligible_iip["value"].iloc[-1]) if not eligible_iip.empty else np.nan
+        proxy.at[idx, "iip_yoy_growth"] = iip_value
+        proxy.at[idx, "missing_iip_asof_eligible"] = 0.0 if pd.notna(iip_value) else 1.0
+        audit.append({
+            "target_month": month,
+            "target_cutoff_at": cutoff,
+            "evaluation_mode": "pseudo_vintage_proxy",
+            "daily_availability_policy": "source_release_ts_if_present_else_observation_date_plus_1_utc_day",
+            "iip_availability_policy": "source_release_ts_if_present_else_observation_month_end_plus_15_vietnam_days",
+            **source_audit,
+            "iip_observations_available_by_cutoff": int(len(eligible_iip)),
+            "iip_latest_observation_month": (
+                eligible_iip["month_start"].iloc[-1].date().isoformat()
+                if not eligible_iip.empty else None
+            ),
+            "historical_source_revisions_reconstructed": False,
+            "strict_pit_claim_allowed": False,
+        })
+    proxy["evaluation_mode"] = "pseudo_vintage_proxy"
+    proxy["strict_vintage_performance_claim_allowed"] = False
+    return proxy, pd.DataFrame(audit)
 
 
 def soft_threshold(value: float, threshold: float) -> float:
@@ -380,6 +536,10 @@ def evaluate_sourcewise_ablation(history: pd.DataFrame) -> tuple[pd.DataFrame, p
     """
     summaries = []
     prediction_rows = []
+    evaluation_mode = str(
+        history.get("evaluation_mode", pd.Series(["strict_pit"])).iloc[0]
+    )
+    is_proxy = evaluation_mode == "pseudo_vintage_proxy"
     for source, (source_values, availability_flag) in SOURCE_ABLATION_GROUPS.items():
         source_predictors = [*source_values, availability_flag]
         eligible = history[availability_flag].eq(0) & history[source_values].notna().any(axis=1)
@@ -422,10 +582,20 @@ def evaluate_sourcewise_ablation(history: pd.DataFrame) -> tuple[pd.DataFrame, p
             "eligible_percent": round(float(eligible.mean() * 100), 2) if len(history) else 0.0,
             "paired_origins": len(common),
             "failed_folds": failures,
-            "status": "not_estimable_no_point_in_time_features" if not eligible.any() else (
-                "not_estimable_insufficient_training_history" if common.empty else (
-                    "research_window_available" if len(common) >= 24 else "descriptive_only_under_24_origins"
-                )
+            "status": (
+                "not_estimable_no_proxy_features" if is_proxy else "not_estimable_no_point_in_time_features"
+            ) if not eligible.any() else (
+                "not_estimable_insufficient_proxy_training_history"
+                if is_proxy and common.empty
+                else "not_estimable_insufficient_training_history"
+                if common.empty
+                else "proxy_diagnostic_available"
+                if is_proxy and len(common) >= 24
+                else "proxy_descriptive_only_under_24_origins"
+                if is_proxy
+                else "research_window_available"
+                if len(common) >= 24
+                else "descriptive_only_under_24_origins"
             ),
             "baseline_mae_pp": None,
             "source_added_mae_pp": None,
@@ -436,8 +606,10 @@ def evaluate_sourcewise_ablation(history: pd.DataFrame) -> tuple[pd.DataFrame, p
             "dm_pvalue_mae_loss": None,
             "baseline_rmse_pp": None,
             "source_added_rmse_pp": None,
-            "point_in_time_history_available": bool(eligible.any()),
+            "point_in_time_history_available": bool(eligible.any()) and not is_proxy,
+            "proxy_feature_history_available": bool(eligible.any()) if is_proxy else False,
             "strict_vintage_performance_claim_allowed": False,
+            "evaluation_mode": evaluation_mode,
         }
         if not common.empty:
             paired = paired_model_comparison(
@@ -457,17 +629,24 @@ def evaluate_sourcewise_ablation(history: pd.DataFrame) -> tuple[pd.DataFrame, p
         summaries.append(result)
     prediction_columns = [
         "source", "target_month", "actual_cpi_mom_percent", "ar_midas_ridge",
-        "ar_midas_plus_source", "prior_training_rows_with_source",
+        "ar_midas_plus_source", "prior_training_rows_with_source", "evaluation_mode",
+        "strict_vintage_performance_claim_allowed",
     ]
+    for row in prediction_rows:
+        row["evaluation_mode"] = evaluation_mode
+        row["strict_vintage_performance_claim_allowed"] = False
     return pd.DataFrame(summaries), pd.DataFrame(prediction_rows, columns=prediction_columns)
 
 
 def main() -> None:
     started = time.perf_counter()
     OUT.mkdir(parents=True, exist_ok=True)
-    labels, brent, features = fetch_features()
+    labels, brent, usd_vnd, fuel, iip, features = fetch_features()
     labels = labels.loc[labels["country"].astype(str).str.upper() == "VNM"].copy()
     brent = brent.loc[brent["country"].astype(str).str.upper() == "VNM"].copy()
+    usd_vnd = usd_vnd.loc[usd_vnd["country"].astype(str).str.upper() == "VNM"].copy()
+    fuel = fuel.loc[fuel["country"].astype(str).str.upper() == "VNM"].copy()
+    iip = iip.loc[iip["country"].astype(str).str.upper() == "VNM"].copy()
     labels["target_month"] = pd.to_datetime(labels["target_month"], errors="coerce").dt.to_period("M").dt.to_timestamp()
     labels["target_cpi_mom_percent"] = pd.to_numeric(labels["target_cpi_mom_percent"], errors="coerce")
     labels["label_available_at"] = pd.to_datetime(labels["label_available_at"], errors="coerce", utc=True)
@@ -517,6 +696,11 @@ def main() -> None:
     sourcewise_summary, sourcewise_predictions = evaluate_sourcewise_ablation(history)
     sourcewise_summary.to_csv(OUT / "feature_ablation_sourcewise.csv", index=False)
     sourcewise_predictions.to_csv(OUT / "feature_ablation_sourcewise_predictions.csv", index=False)
+    proxy_history, proxy_audit = build_proxy_history(history, brent, usd_vnd, fuel, iip)
+    proxy_summary, proxy_predictions = evaluate_sourcewise_ablation(proxy_history)
+    proxy_summary.to_csv(OUT / "feature_ablation_sourcewise_proxy.csv", index=False)
+    proxy_predictions.to_csv(OUT / "feature_ablation_sourcewise_proxy_predictions.csv", index=False)
+    proxy_audit.to_csv(OUT / "feature_ablation_proxy_asof_audit.csv", index=False)
     # Explicitly record this run's PIT source coverage and vintage limitation.
     coverage_rows = []
     for source, flag in zip(("Brent", "USD/VND", "Fuel", "IIP"), SOURCE_FLAGS):
@@ -935,13 +1119,20 @@ def main() -> None:
         failures_frame,
     )
     protocol = {
-        "protocol_version": 3,
+        "protocol_version": 4,
         "evaluation_run_id": run_id,
         "primary_model": "full_multisource_ridge",
         "model_registry": "feature_ablation_model_registry.csv",
         "per_model_artifacts": "models/<model_name>/<model_version>/",
         "configs": ["naive_last_cpi", "ar1_ols", "cpi_only_ridge", "u_midas_brent_ridge", "ar_midas_ridge", "midas_elastic_net", "midas_lasso", "midas_huber", "full_multisource_ridge", "full_multisource_elastic_net", "multisource_without_brent", "multisource_without_usd_vnd", "multisource_without_fuel", "multisource_without_iip"],
-        "sourcewise_ablation": "for each source, compare base AR-MIDAS against base plus one source on paired folds where the source is point-in-time available; require at least 8 prior training rows containing that source; otherwise mark not estimable",
+        "sourcewise_ablation": "strict track remains vintage-only and is reported in feature_ablation_sourcewise.csv; requires at least 8 prior source-known training rows",
+        "pseudo_vintage_proxy_ablation": {
+            "summary": "feature_ablation_sourcewise_proxy.csv",
+            "predictions": "feature_ablation_sourcewise_proxy_predictions.csv",
+            "asof_audit": "feature_ablation_proxy_asof_audit.csv",
+            "policy": "daily sources use source_release_ts when present, else observation date + 1 UTC day; IIP uses source_release_ts when present, else observation month-end + 15 Vietnam-local days",
+            "limits": ["not strict PIT", "does not reconstruct historical revisions", "availability assumptions are proxies", "never use these scores as real-time performance evidence"],
+        },
         "leave_one_source_out_ablation": "compare Full multi-source Ridge with four configurations that remove the full Brent block (weekly returns and monthly Brent), USD/VND, Vietnam fuel (RON95 and E10 together), or monthly IIP plus that source's missingness indicator; use paired common folds and report not-estimable when point-in-time coverage is absent",
         "full_sources": ["Brent", "USD/VND", "RON95 fuel", "E10 RON95 fuel", "monthly Vietnam IIP YoY growth"],
         "elastic_net_grid": {"alpha": [0.1, 1.0], "l1_ratio": [0.2, 0.8], "inner_validation_origins_max": 6},
@@ -961,7 +1152,7 @@ def main() -> None:
         "fold_status_policy": "insufficient training history or unavailable point-in-time predictors are ineligible, not runtime failures",
         "primary_model_policy": "full_multisource_ridge is the primary model; naive, CPI-only, AR-MIDAS and alternative estimators are baselines/ablations",
         "nso_calendar_snapshot": snapshot,
-        "source_vintages": "not archived before first raw collection; results are pseudo-vintage diagnostics",
+        "source_vintages": "strict results require archived source vintages; a separately labeled pseudo-vintage proxy track is reported and is not strict PIT evidence",
         "real_time_performance_claim_allowed": False,
     }
     (OUT / "feature_ablation_protocol.json").write_text(json.dumps(protocol, indent=2), encoding="utf-8")

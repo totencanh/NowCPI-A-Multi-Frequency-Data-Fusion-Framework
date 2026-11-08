@@ -7,6 +7,48 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.utils.trigger_rule import TriggerRule
 
+try:
+    from spark.common.prometheus_metrics import push_stage_metrics
+except ImportError:
+    push_stage_metrics = None
+
+
+def _publish_task_lifecycle(context, *, status: str) -> None:
+    """Publish task lifecycle immediately; keep run IDs in Airflow/audit only."""
+    if push_stage_metrics is None:
+        return
+    task_instance = context.get("task_instance") or context.get("ti")
+    if task_instance is None:
+        return
+    task_id = task_instance.task_id
+    values = {"task_attempts": getattr(task_instance, "try_number", None)}
+    duration = getattr(task_instance, "duration", None)
+    if duration is not None:
+        values["task_duration_seconds"] = duration
+    push_stage_metrics(
+        component="airflow_task",
+        stage=task_id,
+        source="all",
+        status=status,
+        values=values,
+    )
+
+
+def _task_started(context) -> None:
+    _publish_task_lifecycle(context, status="running")
+
+
+def _task_succeeded(context) -> None:
+    _publish_task_lifecycle(context, status="success")
+
+
+def _task_failed(context) -> None:
+    _publish_task_lifecycle(context, status="failed")
+
+
+def _task_retrying(context) -> None:
+    _publish_task_lifecycle(context, status="partial")
+
 
 def spark_submit_command(application: str, driver_port: int) -> str:
     """Submit one batch application from Airflow's Spark client to the cluster."""
@@ -55,6 +97,10 @@ with DAG(
         "owner": "airflow",
         "retries": 2,
         "retry_delay": timedelta(minutes=5),
+        "on_execute_callback": _task_started,
+        "on_success_callback": _task_succeeded,
+        "on_failure_callback": _task_failed,
+        "on_retry_callback": _task_retrying,
     },
     tags=["nowcpi", "ingestion", "bronze", "silver", "spark"],
 ) as dag:
@@ -109,6 +155,7 @@ with DAG(
             "KAFKA_BROKER": "kafka:9092",
             "RAW_DATA_DIR": "/opt/airflow/data/raw",
             "KAFKA_PUBLISHED_STATE": "/opt/airflow/kafka-state/published_batches.json",
+            "PIPELINE_AUDIT_DIR": "/opt/airflow/audit",
         },
         append_env=True,
         execution_timeout=timedelta(minutes=20),
@@ -186,6 +233,19 @@ with DAG(
         append_env=True,
         execution_timeout=timedelta(minutes=30),
     )
+    pipeline_stage_metrics = BashOperator(
+        task_id="pipeline_stage_metrics",
+        bash_command="python -u /opt/airflow/scripts/evaluate_pipeline_metrics.py",
+        env={
+            "TRINO_HOST": "trino",
+            "TRINO_PORT": "8080",
+            "TRINO_USER": "nowcpi",
+            "KAFKA_BROKER": "kafka:9092",
+        },
+        append_env=True,
+        execution_timeout=timedelta(minutes=15),
+        trigger_rule=TriggerRule.ALL_DONE,
+    )
 
     [
         collect_cpi,
@@ -201,3 +261,4 @@ with DAG(
     dbt_gold >> [multisource_nowcast, dbt_pit_feature_test]
     dbt_pit_feature_test >> feature_ablation_evaluation
     collect_nso_cpi_release_calendar >> multisource_nowcast
+    [multisource_nowcast, feature_ablation_evaluation] >> pipeline_stage_metrics

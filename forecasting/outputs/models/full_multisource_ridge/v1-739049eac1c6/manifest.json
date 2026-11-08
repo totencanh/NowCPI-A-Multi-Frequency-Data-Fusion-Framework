@@ -1,8 +1,8 @@
 {
   "model_name": "full_multisource_ridge",
   "model_version": "v1-739049eac1c6",
-  "evaluation_run_id": "20261031T080133Z",
-  "generated_at_utc": "2026-10-31T08:01:33.926749+00:00",
+  "evaluation_run_id": "20261108T191136Z",
+  "generated_at_utc": "2026-11-08T19:11:36.644040+00:00",
   "source_code_sha256": "6ff26ecd230d4a4bbc85fb3456d4466be244d4304e11c65772acb70a9638d7f4",
   "role": "primary_production_candidate",
   "model_family": "Full multi-source Ridge",
@@ -49,13 +49,13 @@
   "failures_file": "failures.csv",
   "operational_metrics": {
     "model": "full_multisource_ridge",
-    "fit_predict_seconds": 0.8834442639954432,
+    "fit_predict_seconds": 0.9172837849973803,
     "failed_folds": 0,
     "ineligible_folds": 0,
     "completed_folds": 131,
-    "max_fit_predict_seconds": 0.017504626999652828,
-    "max_rss_kb": 153488,
-    "script_wall_seconds": 65.815,
+    "max_fit_predict_seconds": 0.023216622000290954,
+    "max_rss_kb": 137288,
+    "script_wall_seconds": 64.192,
     "strict_vintage_available": false
   },
   "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",

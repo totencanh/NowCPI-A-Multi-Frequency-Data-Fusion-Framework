@@ -9,8 +9,13 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 USER airflow
 COPY requirements.txt /tmp/airflow-requirements.txt
-RUN uv pip install --target /home/airflow/.local/lib/python3.11/site-packages \
-    --no-cache -r /tmp/airflow-requirements.txt
+RUN for attempt in 1 2 3; do \
+      uv pip install --target /home/airflow/.local/lib/python3.11/site-packages \
+        --no-cache -r /tmp/airflow-requirements.txt && exit 0; \
+      echo "Airflow dependency install attempt ${attempt} failed; retrying after a short delay"; \
+      sleep 5; \
+    done; \
+    exit 1
 
 USER root
 RUN python -m venv /opt/dbt_venv && chown -R airflow:root /opt/dbt_venv

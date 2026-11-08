@@ -66,10 +66,10 @@ target_month,target_cutoff_at,feature_store_row_present,feature_store_cutoff_not
 2020-06-01,2020-06-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2020-06-29
 2020-07-01,2020-07-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2020-07-29
 2020-08-01,2020-08-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2020-08-29
-2020-09-01,2020-10-01 23:59:59+00:00,False,False,,0.0,False,False,False,False,
-2020-10-01,2020-11-01 23:59:59+00:00,False,False,,0.0,False,False,False,False,
-2020-11-01,2020-12-01 23:59:59+00:00,False,False,,0.0,False,False,False,False,
-2020-12-01,2021-01-01 23:59:59+00:00,False,False,,0.0,False,False,False,False,
+2020-09-01,2020-09-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2020-09-29
+2020-10-01,2020-10-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2020-10-29
+2020-11-01,2020-11-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2020-11-29
+2020-12-01,2020-12-26 17:00:00+00:00,False,False,,0.0,False,False,False,False,2020-12-27
 2021-01-01,2021-01-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2021-01-29
 2021-02-01,2021-02-27 17:00:00+00:00,False,False,,0.0,False,False,False,False,2021-02-28
 2021-03-01,2021-03-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2021-03-29
@@ -93,7 +93,7 @@ target_month,target_cutoff_at,feature_store_row_present,feature_store_cutoff_not
 2022-09-01,2022-09-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2022-09-29
 2022-10-01,2022-10-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2022-10-29
 2022-11-01,2022-11-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2022-11-29
-2022-12-01,2023-01-01 23:59:59+00:00,False,False,,0.0,False,False,False,False,
+2022-12-01,2022-12-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2022-12-29
 2023-01-01,2023-01-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2023-01-29
 2023-02-01,2023-02-27 17:00:00+00:00,False,False,,0.0,False,False,False,False,2023-02-28
 2023-03-01,2023-03-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2023-03-29
@@ -104,7 +104,7 @@ target_month,target_cutoff_at,feature_store_row_present,feature_store_cutoff_not
 2023-08-01,2023-08-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2023-08-29
 2023-09-01,2023-09-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2023-09-29
 2023-10-01,2023-10-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2023-10-29
-2023-11-01,2023-12-01 23:59:59+00:00,False,False,,0.0,False,False,False,False,
+2023-11-01,2023-11-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2023-11-29
 2023-12-01,2023-12-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2023-12-29
 2024-01-01,2024-01-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2024-01-29
 2024-02-01,2024-02-28 17:00:00+00:00,False,False,,0.0,False,False,False,False,2024-02-29

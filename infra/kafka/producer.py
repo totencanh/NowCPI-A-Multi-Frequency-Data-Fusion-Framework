@@ -7,11 +7,22 @@ import hashlib
 import json
 import os
 import tempfile
+import time
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from confluent_kafka import Consumer, Producer, TopicPartition
+
+try:
+    from spark.common.prometheus_metrics import push_stage_metrics
+except ImportError:  # Allows the publisher to run without the optional monitoring path.
+    push_stage_metrics = None
+
+try:
+    import fcntl
+except ImportError:  # Windows local runs do not need inter-process locking.
+    fcntl = None
 
 
 SOURCE_TOPICS = {
@@ -28,6 +39,7 @@ STATE_FILE = Path(
     os.getenv("KAFKA_PUBLISHED_STATE", "/app/state/published_batches.json")
 )
 BROKER = os.getenv("KAFKA_BROKER", "kafka:9092")
+PIPELINE_AUDIT_DIR = Path(os.getenv("PIPELINE_AUDIT_DIR", "/opt/airflow/audit"))
 
 
 def parse_args() -> argparse.Namespace:
@@ -157,13 +169,16 @@ def publish_batch(
     producer: Producer,
     path: Path,
     topic: str,
-) -> int:
+) -> dict[str, Any]:
     events = read_events(path)
     delivery_errors: list[str] = []
+    delivery_latencies: list[float] = []
 
-    def delivered(error: Any, message: Any) -> None:
+    def delivered(error: Any, message: Any, enqueued_at: float) -> None:
         if error is not None:
             delivery_errors.append(str(error))
+        else:
+            delivery_latencies.append(max(0.0, time.monotonic() - enqueued_at))
 
     for event in events:
         event_id = event.get("event_id")
@@ -182,7 +197,15 @@ def publish_batch(
 
         while True:
             try:
-                producer.produce(topic, key=key, value=value, callback=delivered)
+                enqueued_at = time.monotonic()
+                producer.produce(
+                    topic,
+                    key=key,
+                    value=value,
+                    callback=lambda error, message, queued_at=enqueued_at: delivered(
+                        error, message, queued_at
+                    ),
+                )
                 producer.poll(0)
                 break
             except BufferError:
@@ -195,7 +218,53 @@ def publish_batch(
         raise RuntimeError(
             f"Kafka delivery failed for {path}: " + "; ".join(delivery_errors[:5])
         )
-    return len(events)
+    ordered_latencies = sorted(delivery_latencies)
+    p95_position = (len(ordered_latencies) - 1) * 0.95 if ordered_latencies else None
+    if p95_position is None:
+        p95_latency = None
+    else:
+        lower = int(p95_position)
+        upper = min(lower + 1, len(ordered_latencies) - 1)
+        p95_latency = round(
+            ordered_latencies[lower]
+            + (ordered_latencies[upper] - ordered_latencies[lower])
+            * (p95_position - lower),
+            6,
+        )
+    return {
+        "attempted_events": len(events),
+        "delivered_events": len(delivery_latencies),
+        "rejected_events": 0,
+        "p95_delivery_latency_seconds": p95_latency,
+        "delivery_latency_samples": len(delivery_latencies),
+        "_delivery_latencies": delivery_latencies,
+    }
+
+
+def append_publish_audit(record: dict[str, Any]) -> None:
+    """Persist successful per-DAG Kafka publisher measurements for the final report."""
+    path = PIPELINE_AUDIT_DIR / "kafka_publish_runs.jsonl"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as audit_file:
+        if fcntl is not None:
+            fcntl.flock(audit_file.fileno(), fcntl.LOCK_EX)
+        try:
+            audit_file.write(json.dumps(record, ensure_ascii=False, separators=(",", ":")) + "\n")
+            audit_file.flush()
+            os.fsync(audit_file.fileno())
+        finally:
+            if fcntl is not None:
+                fcntl.flock(audit_file.fileno(), fcntl.LOCK_UN)
+
+
+def percentile(values: list[float], quantile: float) -> float | None:
+    if not values:
+        return None
+    ordered = sorted(values)
+    position = (len(ordered) - 1) * quantile
+    lower = int(position)
+    upper = min(lower + 1, len(ordered) - 1)
+    return round(ordered[lower] + (ordered[upper] - ordered[lower]) * (position - lower), 6)
 
 
 def topic_offsets(broker: str, topics: set[str]) -> dict[str, tuple[int, int]]:
@@ -241,6 +310,8 @@ def topic_offsets(broker: str, topics: set[str]) -> dict[str, tuple[int, int]]:
 
 def main() -> None:
     args = parse_args()
+    started_at = datetime.now(timezone.utc)
+    started_clock = time.monotonic()
     state = load_state()
     producer = Producer(
         {
@@ -253,7 +324,10 @@ def main() -> None:
     )
 
     total_events = 0
+    attempted_events = 0
     published_batches = 0
+    delivery_latencies: list[float] = []
+    topic_metrics: dict[str, dict[str, int]] = {}
     batches = discover_batches(args.source)
     offsets = topic_offsets(
         BROKER, {topic for _, topic in batches}
@@ -307,7 +381,13 @@ def main() -> None:
         ):
             continue
 
-        count = publish_batch(producer, path, topic)
+        batch_metrics = publish_batch(producer, path, topic)
+        count = int(batch_metrics["delivered_events"])
+        attempted_events += int(batch_metrics["attempted_events"])
+        topic_metrics.setdefault(topic, {"attempted_events": 0, "delivered_events": 0})
+        topic_metrics[topic]["attempted_events"] += int(batch_metrics["attempted_events"])
+        topic_metrics[topic]["delivered_events"] += count
+        delivery_latencies.extend(batch_metrics.pop("_delivery_latencies"))
         state[relative_path] = {
             "sha256": checksum,
             "event_count": count,
@@ -333,6 +413,46 @@ def main() -> None:
         topic: str(low) for topic, (low, _) in offsets.items()
     }
     save_state(state)
+    completed_at = datetime.now(timezone.utc)
+    elapsed_seconds = max(time.monotonic() - started_clock, 0.0)
+    publish_audit = {
+        "dag_id": os.getenv("AIRFLOW_CTX_DAG_ID"),
+        "dag_run_id": os.getenv("AIRFLOW_CTX_DAG_RUN_ID"),
+        "task_id": os.getenv("AIRFLOW_CTX_TASK_ID", "publish_to_kafka"),
+        "started_at": started_at.isoformat().replace("+00:00", "Z"),
+        "completed_at": completed_at.isoformat().replace("+00:00", "Z"),
+        "duration_seconds": round(elapsed_seconds, 3),
+        "batches_discovered": len(batches),
+        "batches_published": published_batches,
+        "attempted_events": attempted_events,
+        "delivered_events": total_events,
+        "rejected_events": 0,
+        "delivery_failures": 0,
+        "acceptance_rate_percent": round(100 * total_events / attempted_events, 2)
+        if attempted_events else None,
+        "throughput_events_per_second": round(total_events / elapsed_seconds, 3)
+        if elapsed_seconds > 0 else None,
+        "p95_delivery_latency_seconds": percentile(delivery_latencies, 0.95),
+        "delivery_latency_samples": len(delivery_latencies),
+        "topic_metrics": topic_metrics,
+    }
+    append_publish_audit(publish_audit)
+    if push_stage_metrics is not None:
+        push_stage_metrics(
+            component="kafka_publisher",
+            stage="kafka",
+            status="success",
+            values={
+                "attempted_events": attempted_events,
+                "delivered_events": total_events,
+                "rejected_events": 0,
+                "acceptance_rate_percent": publish_audit["acceptance_rate_percent"],
+                "throughput_records_per_second": publish_audit["throughput_events_per_second"],
+                "p95_delivery_latency_seconds": publish_audit["p95_delivery_latency_seconds"],
+                "delivery_latency_samples": len(delivery_latencies),
+                "stage_duration_seconds": publish_audit["duration_seconds"],
+            },
+        )
 
 
 if __name__ == "__main__":

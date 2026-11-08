@@ -7,6 +7,11 @@ x-airflow-common: &airflow-common
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__CORE__LOAD_EXAMPLES: "False"
     AIRFLOW__OPENLINEAGE__NAMESPACE: nowcpi
+    AIRFLOW__METRICS__STATSD_ON: "True"
+    AIRFLOW__METRICS__STATSD_HOST: statsd-exporter
+    AIRFLOW__METRICS__STATSD_PORT: "9125"
+    AIRFLOW__METRICS__STATSD_PREFIX: nowcpi_airflow
+    AIRFLOW__METRICS__STATSD_DISABLED_TAGS: job_id,run_id
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db:5432/airflow
     AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_SECRET_KEY:-nowcpi-local-development-key}
     AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY:-}
@@ -25,6 +30,7 @@ x-airflow-common: &airflow-common
     MINIO_ROOT_USER: ${MINIO_ROOT_USER:-nowcpi}
     MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-nowcpi-local-password}
     MINIO_BUCKET: ${MINIO_BUCKET:-nowcpi}
+    PROMETHEUS_PUSHGATEWAY_URL: ${PROMETHEUS_PUSHGATEWAY_URL:-}
     BRONZE_WAIT_TIMEOUT_SECONDS: "1800"
     BRONZE_WAIT_POLL_SECONDS: "10"
   volumes:
@@ -45,6 +51,8 @@ x-airflow-common: &airflow-common
       condition: service_healthy
     kafka-init:
       condition: service_completed_successfully
+    statsd-exporter:
+      condition: service_started
   networks:
     - nowcpi_network
 
@@ -92,6 +100,70 @@ services:
     networks:
       - nowcpi_network
     restart: "no"
+
+  statsd-exporter:
+    image: prom/statsd-exporter:v0.31.0
+    container_name: nowcpi-multi-statsd-exporter
+    command:
+      - --statsd.listen-udp=:9125
+      - --web.listen-address=:9102
+    expose:
+      - "9125/udp"
+      - "9102"
+    networks:
+      - nowcpi_network
+    restart: unless-stopped
+    profiles: [airflow, monitoring]
+
+  pushgateway:
+    image: prom/pushgateway:v1.11.3
+    container_name: nowcpi-multi-pushgateway
+    ports:
+      - "127.0.0.1:9091:9091"
+    networks:
+      - nowcpi_network
+    restart: unless-stopped
+    profiles: [monitoring]
+
+  prometheus:
+    image: prom/prometheus:v3.15.1
+    container_name: nowcpi-multi-prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=30d
+    ports:
+      - "127.0.0.1:9090:9090"
+    volumes:
+      - ./infra/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    depends_on:
+      - pushgateway
+      - statsd-exporter
+    networks:
+      - nowcpi_network
+    restart: unless-stopped
+    profiles: [monitoring]
+
+  grafana:
+    image: grafana/grafana:13.3.0
+    container_name: nowcpi-multi-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./infra/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infra/monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    networks:
+      - nowcpi_network
+    restart: unless-stopped
+    profiles: [monitoring]
 
   # Object storage for Bronze/Silver/Gold lakehouse data.
   minio:
@@ -336,6 +408,7 @@ services:
       HADOOP_CONF_DIR: /opt/bitnami/spark/conf
       KAFKA_BROKER: kafka:9092
       SPARK_DRIVER_HOST: spark-bronze-streaming
+      PROMETHEUS_METRICS_PORT: "9404"
       # New checkpoint replays retained Kafka offsets into the offset-keyed,
       # append-only Bronze receipt table and envelope quarantine.
       BRONZE_KAFKA_CHECKPOINT: /opt/spark/work-dir/checkpoints/bronze-kafka-events-v4
@@ -356,6 +429,8 @@ services:
         condition: service_healthy
     networks:
       - nowcpi_network
+    ports:
+      - "127.0.0.1:9404:9404"
     restart: unless-stopped
 
   airflow-db:
@@ -431,6 +506,8 @@ volumes:
   mariadb_hms_data:
   trino_data:
   airflow_db_data:
+  prometheus_data:
+  grafana_data:
 
 networks:
   nowcpi_network:

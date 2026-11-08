@@ -1,2 +1,2 @@
 model,fit_predict_seconds,failed_folds,ineligible_folds,completed_folds,max_fit_predict_seconds,max_rss_kb,script_wall_seconds,strict_vintage_available
-cpi_only_ridge,0.26222132499833606,0,0,131,0.005585702000189485,153488,65.815,False
+cpi_only_ridge,0.26224908900348964,0,0,131,0.005143126999428205,137288,64.192,False

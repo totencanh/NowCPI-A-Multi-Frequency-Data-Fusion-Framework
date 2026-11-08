@@ -1,6 +1,6 @@
 {
-  "evaluation_run_id": "20261031T080133Z",
-  "generated_at_utc": "2026-10-31T08:01:34.300733+00:00",
+  "evaluation_run_id": "20261108T191136Z",
+  "generated_at_utc": "2026-11-08T19:11:36.908846+00:00",
   "primary_model": "full_multisource_ridge",
   "primary_model_version": "v1-739049eac1c6",
   "source_code_sha256": "6ff26ecd230d4a4bbc85fb3456d4466be244d4304e11c65772acb70a9638d7f4",
@@ -29,7 +29,7 @@
       "runtime_failures": 0,
       "ineligible_folds": 0,
       "completed_folds": 131,
-      "fit_predict_seconds": 0.2636483220021546
+      "fit_predict_seconds": 0.2585663559975728
     },
     {
       "model_name": "cpi_only_ridge",
@@ -42,7 +42,7 @@
       "runtime_failures": 0,
       "ineligible_folds": 0,
       "completed_folds": 131,
-      "fit_predict_seconds": 0.26222132499833606
+      "fit_predict_seconds": 0.26224908900348964
     },
     {
       "model_name": "u_midas_brent_ridge",
@@ -55,7 +55,7 @@
       "runtime_failures": 0,
       "ineligible_folds": 1,
       "completed_folds": 130,
-      "fit_predict_seconds": 0.46297676600079285
+      "fit_predict_seconds": 0.4543443100001241
     },
     {
       "model_name": "ar_midas_ridge",
@@ -68,7 +68,7 @@
       "runtime_failures": 0,
       "ineligible_folds": 1,
       "completed_folds": 130,
-      "fit_predict_seconds": 0.4660558389969083
+      "fit_predict_seconds": 0.45600418200319837
     },
     {
       "model_name": "midas_elastic_net",
@@ -81,7 +81,7 @@
       "runtime_failures": 0,
       "ineligible_folds": 1,
       "completed_folds": 130,
-      "fit_predict_seconds": 14.581015994002428
+      "fit_predict_seconds": 14.342396473000008
     },
     {
       "model_name": "midas_lasso",
@@ -94,7 +94,7 @@
       "runtime_failures": 0,
       "ineligible_folds": 1,
       "completed_folds": 130,
-      "fit_predict_seconds": 6.923666795001736
+      "fit_predict_seconds": 6.809792087997266
     },
     {
       "model_name": "midas_huber",
@@ -107,7 +107,7 @@
       "runtime_failures": 0,
       "ineligible_folds": 1,
       "completed_folds": 130,
-      "fit_predict_seconds": 14.096384569003021
+      "fit_predict_seconds": 13.655472130996714
     },
     {
       "model_name": "full_multisource_ridge",
@@ -120,7 +120,7 @@
       "runtime_failures": 0,
       "ineligible_folds": 0,
       "completed_folds": 131,
-      "fit_predict_seconds": 0.8834442639954432
+      "fit_predict_seconds": 0.9172837849973803
     },
     {
       "model_name": "full_multisource_elastic_net",
@@ -133,7 +133,7 @@
       "runtime_failures": 0,
       "ineligible_folds": 0,
       "completed_folds": 131,
-      "fit_predict_seconds": 21.40052941900194
+      "fit_predict_seconds": 20.870817855996393
     },
     {
       "model_name": "multisource_without_brent",
@@ -146,7 +146,7 @@
       "runtime_failures": 0,
       "ineligible_folds": 1,
       "completed_folds": 130,
-      "fit_predict_seconds": 0.44287860999747863
+      "fit_predict_seconds": 0.4488916810014416
     },
     {
       "model_name": "multisource_without_usd_vnd",
@@ -159,7 +159,7 @@
       "runtime_failures": 0,
       "ineligible_folds": 131,
       "completed_folds": 0,
-      "fit_predict_seconds": 0.15287905499735643
+      "fit_predict_seconds": 0.16467348799506
     },
     {
       "model_name": "multisource_without_fuel",
@@ -172,7 +172,7 @@
       "runtime_failures": 0,
       "ineligible_folds": 131,
       "completed_folds": 0,
-      "fit_predict_seconds": 0.14739618899966445
+      "fit_predict_seconds": 0.1528380749932694
     },
     {
       "model_name": "multisource_without_iip",
@@ -185,7 +185,7 @@
       "runtime_failures": 0,
       "ineligible_folds": 131,
       "completed_folds": 0,
-      "fit_predict_seconds": 0.15087163599991982
+      "fit_predict_seconds": 0.15116555599524872
     }
   ]
 }
