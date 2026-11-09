@@ -1,0 +1,2 @@
+model,target_month,status,reason,required_training_rows,available_training_rows
+multisource_without_brent,2015-11-01,not_evaluated_insufficient_or_unavailable_data,insufficient_point_in_time_training_rows_for_source,8,0

@@ -424,6 +424,167 @@ def _read_csv_records_if_present(path: Path) -> list[dict[str, Any]]:
         return []
 
 
+def read_dbt_test_metrics(
+    target_dir: Path, test_task: dict[str, Any] | None
+) -> dict[str, Any]:
+    """Summarize test counts only when dbt's artifact belongs to this DAG task."""
+    path = target_dir / "run_results.json"
+    if not path.is_file():
+        return {"available": False, "reason": "dbt run_results.json is missing"}
+    try:
+        artifact = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return {"available": False, "reason": f"Cannot read dbt run_results.json: {exc}"}
+    generated = parse_time((artifact.get("metadata") or {}).get("generated_at"))
+    started = parse_time((test_task or {}).get("start_date"))
+    ended = parse_time((test_task or {}).get("end_date"))
+    if not generated or not started or generated < started - timedelta(seconds=2):
+        return {
+            "available": False,
+            "reason": "dbt artifact timestamp cannot be matched to this run's PIT test task",
+            "generated_at": generated.isoformat() if generated else None,
+        }
+    if ended and generated > ended + timedelta(seconds=2):
+        return {
+            "available": False,
+            "reason": "dbt artifact was generated outside this run's PIT test task",
+            "generated_at": generated.isoformat(),
+        }
+    tests = [
+        item for item in artifact.get("results", [])
+        if str(item.get("unique_id", "")).startswith("test.")
+    ]
+    counts = {
+        state: sum(str(item.get("status", "")).lower() == state for item in tests)
+        for state in ("pass", "fail", "warn", "error", "skipped")
+    }
+    return {
+        "available": bool(tests),
+        "generated_at": generated.isoformat(),
+        "test_count": len(tests),
+        "passed": counts["pass"],
+        "failed": counts["fail"] + counts["error"],
+        "warned": counts["warn"],
+        "skipped": counts["skipped"],
+        "failure_rows": sum(int(item.get("failures") or 0) for item in tests),
+        "execution_seconds": round(
+            sum(float(item.get("execution_time") or 0) for item in tests), 3
+        ),
+        "metric_scope": "dbt PIT/data tests from run_results.json matched to task interval",
+    }
+
+
+def read_dbt_gold_model_metrics(
+    target_dir: Path, gold_task: dict[str, Any] | None
+) -> dict[str, Any]:
+    """Join successful dbt Gold model timings with their persisted output rows."""
+    if str((gold_task or {}).get("state", "")).lower() != "success":
+        return {"available": False, "reason": "The current DAG run's dbt_gold task did not succeed"}
+    path = target_dir / "nowcpi_gold_run_results.json"
+    if not path.is_file():
+        return {"available": False, "reason": "No run-scoped dbt Gold artifact yet"}
+    try:
+        artifact = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return {"available": False, "reason": f"Cannot read dbt Gold artifact: {exc}"}
+    generated = parse_time((artifact.get("metadata") or {}).get("generated_at"))
+    started = parse_time((gold_task or {}).get("start_date"))
+    ended = parse_time((gold_task or {}).get("end_date"))
+    if not generated or not started or generated < started - timedelta(seconds=2):
+        return {"available": False, "reason": "dbt Gold artifact does not match this DAG task"}
+    if ended and generated > ended + timedelta(seconds=2):
+        return {"available": False, "reason": "dbt Gold artifact was generated outside this DAG task"}
+
+    model_results = [
+        item for item in artifact.get("results", [])
+        if str(item.get("unique_id", "")).startswith("model.nowcpi.gold_")
+    ]
+    if not model_results:
+        return {"available": False, "reason": "No successful Gold model results in dbt artifact"}
+    models = [
+        item for item in model_results
+        if str(item.get("status", "")).lower() == "success"
+    ]
+    if len(models) != len(model_results):
+        return {
+            "available": False,
+            "reason": "One or more Gold models did not succeed in the run artifact",
+            "models_in_run": len(model_results),
+            "successful_models": len(models),
+        }
+
+    counts: list[dict[str, Any]] = []
+    conn = connect(
+        host=os.getenv("TRINO_HOST", "trino"),
+        port=int(os.getenv("TRINO_PORT", "8080")),
+        user=os.getenv("TRINO_USER", "nowcpi"),
+        catalog="delta",
+        schema="gold",
+    )
+    try:
+        cursor = conn.cursor()
+        for model in models:
+            model_name = str(model["unique_id"]).rsplit(".", 1)[-1]
+            if not re.fullmatch(r"gold_[a-z0-9_]+", model_name):
+                continue
+            query = f"SELECT count(*) FROM delta.gold.{model_name}"
+            count_scope = "full_table_rebuilt_by_dbt"
+            if model_name == "gold_nowcasting_feature_vintages" and started and ended:
+                start_literal = started.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M:%S.%f")
+                end_literal = ended.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M:%S.%f")
+                query = (
+                    "SELECT count(*) FROM delta.gold.gold_nowcasting_feature_vintages "
+                    f"WHERE cast(snapshot_recorded_at AS timestamp) >= TIMESTAMP '{start_literal}' "
+                    f"AND cast(snapshot_recorded_at AS timestamp) <= TIMESTAMP '{end_literal}'"
+                )
+                count_scope = "rows_appended_during_this_gold_task"
+            try:
+                cursor.execute(query)
+                output_rows = int(cursor.fetchone()[0])
+                counts.append({
+                    "model": model_name,
+                    "status": model.get("status"),
+                    "output_rows": output_rows,
+                    "execution_seconds": round(float(model.get("execution_time") or 0), 3),
+                    "count_scope": count_scope,
+                })
+            except Exception as exc:
+                counts.append({
+                    "model": model_name,
+                    "status": model.get("status"),
+                    "output_rows": None,
+                    "execution_seconds": round(float(model.get("execution_time") or 0), 3),
+                    "count_scope": count_scope,
+                    "count_error": str(exc),
+                })
+    finally:
+        conn.close()
+
+    measured = [row for row in counts if row.get("output_rows") is not None]
+    total_rows = sum(int(row["output_rows"]) for row in measured)
+    total_seconds = sum(
+        float(row["execution_seconds"])
+        for row in measured
+        if row.get("execution_seconds") is not None
+    )
+    complete = bool(measured) and len(measured) == len(counts) == len(models)
+    return {
+        "available": complete,
+        "generated_at": generated.isoformat(),
+        "models_in_run": len(models),
+        "models_with_row_counts": len(measured),
+        "output_rows_across_model_materializations": total_rows if complete else None,
+        "model_execution_seconds_for_counted_outputs": round(total_seconds, 3) if complete and total_seconds else None,
+        "materialization_rows_per_model_second": round(total_rows / total_seconds, 3)
+        if complete and total_seconds > 0 else None,
+        "models": counts,
+        "metric_scope": (
+            "sum of output rows across successful dbt Gold model materializations; "
+            "rows may represent overlapping data across models"
+        ),
+    }
+
+
 def _json_default(value: Any) -> str | float:
     """Serialize values returned by Airflow/Trino into report-safe JSON."""
     if isinstance(value, (datetime, date)):
@@ -450,7 +611,9 @@ def build_pipeline_stage_metrics(
     kafka_lag: dict[str, Any],
     gold_cpi: dict[str, Any],
     gold_features: dict[str, Any],
+    gold_model_metrics: dict[str, Any],
     nowcast: dict[str, Any],
+    nowcast_backtest: dict[str, Any],
     ablation: dict[str, Any],
 ) -> dict[str, Any]:
     """Build one run-scoped metric row per pipeline stage plus task detail.
@@ -724,12 +887,34 @@ def build_pipeline_stage_metrics(
             if not silver_durations:
                 row["metric_notes"]["p95_latency_seconds"] = "No per-topic Silver duration samples were recorded."
         elif stage == "gold":
-            row["records_out"] = gold_features.get("feature_rows")
-            row["metric_scope"] = "current Gold table counts; not per-model row deltas"
+            dbt_tests = read_dbt_test_metrics(
+                Path(os.getenv("DBT_TARGET_DIR", "/opt/airflow/dbt/target")),
+                by_task.get("dbt_pit_feature_tests"),
+            )
+            row["records_out"] = (
+                gold_model_metrics.get("output_rows_across_model_materializations")
+                if gold_model_metrics.get("available")
+                else gold_features.get("feature_rows")
+            )
+            row["throughput_records_per_second"] = gold_model_metrics.get(
+                "materialization_rows_per_model_second"
+            )
+            row["metric_scope"] = (
+                "sum of per-model output rows / sum of model execution seconds; output tables may overlap"
+                if gold_model_metrics.get("available")
+                else "current Gold feature table snapshot; dbt model run artifact unavailable"
+            )
             row["details"] = {
                 "gold_cpi_rows": gold_cpi.get("gold_cpi_rows"),
                 "gold_nowcasting_feature_rows": gold_features.get("feature_rows"),
+                "dbt_gold_model_metrics": gold_model_metrics,
                 "dbt_test_task_state": by_task.get("dbt_pit_feature_tests", {}).get("state"),
+                "dbt_test_metrics": dbt_tests,
+                "gold_output_count_definition": (
+                    "sum of output row counts across this run's successful Gold model materializations; model outputs can overlap"
+                    if gold_model_metrics.get("available")
+                    else "current row count of gold_nowcasting_features; snapshot size, not rows created by this run"
+                ),
                 "gold_source_coverage_percent": gold_features.get("latest_target_source_coverage_pct"),
             }
             gold_task_durations = [
@@ -747,9 +932,47 @@ def build_pipeline_stage_metrics(
                 "records_in": "dbt source-row counts are not captured per model run yet.",
                 "rejected_records": "dbt tests are reported as task status; they do not provide a record rejection count.",
                 "acceptance_rate_percent": "Not a record-level stage; use dbt test/task success rate instead.",
-                "throughput_records_per_second": "Requires dbt per-run row deltas; current Gold row count is a table snapshot, not rows produced by this run.",
             })
+            if not gold_model_metrics.get("available"):
+                row["metric_notes"]["throughput_records_per_second"] = (
+                    "Run-scoped dbt Gold model results or output-row counts are unavailable."
+                )
         elif stage == "forecasting":
+            all_backtest = nowcast_backtest.get("windows", {}).get("all_common_months", {})
+            recent_window_name = next(
+                (
+                    name for name in nowcast_backtest.get("windows", {})
+                    if name.startswith("most_recent_")
+                ),
+                None,
+            )
+            recent_backtest = (
+                nowcast_backtest.get("windows", {}).get(recent_window_name, {})
+                if recent_window_name else {}
+            )
+            all_models = all_backtest.get("models", {})
+            recent_models = recent_backtest.get("models", {})
+            forecast_quality = {
+                "available": bool(nowcast_backtest.get("available")),
+                "evaluation_note": nowcast_backtest.get("evaluation_note"),
+                "all_common_origins": all_backtest.get("comparison_months"),
+                "all_common_models": all_models,
+                "all_common_mae_delta_full_vs_ar_midas_pp": (
+                    all_models["full_multisource_ridge"]["mae_pp"]
+                    - all_models["ar_midas_ridge"]["mae_pp"]
+                    if {"full_multisource_ridge", "ar_midas_ridge"}.issubset(all_models)
+                    else None
+                ),
+                "recent_window": recent_window_name,
+                "recent_origins": recent_backtest.get("comparison_months"),
+                "recent_models": recent_models,
+                "recent_mae_delta_full_vs_ar_midas_pp": (
+                    recent_models["full_multisource_ridge"]["mae_pp"]
+                    - recent_models["ar_midas_ridge"]["mae_pp"]
+                    if {"full_multisource_ridge", "ar_midas_ridge"}.issubset(recent_models)
+                    else None
+                ),
+            }
             row["records_in"] = nowcast.get("training_months")
             row["records_out"] = 1 if nowcast.get("nowcast_mom_percent") is not None else None
             row["metric_scope"] = "latest forecast/ablation artifacts; timestamp checked against DAG start"
@@ -762,6 +985,7 @@ def build_pipeline_stage_metrics(
                 "training_origins_with_macro_pit": nowcast.get("full_multisource_ridge_training_origins_with_any_macro_source"),
                 "current_macro_source_coverage_percent": nowcast.get("multisource_current_feature_coverage_pct"),
                 "model_processing_seconds": nowcast.get("processing_duration_seconds"),
+                "model_quality_backtest": forecast_quality,
                 "ablation_run_id": ablation.get("evaluation_run_id"),
                 "artifact_freshness": artifact_freshness,
             }
@@ -1267,6 +1491,99 @@ def markdown_report(report: dict[str, Any]) -> str:
                 f"| {cell(row['acceptance_rate_percent'], '%')} | {cell(row['throughput_records_per_second'])} "
                 f"| {cell(row['p95_latency_seconds'])} | {row['metric_scope']} |"
             )
+        stage_by_name = {row["stage"]: row for row in stage_metrics.get("stages", [])}
+        gold_details = stage_by_name.get("gold", {}).get("details", {})
+        dbt_tests = gold_details.get("dbt_test_metrics", {})
+        gold_models = gold_details.get("dbt_gold_model_metrics", {})
+        lines += ["", "### Gold data and test metrics", ""]
+        if gold_models.get("available"):
+            lines.append(
+                f"This run materialized **{gold_models.get('output_rows_across_model_materializations')} model-output rows** "
+                f"across {gold_models.get('models_with_row_counts')}/{gold_models.get('models_in_run')} Gold models; "
+                f"aggregate model execution time **{gold_models.get('model_execution_seconds_for_counted_outputs')}s**; "
+                f"materialization rate **{gold_models.get('materialization_rows_per_model_second')} rows/model-second**."
+            )
+            lines.append(
+                "Counts are summed across model outputs, so the same underlying observations may appear in multiple tables. "
+                "The append-only feature-vintage model counts only rows appended during this run."
+            )
+            lines.append("")
+            lines.append("| Gold model | Output rows | Model seconds | Count scope |")
+            lines.append("|---|---:|---:|---|")
+            for model in gold_models.get("models", []):
+                lines.append(
+                    f"| {model.get('model')} | {model.get('output_rows')} | "
+                    f"{model.get('execution_seconds')} | {model.get('count_scope')} |"
+                )
+        else:
+            lines.append(
+                f"Per-model output metrics unavailable: {gold_models.get('reason', 'dbt Gold run artifact not matched to this DAG run')}."
+            )
+            partial_models = gold_models.get("models", [])
+            if partial_models:
+                lines += [
+                    "",
+                    "| Gold model | Output rows | Model seconds | Count error |",
+                    "|---|---:|---:|---|",
+                ]
+                for model in partial_models:
+                    lines.append(
+                        f"| {model.get('model')} | {model.get('output_rows')} "
+                        f"| {model.get('execution_seconds')} | {model.get('count_error', '')} |"
+                    )
+        if dbt_tests.get("available"):
+            lines.append(
+                f"Current Gold snapshots: **{gold_details.get('gold_cpi_rows')} CPI rows**, "
+                f"**{gold_details.get('gold_nowcasting_feature_rows')} nowcasting feature rows**. "
+                f"PIT/data tests: **{dbt_tests.get('passed')}/{dbt_tests.get('test_count')} passed**, "
+                f"**{dbt_tests.get('failed')} failed**, **{dbt_tests.get('failure_rows')} failing rows**; "
+                f"test execution time sum **{dbt_tests.get('execution_seconds')}s**."
+            )
+        else:
+            lines.append(
+                f"Gold table snapshots: {gold_details.get('gold_cpi_rows')} CPI rows and "
+                f"{gold_details.get('gold_nowcasting_feature_rows')} feature rows. "
+                f"Per-test counts unavailable: {dbt_tests.get('reason', 'dbt test artifact not found or not matched to this run')}"
+            )
+        lines.append(
+            "The feature/CPI counts below are current table sizes. Input rows remain N/A because Gold has multiple "
+            "overlapping inputs; rejected rows and acceptance rate are not Silver-style record metrics."
+        )
+        forecast_details = stage_by_name.get("forecasting", {}).get("details", {})
+        quality = forecast_details.get("model_quality_backtest", {})
+        lines += ["", "### Forecasting quality metrics", ""]
+        if quality.get("available"):
+            lines += [
+                f"Historical backtest (all common origins: **{quality.get('all_common_origins')}**):",
+                "",
+                "| Model | MAE (pp) | RMSE (pp) | Direction accuracy |",
+                "|---|---:|---:|---:|",
+            ]
+            for model_name, label in (
+                ("naive_last_cpi", "Naïve"),
+                ("ar_midas_ridge", "AR-MIDAS"),
+                ("full_multisource_ridge", "Full multi-source Ridge"),
+            ):
+                metric = quality.get("all_common_models", {}).get(model_name)
+                if metric:
+                    lines.append(
+                        f"| {label} | {metric.get('mae_pp')} | {metric.get('rmse_pp')} "
+                        f"| {metric.get('directional_accuracy_pct')}% |"
+                    )
+            lines.append(
+                f"Full multi-source minus AR-MIDAS MAE: **{quality.get('all_common_mae_delta_full_vs_ar_midas_pp')} pp**."
+            )
+            recent_models = quality.get("recent_models", {})
+            if recent_models:
+                lines.append(
+                    f"Recent window `{quality.get('recent_window')}` ({quality.get('recent_origins')} origins): "
+                    f"Full multi-source MAE **{recent_models.get('full_multisource_ridge', {}).get('mae_pp')} pp**, "
+                    f"AR-MIDAS MAE **{recent_models.get('ar_midas_ridge', {}).get('mae_pp')} pp**; "
+                    f"delta **{quality.get('recent_mae_delta_full_vs_ar_midas_pp')} pp**."
+                )
+            lines.append(quality.get("evaluation_note") or "Historical backtest; interpret with its vintage limitations.")
+        else:
+            lines.append("Forecast quality backtest unavailable: no comparable prediction artifact was found.")
         notes = [
             f"- **{row['stage']}**: {field} — {reason}"
             for row in stage_metrics.get("stages", [])
@@ -1809,6 +2126,16 @@ def main() -> None:
         and dag_duration is not None
         and dag_duration <= DAG_LATENCY_SLO_SECONDS
     )
+    latest_run_id = (latest_dag or {}).get("run_id")
+    latest_run_task_map = {
+        row["task_id"]: row
+        for row in airflow_reliability.get("latest_run_tasks", [])
+        if row.get("run_id") == latest_run_id and row.get("task_id")
+    }
+    dbt_target_dir = Path(os.getenv("DBT_TARGET_DIR", "/opt/airflow/dbt/target"))
+    gold_model_metrics = read_dbt_gold_model_metrics(
+        dbt_target_dir, latest_run_task_map.get("dbt_gold")
+    )
     pipeline_stage_metrics = build_pipeline_stage_metrics(
         now=now,
         dag_run=latest_dag,
@@ -1829,7 +2156,9 @@ def main() -> None:
         kafka_lag=kafka_bronze_lag,
         gold_cpi=gold_quality,
         gold_features=gold_feature_coverage,
+        gold_model_metrics=gold_model_metrics,
         nowcast=nowcast_artifact,
+        nowcast_backtest=nowcast_backtest,
         ablation=ablation_manifest,
     )
     latency_measured = [
@@ -2005,7 +2334,7 @@ def main() -> None:
             "Separate source-scope filtering from data-quality failures; a large out-of-scope share can be expected when collectors keep broad raw history.",
         "Run-scoped Silver row counts are recorded by stage audit; dbt model-level row deltas and source publication timestamps remain useful additions.",
             "Source publication timestamp or release calendar; current IMF CPI events have no release_ts, so publication delay cannot be calculated yet.",
-            "Nowcast MAE/RMSE and prediction interval coverage against subsequently published CPI values.",
+            "Prediction interval coverage and calibration against subsequently published CPI values.",
         ],
     }
 

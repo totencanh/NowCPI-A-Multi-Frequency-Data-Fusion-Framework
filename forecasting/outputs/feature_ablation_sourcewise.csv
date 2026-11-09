@@ -1,5 +1,5 @@
-source,eligible_target_months,eligible_percent,paired_origins,failed_folds,status,baseline_mae_pp,source_added_mae_pp,mae_delta_pp_source_minus_baseline,mae_relative_uplift_pct,mae_delta_95ci_low_pp,mae_delta_95ci_high_pp,dm_pvalue_mae_loss,baseline_rmse_pp,source_added_rmse_pp,point_in_time_history_available,strict_vintage_performance_claim_allowed
-brent_monthly,0,0.0,0,0,not_estimable_no_point_in_time_features,,,,,,,,,,False,False
-usd_vnd,0,0.0,0,0,not_estimable_no_point_in_time_features,,,,,,,,,,False,False
-fuel,0,0.0,0,0,not_estimable_no_point_in_time_features,,,,,,,,,,False,False
-iip,0,0.0,0,0,not_estimable_no_point_in_time_features,,,,,,,,,,False,False
+source,eligible_target_months,eligible_percent,paired_origins,failed_folds,status,baseline_mae_pp,source_added_mae_pp,mae_delta_pp_source_minus_baseline,mae_relative_uplift_pct,mae_delta_95ci_low_pp,mae_delta_95ci_high_pp,dm_pvalue_mae_loss,baseline_rmse_pp,source_added_rmse_pp,point_in_time_history_available,proxy_feature_history_available,strict_vintage_performance_claim_allowed,evaluation_mode
+brent_monthly,0,0.0,0,0,not_estimable_no_point_in_time_features,,,,,,,,,,False,False,False,strict_pit
+usd_vnd,0,0.0,0,0,not_estimable_no_point_in_time_features,,,,,,,,,,False,False,False,strict_pit
+fuel,0,0.0,0,0,not_estimable_no_point_in_time_features,,,,,,,,,,False,False,False,strict_pit
+iip,0,0.0,0,0,not_estimable_no_point_in_time_features,,,,,,,,,,False,False,False,strict_pit

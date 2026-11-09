@@ -1,0 +1,33 @@
+{
+  "model_name": "cpi_only_ridge",
+  "model_version": "v1-6629a0805928",
+  "evaluation_run_id": "20261109T180822Z",
+  "generated_at_utc": "2026-11-09T18:08:22.796322+00:00",
+  "source_code_sha256": "c30e3b9019d1e9d4d3be0ce2d8effa6d5ba3e175d96adafedd64b33891d171bb",
+  "role": "method_ablation",
+  "model_family": "Ridge",
+  "predictors": [
+    "cpi_mom_lag_1"
+  ],
+  "hyperparameters": {
+    "alpha": 10.0
+  },
+  "prediction_file": "predictions.csv",
+  "metrics_file": "metrics.csv",
+  "runtime_file": "runtime.csv",
+  "ineligible_folds_file": "ineligible_folds.csv",
+  "failures_file": "failures.csv",
+  "operational_metrics": {
+    "model": "cpi_only_ridge",
+    "fit_predict_seconds": 0.2497269919986138,
+    "failed_folds": 0,
+    "ineligible_folds": 0,
+    "completed_folds": 131,
+    "max_fit_predict_seconds": 0.006218275999799516,
+    "max_rss_kb": 140332,
+    "script_wall_seconds": 63.912,
+    "strict_vintage_available": false
+  },
+  "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",
+  "point_in_time_claim": "historical source vintages are incomplete; diagnostic only"
+}

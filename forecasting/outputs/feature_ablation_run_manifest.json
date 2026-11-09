@@ -1,18 +1,18 @@
 {
-  "evaluation_run_id": "20261108T191136Z",
-  "generated_at_utc": "2026-11-08T19:11:36.908846+00:00",
+  "evaluation_run_id": "20261109T180822Z",
+  "generated_at_utc": "2026-11-09T18:08:23.348308+00:00",
   "primary_model": "full_multisource_ridge",
-  "primary_model_version": "v1-739049eac1c6",
-  "source_code_sha256": "6ff26ecd230d4a4bbc85fb3456d4466be244d4304e11c65772acb70a9638d7f4",
+  "primary_model_version": "v1-f60ac6bf2951",
+  "source_code_sha256": "c30e3b9019d1e9d4d3be0ce2d8effa6d5ba3e175d96adafedd64b33891d171bb",
   "models": [
     {
       "model_name": "naive_last_cpi",
-      "model_version": "v1-ccc0a3ab52c2",
+      "model_version": "v1-4d81ef6865b8",
       "role": "baseline",
       "model_family": "naive_last_observation",
       "predictors": "[\"cpi_mom_lag_1\"]",
       "hyperparameters": "{}",
-      "artifact_path": "models/naive_last_cpi/v1-ccc0a3ab52c2",
+      "artifact_path": "models/naive_last_cpi/v1-4d81ef6865b8",
       "runtime_failures": 0,
       "ineligible_folds": 0,
       "completed_folds": 0,
@@ -20,172 +20,172 @@
     },
     {
       "model_name": "ar1_ols",
-      "model_version": "v1-f817dad47d84",
+      "model_version": "v1-f4b6e47f1544",
       "role": "baseline",
       "model_family": "AR(1) OLS",
       "predictors": "[\"cpi_mom_lag_1\"]",
       "hyperparameters": "{\"fit_intercept\": true, \"regularization\": null}",
-      "artifact_path": "models/ar1_ols/v1-f817dad47d84",
+      "artifact_path": "models/ar1_ols/v1-f4b6e47f1544",
       "runtime_failures": 0,
       "ineligible_folds": 0,
       "completed_folds": 131,
-      "fit_predict_seconds": 0.2585663559975728
+      "fit_predict_seconds": 0.2724516479952399
     },
     {
       "model_name": "cpi_only_ridge",
-      "model_version": "v1-9cf63f90f22d",
+      "model_version": "v1-6629a0805928",
       "role": "method_ablation",
       "model_family": "Ridge",
       "predictors": "[\"cpi_mom_lag_1\"]",
       "hyperparameters": "{\"alpha\": 10.0}",
-      "artifact_path": "models/cpi_only_ridge/v1-9cf63f90f22d",
+      "artifact_path": "models/cpi_only_ridge/v1-6629a0805928",
       "runtime_failures": 0,
       "ineligible_folds": 0,
       "completed_folds": 131,
-      "fit_predict_seconds": 0.26224908900348964
+      "fit_predict_seconds": 0.2497269919986138
     },
     {
       "model_name": "u_midas_brent_ridge",
-      "model_version": "v1-ca9c6c22a090",
+      "model_version": "v1-bc2702a7b3ea",
       "role": "single_source_ablation",
       "model_family": "U-MIDAS Ridge",
       "predictors": "[\"brent_weekly_log_return_lag_12\", \"brent_weekly_log_return_lag_11\", \"brent_weekly_log_return_lag_10\", \"brent_weekly_log_return_lag_9\", \"brent_weekly_log_return_lag_8\", \"brent_weekly_log_return_lag_7\", \"brent_weekly_log_return_lag_6\", \"brent_weekly_log_return_lag_5\", \"brent_weekly_log_return_lag_4\", \"brent_weekly_log_return_lag_3\", \"brent_weekly_log_return_lag_2\", \"brent_weekly_log_return_lag_1\"]",
       "hyperparameters": "{\"alpha\": 10.0, \"brent_weekly_lags\": 12}",
-      "artifact_path": "models/u_midas_brent_ridge/v1-ca9c6c22a090",
+      "artifact_path": "models/u_midas_brent_ridge/v1-bc2702a7b3ea",
       "runtime_failures": 0,
       "ineligible_folds": 1,
       "completed_folds": 130,
-      "fit_predict_seconds": 0.4543443100001241
+      "fit_predict_seconds": 0.42441179800061946
     },
     {
       "model_name": "ar_midas_ridge",
-      "model_version": "v1-4872a025be69",
+      "model_version": "v1-3f7db802df6b",
       "role": "method_ablation",
       "model_family": "AR-MIDAS Ridge",
       "predictors": "[\"cpi_mom_lag_1\", \"brent_weekly_log_return_lag_12\", \"brent_weekly_log_return_lag_11\", \"brent_weekly_log_return_lag_10\", \"brent_weekly_log_return_lag_9\", \"brent_weekly_log_return_lag_8\", \"brent_weekly_log_return_lag_7\", \"brent_weekly_log_return_lag_6\", \"brent_weekly_log_return_lag_5\", \"brent_weekly_log_return_lag_4\", \"brent_weekly_log_return_lag_3\", \"brent_weekly_log_return_lag_2\", \"brent_weekly_log_return_lag_1\"]",
       "hyperparameters": "{\"alpha\": 10.0, \"brent_weekly_lags\": 12}",
-      "artifact_path": "models/ar_midas_ridge/v1-4872a025be69",
+      "artifact_path": "models/ar_midas_ridge/v1-3f7db802df6b",
       "runtime_failures": 0,
       "ineligible_folds": 1,
       "completed_folds": 130,
-      "fit_predict_seconds": 0.45600418200319837
+      "fit_predict_seconds": 0.43517964300190215
     },
     {
       "model_name": "midas_elastic_net",
-      "model_version": "v1-19db3e926b7a",
+      "model_version": "v1-e6856a435b4c",
       "role": "method_ablation",
       "model_family": "Elastic Net",
       "predictors": "[\"cpi_mom_lag_1\", \"brent_weekly_log_return_lag_12\", \"brent_weekly_log_return_lag_11\", \"brent_weekly_log_return_lag_10\", \"brent_weekly_log_return_lag_9\", \"brent_weekly_log_return_lag_8\", \"brent_weekly_log_return_lag_7\", \"brent_weekly_log_return_lag_6\", \"brent_weekly_log_return_lag_5\", \"brent_weekly_log_return_lag_4\", \"brent_weekly_log_return_lag_3\", \"brent_weekly_log_return_lag_2\", \"brent_weekly_log_return_lag_1\"]",
       "hyperparameters": "{\"alpha_grid\": [0.1, 1.0], \"l1_ratio_grid\": [0.2, 0.8]}",
-      "artifact_path": "models/midas_elastic_net/v1-19db3e926b7a",
+      "artifact_path": "models/midas_elastic_net/v1-e6856a435b4c",
       "runtime_failures": 0,
       "ineligible_folds": 1,
       "completed_folds": 130,
-      "fit_predict_seconds": 14.342396473000008
+      "fit_predict_seconds": 13.174166905002949
     },
     {
       "model_name": "midas_lasso",
-      "model_version": "v1-2950706cfa8c",
+      "model_version": "v1-d89a57fa8b10",
       "role": "method_ablation",
       "model_family": "Lasso",
       "predictors": "[\"cpi_mom_lag_1\", \"brent_weekly_log_return_lag_12\", \"brent_weekly_log_return_lag_11\", \"brent_weekly_log_return_lag_10\", \"brent_weekly_log_return_lag_9\", \"brent_weekly_log_return_lag_8\", \"brent_weekly_log_return_lag_7\", \"brent_weekly_log_return_lag_6\", \"brent_weekly_log_return_lag_5\", \"brent_weekly_log_return_lag_4\", \"brent_weekly_log_return_lag_3\", \"brent_weekly_log_return_lag_2\", \"brent_weekly_log_return_lag_1\"]",
       "hyperparameters": "{\"alpha_grid\": [0.1, 1.0], \"l1_ratio\": 1.0}",
-      "artifact_path": "models/midas_lasso/v1-2950706cfa8c",
+      "artifact_path": "models/midas_lasso/v1-d89a57fa8b10",
       "runtime_failures": 0,
       "ineligible_folds": 1,
       "completed_folds": 130,
-      "fit_predict_seconds": 6.809792087997266
+      "fit_predict_seconds": 6.414712564998808
     },
     {
       "model_name": "midas_huber",
-      "model_version": "v1-cff9dad0fe8f",
+      "model_version": "v1-ae5a29945ef7",
       "role": "method_ablation",
       "model_family": "Huber Ridge",
       "predictors": "[\"cpi_mom_lag_1\", \"brent_weekly_log_return_lag_12\", \"brent_weekly_log_return_lag_11\", \"brent_weekly_log_return_lag_10\", \"brent_weekly_log_return_lag_9\", \"brent_weekly_log_return_lag_8\", \"brent_weekly_log_return_lag_7\", \"brent_weekly_log_return_lag_6\", \"brent_weekly_log_return_lag_5\", \"brent_weekly_log_return_lag_4\", \"brent_weekly_log_return_lag_3\", \"brent_weekly_log_return_lag_2\", \"brent_weekly_log_return_lag_1\"]",
       "hyperparameters": "{\"alpha_grid\": [0.1, 1.0, 10.0], \"epsilon\": 1.345}",
-      "artifact_path": "models/midas_huber/v1-cff9dad0fe8f",
+      "artifact_path": "models/midas_huber/v1-ae5a29945ef7",
       "runtime_failures": 0,
       "ineligible_folds": 1,
       "completed_folds": 130,
-      "fit_predict_seconds": 13.655472130996714
+      "fit_predict_seconds": 12.785079936001239
     },
     {
       "model_name": "full_multisource_ridge",
-      "model_version": "v1-739049eac1c6",
+      "model_version": "v1-f60ac6bf2951",
       "role": "primary_production_candidate",
       "model_family": "Full multi-source Ridge",
       "predictors": "[\"cpi_mom_lag_1\", \"brent_weekly_log_return_lag_12\", \"brent_weekly_log_return_lag_11\", \"brent_weekly_log_return_lag_10\", \"brent_weekly_log_return_lag_9\", \"brent_weekly_log_return_lag_8\", \"brent_weekly_log_return_lag_7\", \"brent_weekly_log_return_lag_6\", \"brent_weekly_log_return_lag_5\", \"brent_weekly_log_return_lag_4\", \"brent_weekly_log_return_lag_3\", \"brent_weekly_log_return_lag_2\", \"brent_weekly_log_return_lag_1\", \"brent_monthly\", \"usd_vnd\", \"fuel_ron95\", \"fuel_e10\", \"iip_yoy_growth\", \"missing_brent_asof_eligible\", \"missing_fx_asof_eligible\", \"missing_fuel_asof_eligible\", \"missing_iip_asof_eligible\"]",
       "hyperparameters": "{\"alpha\": 10.0, \"missingness_indicators\": true}",
-      "artifact_path": "models/full_multisource_ridge/v1-739049eac1c6",
+      "artifact_path": "models/full_multisource_ridge/v1-f60ac6bf2951",
       "runtime_failures": 0,
       "ineligible_folds": 0,
       "completed_folds": 131,
-      "fit_predict_seconds": 0.9172837849973803
+      "fit_predict_seconds": 0.8216581909987326
     },
     {
       "model_name": "full_multisource_elastic_net",
-      "model_version": "v1-3083938c4c65",
+      "model_version": "v1-335080cd6dcc",
       "role": "method_ablation",
       "model_family": "Full multi-source Elastic Net",
       "predictors": "[\"cpi_mom_lag_1\", \"brent_weekly_log_return_lag_12\", \"brent_weekly_log_return_lag_11\", \"brent_weekly_log_return_lag_10\", \"brent_weekly_log_return_lag_9\", \"brent_weekly_log_return_lag_8\", \"brent_weekly_log_return_lag_7\", \"brent_weekly_log_return_lag_6\", \"brent_weekly_log_return_lag_5\", \"brent_weekly_log_return_lag_4\", \"brent_weekly_log_return_lag_3\", \"brent_weekly_log_return_lag_2\", \"brent_weekly_log_return_lag_1\", \"brent_monthly\", \"usd_vnd\", \"fuel_ron95\", \"fuel_e10\", \"iip_yoy_growth\", \"missing_brent_asof_eligible\", \"missing_fx_asof_eligible\", \"missing_fuel_asof_eligible\", \"missing_iip_asof_eligible\"]",
       "hyperparameters": "{\"alpha_grid\": [0.1, 1.0], \"inner_validation_origins_max\": 6, \"l1_ratio_grid\": [0.2, 0.8]}",
-      "artifact_path": "models/full_multisource_elastic_net/v1-3083938c4c65",
+      "artifact_path": "models/full_multisource_elastic_net/v1-335080cd6dcc",
       "runtime_failures": 0,
       "ineligible_folds": 0,
       "completed_folds": 131,
-      "fit_predict_seconds": 20.870817855996393
+      "fit_predict_seconds": 19.976523803002237
     },
     {
       "model_name": "multisource_without_brent",
-      "model_version": "v1-2c4af8efae08",
+      "model_version": "v1-853709049833",
       "role": "leave_one_source_out_ablation",
       "model_family": "Full multi-source Ridge without one source group",
       "predictors": "[\"cpi_mom_lag_1\", \"usd_vnd\", \"fuel_ron95\", \"fuel_e10\", \"iip_yoy_growth\", \"missing_brent_asof_eligible\", \"missing_fx_asof_eligible\", \"missing_fuel_asof_eligible\", \"missing_iip_asof_eligible\"]",
       "hyperparameters": "{\"alpha\": 10.0, \"missingness_indicators\": true, \"omitted_source_group\": \"brent\"}",
-      "artifact_path": "models/multisource_without_brent/v1-2c4af8efae08",
+      "artifact_path": "models/multisource_without_brent/v1-853709049833",
       "runtime_failures": 0,
       "ineligible_folds": 1,
       "completed_folds": 130,
-      "fit_predict_seconds": 0.4488916810014416
+      "fit_predict_seconds": 0.4149183029994674
     },
     {
       "model_name": "multisource_without_usd_vnd",
-      "model_version": "v1-20d97f591f5c",
+      "model_version": "v1-3cf9d7a8646a",
       "role": "leave_one_source_out_ablation",
       "model_family": "Full multi-source Ridge without one source group",
       "predictors": "[\"cpi_mom_lag_1\", \"brent_weekly_log_return_lag_12\", \"brent_weekly_log_return_lag_11\", \"brent_weekly_log_return_lag_10\", \"brent_weekly_log_return_lag_9\", \"brent_weekly_log_return_lag_8\", \"brent_weekly_log_return_lag_7\", \"brent_weekly_log_return_lag_6\", \"brent_weekly_log_return_lag_5\", \"brent_weekly_log_return_lag_4\", \"brent_weekly_log_return_lag_3\", \"brent_weekly_log_return_lag_2\", \"brent_weekly_log_return_lag_1\", \"brent_monthly\", \"fuel_ron95\", \"fuel_e10\", \"iip_yoy_growth\", \"missing_brent_asof_eligible\", \"missing_fx_asof_eligible\", \"missing_fuel_asof_eligible\", \"missing_iip_asof_eligible\"]",
       "hyperparameters": "{\"alpha\": 10.0, \"missingness_indicators\": true, \"omitted_source_group\": \"usd_vnd\"}",
-      "artifact_path": "models/multisource_without_usd_vnd/v1-20d97f591f5c",
+      "artifact_path": "models/multisource_without_usd_vnd/v1-3cf9d7a8646a",
       "runtime_failures": 0,
       "ineligible_folds": 131,
       "completed_folds": 0,
-      "fit_predict_seconds": 0.16467348799506
+      "fit_predict_seconds": 0.14194972500399672
     },
     {
       "model_name": "multisource_without_fuel",
-      "model_version": "v1-ce338e9dfa44",
+      "model_version": "v1-0ca8d2724fb7",
       "role": "leave_one_source_out_ablation",
       "model_family": "Full multi-source Ridge without one source group",
       "predictors": "[\"cpi_mom_lag_1\", \"brent_weekly_log_return_lag_12\", \"brent_weekly_log_return_lag_11\", \"brent_weekly_log_return_lag_10\", \"brent_weekly_log_return_lag_9\", \"brent_weekly_log_return_lag_8\", \"brent_weekly_log_return_lag_7\", \"brent_weekly_log_return_lag_6\", \"brent_weekly_log_return_lag_5\", \"brent_weekly_log_return_lag_4\", \"brent_weekly_log_return_lag_3\", \"brent_weekly_log_return_lag_2\", \"brent_weekly_log_return_lag_1\", \"brent_monthly\", \"usd_vnd\", \"iip_yoy_growth\", \"missing_brent_asof_eligible\", \"missing_fx_asof_eligible\", \"missing_fuel_asof_eligible\", \"missing_iip_asof_eligible\"]",
       "hyperparameters": "{\"alpha\": 10.0, \"missingness_indicators\": true, \"omitted_source_group\": \"fuel\"}",
-      "artifact_path": "models/multisource_without_fuel/v1-ce338e9dfa44",
+      "artifact_path": "models/multisource_without_fuel/v1-0ca8d2724fb7",
       "runtime_failures": 0,
       "ineligible_folds": 131,
       "completed_folds": 0,
-      "fit_predict_seconds": 0.1528380749932694
+      "fit_predict_seconds": 0.1398454990035134
     },
     {
       "model_name": "multisource_without_iip",
-      "model_version": "v1-4a4245d9614d",
+      "model_version": "v1-f9db93a1383e",
       "role": "leave_one_source_out_ablation",
       "model_family": "Full multi-source Ridge without one source group",
       "predictors": "[\"cpi_mom_lag_1\", \"brent_weekly_log_return_lag_12\", \"brent_weekly_log_return_lag_11\", \"brent_weekly_log_return_lag_10\", \"brent_weekly_log_return_lag_9\", \"brent_weekly_log_return_lag_8\", \"brent_weekly_log_return_lag_7\", \"brent_weekly_log_return_lag_6\", \"brent_weekly_log_return_lag_5\", \"brent_weekly_log_return_lag_4\", \"brent_weekly_log_return_lag_3\", \"brent_weekly_log_return_lag_2\", \"brent_weekly_log_return_lag_1\", \"brent_monthly\", \"usd_vnd\", \"fuel_ron95\", \"fuel_e10\", \"missing_brent_asof_eligible\", \"missing_fx_asof_eligible\", \"missing_fuel_asof_eligible\", \"missing_iip_asof_eligible\"]",
       "hyperparameters": "{\"alpha\": 10.0, \"missingness_indicators\": true, \"omitted_source_group\": \"iip\"}",
-      "artifact_path": "models/multisource_without_iip/v1-4a4245d9614d",
+      "artifact_path": "models/multisource_without_iip/v1-f9db93a1383e",
       "runtime_failures": 0,
       "ineligible_folds": 131,
       "completed_folds": 0,
-      "fit_predict_seconds": 0.15116555599524872
+      "fit_predict_seconds": 0.1417641050020393
     }
   ]
 }

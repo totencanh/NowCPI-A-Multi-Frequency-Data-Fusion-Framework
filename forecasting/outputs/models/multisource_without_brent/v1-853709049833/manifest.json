@@ -1,0 +1,45 @@
+{
+  "model_name": "multisource_without_brent",
+  "model_version": "v1-853709049833",
+  "evaluation_run_id": "20261109T180822Z",
+  "generated_at_utc": "2026-11-09T18:08:23.186663+00:00",
+  "source_code_sha256": "c30e3b9019d1e9d4d3be0ce2d8effa6d5ba3e175d96adafedd64b33891d171bb",
+  "role": "leave_one_source_out_ablation",
+  "model_family": "Full multi-source Ridge without one source group",
+  "predictors": [
+    "cpi_mom_lag_1",
+    "usd_vnd",
+    "fuel_ron95",
+    "fuel_e10",
+    "iip_yoy_growth",
+    "missing_brent_asof_eligible",
+    "missing_fx_asof_eligible",
+    "missing_fuel_asof_eligible",
+    "missing_iip_asof_eligible"
+  ],
+  "hyperparameters": {
+    "alpha": 10.0,
+    "missingness_indicators": true,
+    "omitted_source_group": "brent"
+  },
+  "omitted_source": "Brent weekly and monthly",
+  "comparison_model": "full_multisource_ridge",
+  "prediction_file": "predictions.csv",
+  "metrics_file": "metrics.csv",
+  "runtime_file": "runtime.csv",
+  "ineligible_folds_file": "ineligible_folds.csv",
+  "failures_file": "failures.csv",
+  "operational_metrics": {
+    "model": "multisource_without_brent",
+    "fit_predict_seconds": 0.4149183029994674,
+    "failed_folds": 0,
+    "ineligible_folds": 1,
+    "completed_folds": 130,
+    "max_fit_predict_seconds": 0.013045726000200375,
+    "max_rss_kb": 140332,
+    "script_wall_seconds": 63.912,
+    "strict_vintage_available": false
+  },
+  "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",
+  "point_in_time_claim": "historical source vintages are incomplete; diagnostic only"
+}

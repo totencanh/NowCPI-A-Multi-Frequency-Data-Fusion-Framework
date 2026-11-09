@@ -270,11 +270,11 @@ def build_proxy_history(
                 pd.to_datetime(subset.get("source_release_ts"), errors="coerce", utc=True)
                 .notna().sum()
             ) if "source_release_ts" in subset else 0
-            source_audit[source] = {
+            source_audit.update({
                 f"{source}_observations_available": int(len(subset)),
                 f"{source}_observations_with_source_release_ts": release_count,
                 f"{source}_observations_using_proxy": int(len(subset) - release_count),
-            }
+            })
             if source == "brent":
                 # The weekly Brent predictors are already built with the same
                 # observation-date/next-day policy in historical_weekly_returns.
@@ -332,6 +332,10 @@ def build_proxy_history(
         iip_value = float(eligible_iip["value"].iloc[-1]) if not eligible_iip.empty else np.nan
         proxy.at[idx, "iip_yoy_growth"] = iip_value
         proxy.at[idx, "missing_iip_asof_eligible"] = 0.0 if pd.notna(iip_value) else 1.0
+        iip_release_count = (
+            int(pd.to_datetime(eligible_iip["source_release_ts"], errors="coerce", utc=True).notna().sum())
+            if "source_release_ts" in eligible_iip else 0
+        )
         audit.append({
             "target_month": month,
             "target_cutoff_at": cutoff,
@@ -340,6 +344,8 @@ def build_proxy_history(
             "iip_availability_policy": "source_release_ts_if_present_else_observation_month_end_plus_15_vietnam_days",
             **source_audit,
             "iip_observations_available_by_cutoff": int(len(eligible_iip)),
+            "iip_observations_with_source_release_ts": iip_release_count,
+            "iip_observations_using_proxy": int(len(eligible_iip) - iip_release_count),
             "iip_latest_observation_month": (
                 eligible_iip["month_start"].iloc[-1].date().isoformat()
                 if not eligible_iip.empty else None

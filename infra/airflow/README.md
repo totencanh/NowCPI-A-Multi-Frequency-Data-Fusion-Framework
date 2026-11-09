@@ -77,7 +77,13 @@ duration for the measured run. Stages are ingestion, Kafka, Bronze, Silver,
 Gold/dbt, and forecasting. Run-specific collector and Silver counts are joined
 by Airflow DAG run ID; Kafka/Bronze 24-hour observations and current Gold row
 counts are labeled with their measurement scope instead of being presented as
-run-level deltas. A `null` metric means it was unavailable, not zero.
+run-level deltas. Gold model outputs are counted per successful dbt model and
+joined to that model's dbt execution time; the aggregate materialization rate
+sums rows across Gold tables, so overlapping rows are possible. The append-only
+feature-vintage model counts only rows recorded during that Gold task. Gold
+input rows, record rejections, and acceptance rate remain N/A because Gold has
+multiple overlapping inputs and dbt tests validate constraints rather than
+rejecting records. A `null` metric means it was unavailable, not zero.
 
 The Kafka publisher writes one `kafka_publish_runs.jsonl` audit row per DAG run
 with candidate/delivered event counts, send-to-ack latency samples, acceptance,

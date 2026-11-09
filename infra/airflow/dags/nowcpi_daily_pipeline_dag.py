@@ -198,7 +198,9 @@ with DAG(
             "--project-dir /opt/airflow/dbt --profiles-dir /opt/airflow/dbt && "
             "env -u PYTHONPATH /opt/dbt_venv/bin/dbt run "
             "--project-dir /opt/airflow/dbt --profiles-dir /opt/airflow/dbt "
-            "--select path:models/gold"
+            "--select path:models/gold && "
+            "cp /opt/airflow/dbt/target/run_results.json "
+            "/opt/airflow/dbt/target/nowcpi_gold_run_results.json"
         ),
         execution_timeout=timedelta(minutes=30),
     )

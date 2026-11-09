@@ -1,0 +1,2 @@
+model,target_month,status,reason,required_training_rows,available_training_rows
+u_midas_brent_ridge,2015-11-01,not_evaluated_insufficient_or_unavailable_data,insufficient_training_history_after_feature_eligibility,8,7

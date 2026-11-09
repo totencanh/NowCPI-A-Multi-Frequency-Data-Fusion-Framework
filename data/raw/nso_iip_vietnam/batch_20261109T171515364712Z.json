@@ -1,0 +1,70 @@
+[
+  {
+    "schema_version": 1,
+    "event_id": "bd85b87c8c2a2c6e4d75bffac0ae7c2fa37e57844762109a3c1f755f1cffd8a4",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2026-09",
+    "frequency": "monthly",
+    "value": 219.29,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-11-09T17:15:15.333637+00:00",
+    "source_record_id": "nso_iip_total_index:2026-09",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2026-09",
+        "OBS_VALUE": "219.29"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  },
+  {
+    "schema_version": 1,
+    "event_id": "c53f68ea1f8d051f8674b3c4ce3a407255b26e69e008d47b10c04c925d06c5ab",
+    "source": "national_statistics_office_vietnam",
+    "series_id": "iip_total_index",
+    "country": "VNM",
+    "observation_period": "2026-10",
+    "frequency": "monthly",
+    "value": 102.27,
+    "unit": "index",
+    "release_ts": null,
+    "ingested_at": "2026-11-09T17:15:15.333696+00:00",
+    "source_record_id": "nso_iip_total_index:2026-10",
+    "raw_payload": {
+      "source_url": "https://nsdp.nso.gov.vn/GSO-chung/SDMXFiles/GSO/IIPVNM.xml",
+      "source_dataset": "NSDP IIPVNM",
+      "country_code": "VNM",
+      "series_selection": "first NSDP series (aggregate Industry)",
+      "series_dimensions": {
+        "DATA_DOMAIN": "IND",
+        "REF_AREA": "VN",
+        "INDICATOR": "AIP_ISIC4_IX",
+        "COUNTERPART_AREA": "_Z",
+        "FREQ": "M",
+        "BASE_PER": "2015",
+        "UNIT_MULT": "0"
+      },
+      "observation_attributes": {
+        "TIME_PERIOD": "2026-10",
+        "OBS_VALUE": "102.27"
+      },
+      "value_definition": "monthly industrial production index level"
+    }
+  }
+]
