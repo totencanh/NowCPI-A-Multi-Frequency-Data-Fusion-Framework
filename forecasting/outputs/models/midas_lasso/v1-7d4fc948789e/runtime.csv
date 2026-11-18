@@ -1,0 +1,2 @@
+model,fit_predict_seconds,failed_folds,ineligible_folds,completed_folds,max_fit_predict_seconds,max_rss_kb,script_wall_seconds,strict_vintage_available
+midas_lasso,4.970033133995457,0,1,130,0.07171587600169005,169384,67.96,False

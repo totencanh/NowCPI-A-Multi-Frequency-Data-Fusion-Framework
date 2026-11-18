@@ -45,6 +45,11 @@ from evaluation_protocol import (
     paired_model_comparison,
     release_timestamp_audit,
 )
+from forecast_origin_ledger import (
+    append_forecast_origin,
+    append_observed_outcomes,
+    summarize_ledger,
+)
 from source_history.raw_batch_version_audit import build_raw_batch_version_audit
 
 
@@ -52,6 +57,8 @@ HERE = Path(__file__).resolve().parent
 OUTPUT_DIR = HERE / "outputs"
 LAGS = 12
 MIN_TRAIN = 8
+MIN_INTERVAL_CALIBRATION_ORIGINS = 24
+PREDICTION_INTERVAL_COVERAGE = 0.90
 RIDGE_ALPHA = 10.0
 HISTORICAL_CPI_RELEASE_DAY = 15
 HISTORICAL_BRENT_PUBLICATION_LAG_DAYS = 1
@@ -329,6 +336,36 @@ def fit_predict(
         x_train.T @ train["actual_cpi_mom_percent"].to_numpy(),
     )
     return float((x_test @ beta).item())
+
+
+def conformal_absolute_error_interval(
+    prediction: float,
+    prior_residuals: list[float] | np.ndarray,
+    coverage: float = PREDICTION_INTERVAL_COVERAGE,
+) -> dict:
+    """Build a symmetric split-conformal interval from prior forecast errors."""
+    residuals = np.asarray(prior_residuals, dtype=float)
+    residuals = np.abs(residuals[np.isfinite(residuals)])
+    count = int(len(residuals))
+    if count < MIN_INTERVAL_CALIBRATION_ORIGINS:
+        return {
+            "lower": None,
+            "upper": None,
+            "half_width": None,
+            "calibration_origins": count,
+            "status": "not_estimable_insufficient_prior_origins",
+        }
+    # Finite-sample conformal rank. The higher order statistic avoids
+    # interpolating to a narrower interval than the observed calibration data.
+    rank = min(int(np.ceil((count + 1) * coverage)), count)
+    radius = float(np.sort(residuals)[rank - 1])
+    return {
+        "lower": float(prediction - radius),
+        "upper": float(prediction + radius),
+        "half_width": radius,
+        "calibration_origins": count,
+        "status": "available_pseudo_vintage_calibration",
+    }
 
 
 def fit_ar1(train: pd.DataFrame, test: pd.DataFrame) -> float:
@@ -722,6 +759,7 @@ def main() -> None:
         record = {
             "target_month": row["target_month"].iloc[0],
             "actual_cpi_mom_percent": float(row["actual_cpi_mom_percent"].iloc[0]),
+            "target_effective_release_at": row["target_effective_release_at"].iloc[0],
             "training_months": len(train),
             "information_cutoff_at": row["cutoff_at"].iloc[0],
             "cpi_lag_assumed_available_at": row[
@@ -816,7 +854,78 @@ def main() -> None:
 
     predictions = pd.DataFrame(backtest)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    interval_records = []
+    if not predictions.empty:
+        predictions = predictions.sort_values("target_month").reset_index(drop=True)
+        predictions["full_multisource_ridge_interval_lower_90"] = np.nan
+        predictions["full_multisource_ridge_interval_upper_90"] = np.nan
+        predictions["interval_calibration_origins"] = 0
+        predictions["interval_status"] = "not_evaluated"
+        for index, row in predictions.iterrows():
+            cutoff = pd.to_datetime(row["information_cutoff_at"], errors="coerce", utc=True)
+            prior = predictions.iloc[:index].copy()
+            prior_release = pd.to_datetime(
+                prior["target_effective_release_at"], errors="coerce", utc=True
+            )
+            prior = prior.loc[
+                prior_release.notna()
+                & (prior_release <= cutoff)
+                & prior["full_multisource_ridge"].notna()
+                & prior["actual_cpi_mom_percent"].notna()
+            ]
+            residuals = (
+                prior["full_multisource_ridge"]
+                - prior["actual_cpi_mom_percent"]
+            ).to_numpy(dtype=float)
+            point = row["full_multisource_ridge"]
+            interval = (
+                conformal_absolute_error_interval(float(point), residuals)
+                if pd.notna(point)
+                else {
+                    "lower": None, "upper": None, "half_width": None,
+                    "calibration_origins": len(residuals),
+                    "status": "point_forecast_unavailable",
+                }
+            )
+            predictions.loc[index, "full_multisource_ridge_interval_lower_90"] = interval["lower"]
+            predictions.loc[index, "full_multisource_ridge_interval_upper_90"] = interval["upper"]
+            predictions.loc[index, "interval_calibration_origins"] = interval["calibration_origins"]
+            predictions.loc[index, "interval_status"] = interval["status"]
+            if interval["lower"] is not None:
+                interval_records.append({
+                    "target_month": row["target_month"],
+                    "actual_cpi_mom_percent": row["actual_cpi_mom_percent"],
+                    "lower_90": interval["lower"],
+                    "upper_90": interval["upper"],
+                    "width_90": interval["upper"] - interval["lower"],
+                    "calibration_origins": interval["calibration_origins"],
+                })
     predictions.to_csv(OUTPUT_DIR / "midas_backtest_predictions.csv", index=False)
+    interval_frame = pd.DataFrame(interval_records)
+    interval_metric_rows = []
+    for window_name, frame in (
+        ("all_eligible_origins", interval_frame),
+        ("latest_36_eligible_origins", interval_frame.tail(36)),
+        ("latest_24_eligible_origins", interval_frame.tail(24)),
+    ):
+        if frame.empty:
+            continue
+        covered = frame["actual_cpi_mom_percent"].between(
+            frame["lower_90"], frame["upper_90"], inclusive="both"
+        )
+        interval_metric_rows.append({
+            "model": "full_multisource_ridge",
+            "nominal_coverage_pct": PREDICTION_INTERVAL_COVERAGE * 100,
+            "observed_coverage_pct": float(covered.mean() * 100),
+            "mean_width_pp": float(frame["width_90"].mean()),
+            "scored_origins": len(frame),
+            "evaluation_window": window_name,
+            "evaluation_mode": "pseudo_vintage_rolling_conformal_diagnostic",
+            "real_time_performance_claim_allowed": False,
+        })
+    pd.DataFrame(interval_metric_rows).to_csv(
+        OUTPUT_DIR / "midas_prediction_interval_metrics.csv", index=False
+    )
     metrics = common_backtest_metrics(predictions)
     metrics.to_csv(OUTPUT_DIR / "midas_backtest_metrics.csv", index=False)
     backtest_evaluation_duration = round(
@@ -848,6 +957,14 @@ def main() -> None:
                 "dm_minimum_paired_origins": MIN_DM_ORIGINS,
                 "dm_losses": ["absolute_error", "squared_error"],
                 "uncertainty": "seeded paired circular moving-block bootstrap 95% CI",
+                "prediction_interval": {
+                    "method": "symmetric split conformal from prior expanding rolling-origin absolute errors",
+                    "nominal_coverage_pct": PREDICTION_INTERVAL_COVERAGE * 100,
+                    "minimum_prior_calibration_origins": MIN_INTERVAL_CALIBRATION_ORIGINS,
+                    "finite_sample_quantile": "higher order statistic at ceil((n+1)*coverage)",
+                    "historical_evaluation_mode": "pseudo_vintage_rolling_conformal_diagnostic",
+                    "real_time_coverage_claim_allowed": False,
+                },
                 "release_time_policy": "CPI uses source_release_ts when present, otherwise NSO issue date with a conservative next-Vietnam-day availability proxy, then day-15 fallback; Brent uses source_release_ts when present, otherwise observation date + 1 UTC day",
                 "vintage_limit": "NSO CPI issue dates are collected, but historical CPI value vintages and complete source vintages are not archived; do not claim strict vintage-accurate results",
                 "real_time_performance_claim_allowed": False,
@@ -953,6 +1070,7 @@ def main() -> None:
         "processing_started_at_utc": processing_started_at.isoformat(),
         "training_months": len(train),
         "latest_actual_cpi_month": latest_actual_month.strftime("%Y-%m"),
+        "cpi_release_calendar_snapshot": release_snapshot_name,
         "cpi_only_ridge_nowcast_mom_percent": None,
         "u_midas_brent_only_diagnostic_mom_percent": None,
         "ar_midas_ridge_nowcast_mom_percent": None,
@@ -1123,6 +1241,46 @@ def main() -> None:
         current_result["midas_status"] = (
             "no forecast: latest CPI lag or complete target-aligned Brent lags unavailable"
         )
+    current_prediction = current_result.get("full_multisource_ridge_nowcast_mom_percent")
+    if current_prediction is not None:
+        current_cutoff = pd.Timestamp(now)
+        prior_interval_origins = predictions.copy()
+        if not prior_interval_origins.empty:
+            prior_release = pd.to_datetime(
+                prior_interval_origins["target_effective_release_at"],
+                errors="coerce", utc=True,
+            )
+            prior_interval_origins = prior_interval_origins.loc[
+                prior_release.notna()
+                & (prior_release <= current_cutoff)
+                & (pd.to_datetime(prior_interval_origins["target_month"]) < current_month)
+                & prior_interval_origins["full_multisource_ridge"].notna()
+                & prior_interval_origins["actual_cpi_mom_percent"].notna()
+            ]
+        interval_residuals = (
+            prior_interval_origins["full_multisource_ridge"]
+            - prior_interval_origins["actual_cpi_mom_percent"]
+        ).to_numpy(dtype=float) if not prior_interval_origins.empty else np.array([])
+        interval = conformal_absolute_error_interval(
+            float(current_prediction), interval_residuals
+        )
+        current_result.update({
+            "prediction_interval_model": "full_multisource_ridge",
+            "prediction_interval_nominal_coverage_pct": PREDICTION_INTERVAL_COVERAGE * 100,
+            "prediction_interval_lower_mom_percent": interval["lower"],
+            "prediction_interval_upper_mom_percent": interval["upper"],
+            "prediction_interval_half_width_pp": interval["half_width"],
+            "prediction_interval_calibration_origins": interval["calibration_origins"],
+            "prediction_interval_status": interval["status"],
+            "prediction_interval_calibration_basis": (
+                "prior expanding rolling-origin absolute errors; historical inputs are pseudo-vintage"
+            ),
+            "prediction_interval_real_time_claim_allowed": False,
+        })
+    else:
+        current_result["prediction_interval_status"] = (
+            "not_available: primary full multi-source forecast is unavailable"
+        )
     processing_completed_at = pd.Timestamp.now(tz="UTC")
     current_result["processing_completed_at_utc"] = processing_completed_at.isoformat()
     current_result["processing_duration_seconds"] = round(
@@ -1150,6 +1308,22 @@ def main() -> None:
     )
     current_result["model_version"] = "v1-" + hashlib.sha256(model_signature.encode()).hexdigest()[:12]
     current_result["model_code_sha256"] = model_code_digest
+    origin_status = append_forecast_origin(
+        current_result, current, current_feature_row, OUTPUT_DIR
+    )
+    outcome_status = append_observed_outcomes(labels, OUTPUT_DIR)
+    current_result["prospective_origin_id"] = origin_status["origin_id"]
+    current_result["prospective_origin_appended"] = origin_status["origin_appended"]
+    current_result["prospective_outcomes_appended_this_run"] = outcome_status[
+        "outcomes_appended"
+    ]
+    current_result["prospective_scored_origins_total"] = outcome_status[
+        "scored_origins"
+    ]
+    current_result["prospective_evaluation_mode"] = (
+        "pipeline_observed_gold_label; separate from historical pseudo-vintage"
+    )
+    current_result["prospective_ledger_summary"] = summarize_ledger(OUTPUT_DIR)
     production_model_dir = OUTPUT_DIR / "production_models" / "full_multisource_ridge"
     production_model_dir.mkdir(parents=True, exist_ok=True)
     (production_model_dir / "latest.json").write_text(

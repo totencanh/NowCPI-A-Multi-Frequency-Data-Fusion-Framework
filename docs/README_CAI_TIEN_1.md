@@ -79,12 +79,68 @@ Raw batch append-only hiện giữ các lần thu thập kể từ khi dự án 
 
 **Kết luận về tính thời gian thực:** đã cải thiện backtest bằng lịch ngày đăng CPI NSO và cutoff bảo thủ; chưa thể gọi kết quả là strict real-time vì thiếu giờ công bố chính xác, vintage lịch sử CPI và release/version history hoàn chỉnh của các nguồn. Các bảng backtest gắn `pseudo_vintage_diagnostic`, không cho phép tuyên bố hiệu năng real-time.
 
+## Phần xử lý các hạn chế còn tồn tại trong lúc cải tiến
+
+| Hạn chế | Cách xử lý trong nghiên cứu | Trạng thái và cách diễn giải |
+|---|---|---|
+| Không có vintage đầy đủ cho dữ liệu quá khứ | Không cố dựng lại giá trị lịch sử từ dữ liệu hiện tại. Giữ backtest lịch sử ở nhãn `pseudo_vintage_diagnostic`; từ các lần chạy mới, tiếp tục lưu snapshot bất biến có cutoff, thời điểm pipeline nhận và mã nhận diện phiên bản. | Không thể sửa thiếu hụt của quá khứ. Khi đủ mốc mới, đánh giá các forecast origin tích lũy riêng như bằng chứng prospective; không gộp chúng với điểm pseudo-vintage. |
+| Nhiều nguồn thiếu giờ công bố chính xác | Tách `source_release_ts` khỏi `available_at`. Nếu NSO chỉ cung cấp ngày, lưu độ chính xác là ngày và dùng cutoff bảo thủ tại đầu ngày công bố theo giờ Việt Nam; Brent thiếu timestamp nguồn thì ghi rõ giả định trễ một ngày UTC. | Đây là quy tắc giảm nguy cơ dùng dữ liệu tương lai, không phải giờ công bố đã xác minh. Báo cáo riêng độ phủ timestamp nguồn và các giả định. |
+| Dễ chọn mô hình theo kết quả trên tập đánh giá | Giữ outer rolling-origin làm tập chấm cuối; chọn lag/alpha/blend bằng expanding inner-validation trong phần train của từng fold. So sánh mô hình trên cùng các target month và báo cáo số mốc paired. | Không dùng outer test để lựa chọn cấu hình. Cửa sổ 9 tháng chỉ mô tả; DM chỉ báo cáo khi có ít nhất 24 mốc paired theo protocol. |
+| Điểm MAE/RMSE không giải thích được tháng dự báo sai | Lưu dự báo theo từng fold, cutoff, số tháng train, giả định availability và dự báo từng baseline; giữ artifact failure/error cases để rà soát các tháng sai lớn. | Khi trình bày, chọn vài tháng sai lớn và kiểm tra nguồn nào khả dụng, sai số có dấu và chênh lệch với baseline. Không gán nguyên nhân kinh tế nếu log dữ liệu không chứng minh được. |
+| Kết quả dự báo chưa cho biết giá trị vận hành hay quyết định | Báo cáo song song thời gian chạy, độ phủ nguồn và các metric vận hành có đo được; không suy diễn policy gain từ MAE/RMSE. | Chưa có hàm tổn thất hay quyết định chính sách do stakeholder xác định, nên tác động hỗ trợ quyết định vẫn là câu hỏi mở. |
+
+### Đoạn trình bày đề xuất
+
+Để giảm nguy cơ rò rỉ thông tin tương lai, nghiên cứu xác định cutoff cho từng forecast origin và chỉ đưa vào mô hình những quan sát có kỳ quan sát và thời điểm khả dụng phù hợp. Lịch CPI NSO được dùng theo độ chính xác ngày; khi nguồn không cung cấp giờ công bố hoặc vintage lịch sử, nghiên cứu áp dụng giả định bảo thủ, ghi rõ basis và giữ kết quả trong nhóm chẩn đoán pseudo-vintage. Mô hình được đánh giá bằng rolling-origin trên các tháng chung với baseline; việc chọn cấu hình diễn ra trong validation của từng fold. Các dự báo và sai số theo từng tháng được lưu để phân tích trường hợp sai lớn. Do chưa khôi phục được vintage nguồn trong quá khứ, nghiên cứu không gọi backtest hiện tại là strict real-time và tiếp tục tích lũy snapshot từ các lần chạy mới để đánh giá prospective riêng.
+
+### Hiện thực phần bổ sung
+
+Task nowcast ghi một dòng append-only vào `pit_forecast_origins.jsonl` cho mỗi
+lần dự báo thành công. Dòng đó lưu target month, cutoff, thời điểm phát hành
+dự báo, model/version và code hash, các dự báo đối chiếu, snapshot lịch CPI
+NSO, cùng ID/build/cutoff và availability/eligibility của snapshot feature
+Gold PIT. Chạy lại đúng cùng target, cutoff và model version không tạo origin
+trùng.
+
+Ở lần chạy sau, khi CPI mục tiêu có trong Gold và `label_available_at` muộn
+hơn cutoff của origin, hệ thống ghi outcome một lần vào
+`pit_forecast_outcomes.jsonl`, gồm giá trị CPI trong Gold tại lần chấm đầu,
+thời điểm/basis khả dụng và sai số cho từng dự báo đã lưu. Giá trị đó chưa
+được xác nhận là vintage công bố đầu tiên của nguồn. Bảng
+`pit_forecast_origin_metrics.csv` tính MAE/RMSE và directional accuracy mô tả,
+chọn forecast cutoff mới nhất cho mỗi target month; mẫu prospective nhỏ chưa
+dùng để đưa ra kiểm định suy luận. `pit_forecast_origin_summary.json` cho biết
+số origin đã ghi và đã chấm.
+
+### Trạng thái sau lần chạy ngày 18/11/2026
+
+DAG `nowcpi_daily_pipeline`, run
+`scheduled__2026-11-17T01:00:00+00:00`, kết thúc thành công lúc 11:24 giờ Việt
+Nam. Kiểm tra dbt PIT đạt **9/9**. Nowcast tạo một origin cho target
+**2026-10**, cutoff **11:23:19 giờ Việt Nam**, dùng Full multi-source Ridge
+và dự báo **0,298942% MoM**. Origin đã được ghi; lúc chụp trạng thái chưa có
+outcome và chưa có target month nào được chấm, vì Gold mới có CPI thực tế đến
+**2026-09**. Do đó file metric prospective hiện chỉ có header, chưa có kết quả
+MAE/RMSE prospective.
+
+Lần chạy báo độ phủ feature hiện tại **100%**, nhưng đây là mức nguồn có dữ liệu
+cho snapshot hiện tại, không phải số origin huấn luyện có macro PIT. Trạng thái
+mô hình ghi **0 training origins PIT có nguồn macro**. Các timestamp availability
+trong origin hiện dựa trên `source_ingested_at`; vì thế nhật ký này là bằng
+chứng pipeline-observed tích lũy từ nay, chưa phải strict source-release
+vintage hay backtest real-time xác thực. Không gộp kết quả này với backtest
+pseudo-vintage lịch sử.
+
 ## Artifact và mã liên quan
 
 - [Metrics rolling-origin](../forecasting/outputs/midas_backtest_metrics.csv)
 - [Paired comparisons, CI và DM](../forecasting/outputs/midas_paired_comparisons.csv)
 - [Dự báo từng fold](../forecasting/outputs/midas_backtest_predictions.csv)
 - [Nowcast và thời gian xử lý](../forecasting/outputs/midas_current_nowcast.json)
+- Nhật ký forecast origin: `../forecasting/outputs/pit_forecast_origins.jsonl`
+- Nhật ký outcome: `../forecasting/outputs/pit_forecast_outcomes.jsonl`
+- Metric prospective theo target month: `../forecasting/outputs/pit_forecast_origin_metrics.csv`
+- Tóm tắt ledger: `../forecasting/outputs/pit_forecast_origin_summary.json`
 - [Audit lịch CPI NSO](../forecasting/outputs/nso_release_calendar_audit.csv)
 - [Audit source release timestamp](../forecasting/outputs/release_timestamp_audit.csv)
 - [Audit batch/event revisions](../forecasting/outputs/raw_event_version_audit.csv)

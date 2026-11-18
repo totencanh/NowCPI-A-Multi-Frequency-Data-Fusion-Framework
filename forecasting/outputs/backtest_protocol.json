@@ -68,6 +68,14 @@
     "squared_error"
   ],
   "uncertainty": "seeded paired circular moving-block bootstrap 95% CI",
+  "prediction_interval": {
+    "method": "symmetric split conformal from prior expanding rolling-origin absolute errors",
+    "nominal_coverage_pct": 90.0,
+    "minimum_prior_calibration_origins": 24,
+    "finite_sample_quantile": "higher order statistic at ceil((n+1)*coverage)",
+    "historical_evaluation_mode": "pseudo_vintage_rolling_conformal_diagnostic",
+    "real_time_coverage_claim_allowed": false
+  },
   "release_time_policy": "CPI uses source_release_ts when present, otherwise NSO issue date with a conservative next-Vietnam-day availability proxy, then day-15 fallback; Brent uses source_release_ts when present, otherwise observation date + 1 UTC day",
   "vintage_limit": "NSO CPI issue dates are collected, but historical CPI value vintages and complete source vintages are not archived; do not claim strict vintage-accurate results",
   "real_time_performance_claim_allowed": false

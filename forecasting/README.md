@@ -41,15 +41,44 @@ vintages and must not relabel the old 140 origins as PIT. The first October
 snapshot can become a historical training origin only after October CPI is
 actually released and its release cutoff is later than the snapshot.
 
+### Prospective forecast-origin log
+
+Each successful live forecast is appended to `outputs/pit_forecast_origins.jsonl`
+with target month, information cutoff, issue time, model/version/code hash,
+candidate forecasts, the NSO release-calendar snapshot, and the selected Gold
+feature snapshot ID/build ID plus source availability and eligibility. On later
+runs, when a target CPI label has `label_available_at` after that origin's
+cutoff, one outcome is appended to `outputs/pit_forecast_outcomes.jsonl` with
+the Gold label used at its first scoring run and per-model signed, absolute,
+and squared errors. A repeated task execution with the same target, cutoff,
+and model version does not duplicate the record.
+
+`outputs/pit_forecast_origin_metrics.csv` reports descriptive MAE, RMSE, and
+directional accuracy using the latest forecast cutoff per target month, so
+multiple daily forecasts for one target do not count as multiple months.
+The primary model also reports a nominal 90% prediction interval when at least
+24 prior rolling-origin errors are available. The interval and its calibration
+count/status are stored with each forecast; later outcomes record whether the
+actual CPI fell inside and the interval width. `outputs/midas_prediction_interval_metrics.csv`
+summarizes rolling-origin coverage/width, while
+`outputs/pit_prediction_interval_metrics.csv` summarizes live scored intervals.
+Historical calibration uses pseudo-vintage backtest errors, so these intervals
+are a diagnostic and are not strict real-time calibrated uncertainty estimates.
+`outputs/pit_forecast_origin_summary.json` reports ledger counts. The JSONL
+files are the append-only records; the CSV and summary are derived outputs.
+These prospective scores use pipeline-observed labels and are not strict
+source-vintage evidence. They must remain separate from the historical
+pseudo-vintage backtest, and no inferential claim is made for the small live
+sample.
+
 The latest source audit and the feature ablation report should accompany any claim about model quality. In particular, a multi-source model may be the chosen production architecture while its incremental historical value remains unproven until enough valid PIT forecast origins accumulate. Do not present the model selection itself as proof that adding all sources improved MAE or RMSE.
 
-The benchmark evaluates a baseline-to-primary progression and records four
-leave-one-source-group-out configurations: without Brent, USD/VND, Vietnam fuel
-(RON95 and E10 together), and monthly IIP. Each is compared with Full
-multi-source Ridge on paired folds. The sourcewise add-one-source experiment
-is retained separately. Both types of source ablation are marked not estimable
-when historical PIT source coverage is missing; the code does not fabricate
-scores for unavailable vintages.
+The historical benchmark evaluates a baseline-to-primary progression and
+records four leave-one-source-group-out configurations. Those backtest folds
+remain not estimable when historical PIT source coverage is missing; the code
+does not fabricate scores for unavailable vintages. Live PIT snapshots are
+still accumulated prospectively, but they do not by themselves prove the
+incremental value of an individual source.
 
 For source vintage details, see [`docs/POINT_IN_TIME_SOURCE_REVIEW.md`](../docs/POINT_IN_TIME_SOURCE_REVIEW.md). For model comparison protocol and current evidence, see [`docs/README_CAI_TIEN_2.md`](../docs/README_CAI_TIEN_2.md).
 

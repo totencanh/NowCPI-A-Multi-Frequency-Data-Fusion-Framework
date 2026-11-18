@@ -18,7 +18,7 @@ Mô hình production chính là **Full multi-source Ridge**; naive CPI, AR(1), C
 | Baseline → phương pháp → full; version và hyperparameters | **Đã có và vừa chạy benchmark** | 14 model configurations, registry/version/code hash/hyperparameters; 0 runtime failures, 399 fold không đủ điều kiện. Leave-one-source-out Brent (cả tuần và tháng) có 130 pseudo-vintage origins; USD/VND, fuel và IIP chưa đủ PIT tại 131/131 mốc. |
 | Đo vận hành song song chất lượng | **Đã có một phần** | Benchmark: 54,21 giây, peak RSS 137.620 KB, 0 lỗi runtime. Pipeline report vừa làm mới: DAG 582,95 giây; Kafka→Bronze P95 đạt 4/6 topic; 36/36 Silver integrity checks đạt. Chi phí tiền tệ và steady-state throughput SLO chưa có. |
 | Insightfulness / policy gain | **Chưa đo** | Chưa có hàm tổn thất hay quyết định chính sách do stakeholder xác định; không gán uplift/policy gain giả từ MAE. |
-| Độ bất định của chính dự báo | **Chưa có prediction interval được calibration** | CI hiện tại chỉ đo độ bất định của chênh lệch metric giữa hai model; chưa phải khoảng dự báo CPI hay coverage của khoảng dự báo. |
+| Độ bất định của chính dự báo | **Đã bổ sung khoảng dự báo 90% dạng conformal; cần chạy lại để có số liệu** | Khoảng dùng sai số rolling-origin quá khứ, yêu cầu tối thiểu 24 origin và được chấm theo coverage/width. Vì lịch sử là pseudo-vintage, chưa được gọi là khoảng real-time đã hiệu chỉnh. |
 
 Benchmark mới nhất lưu tại `feature_ablation_run_manifest.json` với run ID `20261030T201343Z`. Báo cáo freshness/latency/throughput/quality vận hành thật vừa được làm mới lúc `2026-10-30 20:14:42 UTC` tại `workspace/pipeline-audit/reports/pipeline_metrics_latest.md` và `.json`.
 
@@ -103,8 +103,34 @@ Chọn **Full multi-source Ridge** làm production model theo định hướng n
 
 Đánh giá nguồn thay thế theo phạm vi Việt Nam nằm trong [đánh giá nguồn point-in-time](POINT_IN_TIME_SOURCE_REVIEW.md). Các biến CPI, FX, giá xăng và IIP phải là dữ liệu Việt Nam (`country=VNM`); Brent là chuẩn dầu quốc tế áp dụng làm biến đầu vào cho mô hình Việt Nam, không phải chuỗi của một quốc gia khác.
 
+## Phần xử lý các hạn chế còn tồn tại trong lúc cải tiến
+
+| Hạn chế còn lại | Cách xử lý | Trạng thái và cách diễn giải |
+|---|---|---|
+| Không có vintage nguồn đầy đủ để dựng lại thông tin lịch sử | Giữ backtest cũ ở nhãn pseudo-vintage; không backdate dữ liệu. Pipeline tiếp tục ghi snapshot PIT bất biến từ các lần chạy mới và chấm outcome sau khi CPI được công bố. | Không thể khôi phục quá khứ bằng code. Bằng chứng prospective tích lũy riêng, chưa thay thế historical strict-PIT. |
+| Điểm nowcast không cho biết mức bất định của CPI | Bổ sung khoảng dự báo conformal 90% đối xứng quanh Full multi-source Ridge. Bán kính lấy từ sai số tuyệt đối của các rolling-origin dự báo trước đó đã có nhãn tại cutoff; cần ít nhất 24 origin. Backtest ghi coverage và độ rộng; live origin lưu khoảng để chấm khi nhãn đến. | Đã hiện thực trong code; chưa chạy Airflow sau thay đổi. Calibration lấy từ historical pseudo-vintage nên chỉ là chẩn đoán, chưa phải bảo đảm coverage real-time. |
+| Chưa biết các nguồn đa chiều có làm tăng giá trị dự báo | Giữ sourcewise strict-PIT ablation hiện có; chỉ kết luận khi có vintage hoặc paired origin hợp lệ. Không dùng feature coverage hiện tại thay cho lịch sử training. | Chưa thể khắc phục thiếu lịch sử bằng thuật toán. Cần source archive có vintage hoặc tiếp tục tích lũy origin mới. |
+| Chưa đo policy gain / giá trị quyết định | Không tự quy đổi MAE/RMSE thành lợi ích chính sách. Cần stakeholder xác định quyết định cụ thể, hàm tổn thất và chi phí sai dự báo trước khi mô phỏng. | Còn mở; không thể định nghĩa mục tiêu chính sách thay người dùng. |
+| Chi phí tiền tệ và throughput ổn định chưa rõ | Tiếp tục báo cáo runtime, RSS, DAG/task duration và completeness; chi phí tiền tệ chỉ bổ sung khi có billing telemetry phù hợp. | Đã có một phần đo vận hành; chưa có billing/steady-state throughput đủ để khẳng định SLO. |
+
+### Đoạn trình bày đề xuất
+
+Để bổ sung thông tin bất định cho nowcast, nghiên cứu tạo khoảng dự báo conformal 90% quanh ước lượng Full multi-source Ridge. Bán kính khoảng được xác định từ sai số tuyệt đối của các dự báo rolling-origin trước đó, chỉ sử dụng outcome đã khả dụng trước cutoff hiện tại và yêu cầu tối thiểu 24 origin. Coverage và độ rộng khoảng được báo cáo trên các origin đủ điều kiện. Do vintage lịch sử của các nguồn chưa đầy đủ, kết quả hiệu chỉnh hiện được xem là chẩn đoán pseudo-vintage; nghiên cứu không diễn giải đây là bảo đảm coverage trong môi trường real-time.
+
+### Hiện thực phần bổ sung
+
+Trong mỗi fold rolling-origin, khoảng chỉ dùng sai số của các fold trước có nhãn đã được phát hành trước cutoff fold hiện tại; target fold không tham gia hiệu chỉnh chính khoảng của nó. Mốc phân vị hữu hạn mẫu dùng order statistic `higher` để không nội suy hẹp hơn sai số quan sát. Nếu chưa đủ 24 lỗi trước đó, khoảng được để trống và status báo `not_estimable_insufficient_prior_origins`.
+
+Output backtest lưu lower/upper 90%, số origin hiệu chỉnh và trạng thái từng tháng trong `midas_backtest_predictions.csv`; tổng hợp coverage và mean width ở `midas_prediction_interval_metrics.csv`. Dự báo live ghi các cận và calibration count trong JSON nowcast và forecast-origin ledger; sau khi CPI thực tế đến, ledger chấm CPI nằm trong/ngoài khoảng và độ rộng ở `pit_prediction_interval_metrics.csv`. Đây là đánh giá mô tả, không tuyên bố khoảng dự báo nhân quả hay chắc chắn đạt coverage danh nghĩa.
+
+### Trạng thái sau thay đổi
+
+Code và tài liệu đã được cập nhật để tạo/chấm khoảng dự báo. Chưa chạy lại DAG sau thay đổi này, vì vậy chưa có coverage, độ rộng khoảng hoặc kiểm tra vận hành mới để báo cáo. Sau lần chạy, xem `midas_prediction_interval_metrics.csv` để biết backtest pseudo-vintage và `pit_prediction_interval_metrics.csv` để xem các live origin đã có nhãn. Nếu số prior origin dưới 24, nowcast sẽ ghi rõ chưa đủ dữ liệu và không tạo cận giả.
+
 ## Artifact
 
+- [Coverage/độ rộng prediction interval rolling-origin](../forecasting/outputs/midas_prediction_interval_metrics.csv)
+- Prediction interval prospective: `../forecasting/outputs/pit_prediction_interval_metrics.csv`
 - [Rolling-origin metrics](../forecasting/outputs/feature_ablation_metrics.csv)
 - [Paired CI/DM comparisons](../forecasting/outputs/feature_ablation_paired_comparisons.csv)
 - [Per-fold predictions và tham số Elastic Net](../forecasting/outputs/feature_ablation_predictions.csv)
@@ -121,6 +147,7 @@ Chọn **Full multi-source Ridge** làm production model theo định hướng n
 - [Benchmark implementation](../forecasting/benchmark/evaluate_feature_ablation.py)
 - [Ablation riêng từng nguồn](../forecasting/outputs/feature_ablation_sourcewise.csv)
 - [Dự báo paired theo từng nguồn (hiện rỗng vì chưa đủ vintage)](../forecasting/outputs/feature_ablation_sourcewise_predictions.csv)
+
 - [Freshness nguồn theo audit thực tế, tính đến 31/10/2026](../forecasting/outputs/source_freshness_asof_20261031.csv)
 - [Báo cáo metric vận hành thật — Markdown](../workspace/pipeline-audit/reports/pipeline_metrics_latest.md)
 - [Báo cáo metric vận hành thật — JSON](../workspace/pipeline-audit/reports/pipeline_metrics_latest.json)
@@ -130,3 +157,4 @@ Chọn **Full multi-source Ridge** làm production model theo định hướng n
 Audit source-check mới nhất sau khi thay IIP sang NSO cho thấy **5/6 nguồn đạt freshness SLO (83,33%)**. NSO IIP tháng 09/2026 đã được collector ghi nhận; nguồn bị đánh dấu degraded là USD/VND do Yahoo Finance rate limit, dù observation gần nhất vẫn là 30/10/2026. IIP World Bank cũ được loại khỏi phép tính nguồn hiện hành.
 
 Đây là observation-age freshness và trạng thái collector, **không phải độ trễ từ thời điểm nguồn phát hành đến lúc ingestion**. Báo cáo pipeline đo thêm Kafka→Bronze latency và DAG/task duration thật; 4/6 topic đạt P95 ≤60 giây, DAG gần nhất hoàn tất trong 582,95 giây (SLO ≤600 giây). USD/VND và fuel có P95 lần lượt 72,3 và 71,1 giây. Timestamp phát hành thực vẫn thiếu ở nhiều nguồn, nên chưa thể tính release-to-ingestion latency đáng tin cậy.
+

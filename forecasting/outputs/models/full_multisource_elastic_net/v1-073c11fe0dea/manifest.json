@@ -1,0 +1,70 @@
+{
+  "model_name": "full_multisource_elastic_net",
+  "model_version": "v1-073c11fe0dea",
+  "evaluation_run_id": "20261118T095735Z",
+  "generated_at_utc": "2026-11-18T09:57:36.080358+00:00",
+  "source_code_sha256": "5ed1cf4f25b805258d58b50401923de07dde9c6823a2915300cb354ec1919ac1",
+  "role": "method_ablation",
+  "model_family": "Full multi-source Elastic Net",
+  "predictors": [
+    "cpi_mom_lag_1",
+    "brent_weekly_log_return_lag_12",
+    "brent_weekly_log_return_lag_11",
+    "brent_weekly_log_return_lag_10",
+    "brent_weekly_log_return_lag_9",
+    "brent_weekly_log_return_lag_8",
+    "brent_weekly_log_return_lag_7",
+    "brent_weekly_log_return_lag_6",
+    "brent_weekly_log_return_lag_5",
+    "brent_weekly_log_return_lag_4",
+    "brent_weekly_log_return_lag_3",
+    "brent_weekly_log_return_lag_2",
+    "brent_weekly_log_return_lag_1",
+    "brent_monthly",
+    "usd_vnd",
+    "fuel_ron95",
+    "fuel_e10",
+    "iip_yoy_growth",
+    "missing_brent_asof_eligible",
+    "missing_fx_asof_eligible",
+    "missing_fuel_asof_eligible",
+    "missing_iip_asof_eligible"
+  ],
+  "hyperparameters": {
+    "alpha_grid": [
+      0.1,
+      1.0
+    ],
+    "l1_ratio_grid": [
+      0.2,
+      0.8
+    ],
+    "inner_validation_origins_max": 6
+  },
+  "sources": [
+    "CPI",
+    "Brent",
+    "USD/VND",
+    "RON95",
+    "E10 RON95",
+    "NSO IIP"
+  ],
+  "prediction_file": "predictions.csv",
+  "metrics_file": "metrics.csv",
+  "runtime_file": "runtime.csv",
+  "ineligible_folds_file": "ineligible_folds.csv",
+  "failures_file": "failures.csv",
+  "operational_metrics": {
+    "model": "full_multisource_elastic_net",
+    "fit_predict_seconds": 17.689654386020266,
+    "failed_folds": 0,
+    "ineligible_folds": 0,
+    "completed_folds": 131,
+    "max_fit_predict_seconds": 0.28953654499855475,
+    "max_rss_kb": 169384,
+    "script_wall_seconds": 67.96,
+    "strict_vintage_available": false
+  },
+  "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",
+  "point_in_time_claim": "historical source vintages are incomplete; diagnostic only"
+}

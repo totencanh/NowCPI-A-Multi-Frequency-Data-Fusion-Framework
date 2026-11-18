@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "forecast_origins_recorded": 2,
+  "origins_with_pipeline_observed_outcome": 0,
+  "origins_waiting_for_target_release": 2,
+  "unique_target_months_scored": 0,
+  "scoring_rule": "latest forecast cutoff per target month; each month counts once",
+  "metrics_file": "pit_forecast_origin_metrics.csv",
+  "prediction_interval_metrics_file": "pit_prediction_interval_metrics.csv",
+  "evaluation_mode": "prospective pipeline-observed; separate from historical pseudo-vintage backtest",
+  "source_release_vintages_verified": false,
+  "updated_at_utc": "2026-11-18T09:57:13.215101+00:00"
+}
