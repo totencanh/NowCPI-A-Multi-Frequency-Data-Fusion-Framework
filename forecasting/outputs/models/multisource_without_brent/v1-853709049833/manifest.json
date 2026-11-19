@@ -1,8 +1,8 @@
 {
   "model_name": "multisource_without_brent",
   "model_version": "v1-853709049833",
-  "evaluation_run_id": "20261109T180822Z",
-  "generated_at_utc": "2026-11-09T18:08:23.186663+00:00",
+  "evaluation_run_id": "20261112T153149Z",
+  "generated_at_utc": "2026-11-12T15:31:49.846048+00:00",
   "source_code_sha256": "c30e3b9019d1e9d4d3be0ce2d8effa6d5ba3e175d96adafedd64b33891d171bb",
   "role": "leave_one_source_out_ablation",
   "model_family": "Full multi-source Ridge without one source group",
@@ -31,13 +31,13 @@
   "failures_file": "failures.csv",
   "operational_metrics": {
     "model": "multisource_without_brent",
-    "fit_predict_seconds": 0.4149183029994674,
+    "fit_predict_seconds": 0.38588469800106395,
     "failed_folds": 0,
     "ineligible_folds": 1,
     "completed_folds": 130,
-    "max_fit_predict_seconds": 0.013045726000200375,
-    "max_rss_kb": 140332,
-    "script_wall_seconds": 63.912,
+    "max_fit_predict_seconds": 0.010642833000019891,
+    "max_rss_kb": 139452,
+    "script_wall_seconds": 60.755,
     "strict_vintage_available": false
   },
   "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",

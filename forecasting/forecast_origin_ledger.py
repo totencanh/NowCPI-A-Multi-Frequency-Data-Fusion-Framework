@@ -100,9 +100,18 @@ def append_forecast_origin(
         "brent_only_u_midas": result.get("u_midas_brent_only_diagnostic_mom_percent"),
         "naive_last_cpi": cpi_lag,
     }
+    # Persist the actual feature vector used for this forecast. The snapshot ID
+    # remains the authoritative Gold lineage; this copy makes each prospective
+    # origin independently auditable and replayable if the feature table changes.
+    model_predictors = result.get("model_predictors") or []
+    model_input_features = {}
+    if not current_row.empty:
+        for name in model_predictors:
+            if name in current_row.columns:
+                model_input_features[name] = current_row[name].iloc[0]
     origin = {
         "origin_id": origin_id,
-        "schema_version": 1,
+        "schema_version": 2,
         "target_month": target_month,
         "information_cutoff_at_utc": cutoff,
         "forecast_issued_at_utc": result.get("processing_completed_at_utc"),
@@ -131,6 +140,7 @@ def append_forecast_origin(
         "feature_snapshot": {
             name: vintage.get(name) for name in lineage_columns
         },
+        "model_input_features": model_input_features,
         "feature_source_training_origins": result.get(
             "multisource_source_training_origins", {}
         ),

@@ -46,7 +46,9 @@ actually released and its release cutoff is later than the snapshot.
 Each successful live forecast is appended to `outputs/pit_forecast_origins.jsonl`
 with target month, information cutoff, issue time, model/version/code hash,
 candidate forecasts, the NSO release-calendar snapshot, and the selected Gold
-feature snapshot ID/build ID plus source availability and eligibility. On later
+feature snapshot ID/build ID plus source availability and eligibility. Schema
+version 2 also records the exact `model_input_features` vector used for that
+forecast, so the origin can be audited independently of a later Gold rebuild. On later
 runs, when a target CPI label has `label_available_at` after that origin's
 cutoff, one outcome is appended to `outputs/pit_forecast_outcomes.jsonl` with
 the Gold label used at its first scoring run and per-model signed, absolute,
@@ -70,6 +72,15 @@ These prospective scores use pipeline-observed labels and are not strict
 source-vintage evidence. They must remain separate from the historical
 pseudo-vintage backtest, and no inferential claim is made for the small live
 sample.
+
+Prospective PIT coverage has a warm-up period. Daily forecasts for the same
+target month are useful origin records, but they do not create additional
+distinct CPI training months. A month becomes a scored prospective outcome only
+after its CPI label is ingested with an availability time later than the
+forecast cutoff. Its macro snapshot can then contribute to future PIT training
+only if the immutable Gold snapshot was captured by the relevant cutoff and at
+least one source passed its availability checks. Older missing snapshots are
+not backfilled from today's revised source values.
 
 The latest source audit and the feature ablation report should accompany any claim about model quality. In particular, a multi-source model may be the chosen production architecture while its incremental historical value remains unproven until enough valid PIT forecast origins accumulate. Do not present the model selection itself as proof that adding all sources improved MAE or RMSE.
 

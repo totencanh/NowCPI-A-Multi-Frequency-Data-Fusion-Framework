@@ -1,0 +1,130 @@
+[
+  {
+    "schema_version": 1,
+    "event_id": "495712d2bc7aad3f9d04b27ef49799f1998274fcccb5eb871c8cf51c32cbebaf",
+    "source": "frankfurter_v2",
+    "series_id": "usd_vnd",
+    "country": "VNM",
+    "observation_period": "2026-11-19",
+    "frequency": "daily",
+    "value": 25769.0,
+    "unit": "VND/USD",
+    "release_ts": null,
+    "ingested_at": "2026-11-19T15:03:59.530424+00:00",
+    "source_record_id": "usd_vnd:2026-11-19",
+    "raw_payload": {
+      "date": "2026-11-19",
+      "base": "USD",
+      "quote": "VND",
+      "rate": 25769,
+      "providers": [
+        {
+          "key": "BCRA",
+          "date": "2026-11-18",
+          "rate": 25701
+        },
+        {
+          "key": "BDI",
+          "date": "2026-11-18",
+          "rate": 25708
+        },
+        {
+          "key": "BI",
+          "date": "2026-11-19",
+          "rate": 25707
+        },
+        {
+          "key": "BNA",
+          "date": "2026-11-19",
+          "rate": 25733
+        },
+        {
+          "key": "BNM",
+          "date": "2026-11-19",
+          "rate": 25681
+        },
+        {
+          "key": "BOM",
+          "date": "2026-11-19",
+          "rate": 25757
+        },
+        {
+          "key": "CBKKW",
+          "date": "2026-11-19",
+          "rate": 25750
+        },
+        {
+          "key": "CBM",
+          "date": "2026-11-18",
+          "rate": 256.72,
+          "excluded": true
+        },
+        {
+          "key": "CBR",
+          "date": "2026-11-19",
+          "rate": 25656
+        },
+        {
+          "key": "CBSL",
+          "date": "2026-11-19",
+          "rate": 25795
+        },
+        {
+          "key": "CBU",
+          "date": "2026-11-19",
+          "rate": 25709
+        },
+        {
+          "key": "MAS",
+          "date": "2026-11-19",
+          "rate": 25738
+        },
+        {
+          "key": "NB",
+          "date": "2026-11-19",
+          "rate": 25762
+        },
+        {
+          "key": "NBC",
+          "date": "2026-11-19",
+          "rate": 25572
+        },
+        {
+          "key": "NBK",
+          "date": "2026-11-19",
+          "rate": 25689
+        },
+        {
+          "key": "NBKR",
+          "date": "2026-11-14",
+          "rate": 25720
+        },
+        {
+          "key": "NBP",
+          "date": "2026-11-18",
+          "rate": 25698
+        },
+        {
+          "key": "NBRB",
+          "date": "2026-11-19",
+          "rate": 25728
+        },
+        {
+          "key": "NBU",
+          "date": "2026-11-19",
+          "rate": 25719
+        },
+        {
+          "key": "RBA",
+          "date": "2026-11-19",
+          "rate": 25747
+        },
+        {
+          "key": "SAMA",
+          "date": "2026-11-19",
+          "rate": 26786
+        }
+      ]
+    }
+  }
+]

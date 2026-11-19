@@ -1082,7 +1082,20 @@ def main() -> None:
             current_feature_row.get("asof_feature_source_coverage_pct", 0.0)
         ) if current_feature_row else 0.0,
         "multisource_feature_build_id": (
-            current_feature_row.get("gold_build_id") if current_feature_row else None
+            current_feature_row.get("feature_build_id")
+            if current_feature_row
+            else None
+        ),
+        "multisource_feature_snapshot_id": (
+            current_feature_row.get("feature_snapshot_id")
+            if current_feature_row
+            else None
+        ),
+        "multisource_feature_snapshot_recorded_at": (
+            pd.Timestamp(current_feature_row["snapshot_recorded_at"]).isoformat()
+            if current_feature_row
+            and pd.notna(current_feature_row.get("snapshot_recorded_at"))
+            else None
         ),
         "ar_midas_validation_blend_diagnostic_mom_percent": None,
         "validation_selected_ar_midas_share": None,

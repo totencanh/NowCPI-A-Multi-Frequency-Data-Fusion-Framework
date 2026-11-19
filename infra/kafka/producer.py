@@ -6,13 +6,23 @@ import argparse
 import hashlib
 import json
 import os
+import sys
 import tempfile
 import time
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from confluent_kafka import Consumer, Producer, TopicPartition
+
+try:
+    from spark.common.schemas import validate_event
+except ImportError:
+    # Local runs do not inherit the Airflow container's /opt/spark/app path.
+    project_processing_path = Path(__file__).resolve().parents[2] / "processing"
+    if str(project_processing_path) not in sys.path:
+        sys.path.insert(0, str(project_processing_path))
+    from spark.common.schemas import validate_event
 
 try:
     from spark.common.prometheus_metrics import push_stage_metrics
@@ -121,22 +131,22 @@ def read_events(path: Path) -> list[dict[str, Any]]:
 def enrich_event(event: dict[str, Any]) -> dict[str, Any]:
     """Add stable transport metadata without changing the raw JSON archive."""
     enriched = dict(event)
-    period = str(event.get("observation_period") or "").strip()
-    try:
-        if len(period) == 4 and period.isdigit():
-            event_date = date(int(period), 1, 1)
-        elif len(period) == 7 and period[4] == "-":
-            event_date = date.fromisoformat(f"{period}-01")
-        else:
-            event_date = date.fromisoformat(period[:10])
-        enriched.setdefault(
-            "event_time",
-            datetime(event_date.year, event_date.month, event_date.day, tzinfo=timezone.utc)
-            .isoformat()
-            .replace("+00:00", "Z"),
+    # Observation period is the economic reference date, not when the source
+    # released or NowCPI received the record. Never use it as event time.
+    event_time = event.get("release_ts") or event.get("event_time") or event.get("ingested_at")
+    if event_time:
+        enriched["event_time"] = event_time
+        enriched["event_time_basis"] = (
+            "source_release_ts" if event.get("release_ts")
+            else "source_event_time" if event.get("event_time")
+            else "source_ingested_at"
         )
-    except (TypeError, ValueError):
-        enriched.setdefault("event_time", None)
+    else:
+        enriched["event_time"] = None
+        enriched["event_time_basis"] = "unavailable"
+    # Distinguish this event-time contract from legacy Bronze rows, where
+    # event_time may have been derived from the observation period.
+    enriched["event_time_contract_version"] = 2
 
     business_key_fields = {
         "source": event.get("source"),
@@ -159,7 +169,7 @@ def enrich_event(event: dict[str, Any]) -> dict[str, Any]:
         ensure_ascii=False,
         sort_keys=True,
         separators=(",", ":"),
-        allow_nan=False,
+        allow_nan=True,
     ).encode("utf-8")
     enriched.setdefault("payload_hash", hashlib.sha256(canonical_payload).hexdigest())
     return enriched
@@ -171,6 +181,15 @@ def publish_batch(
     topic: str,
 ) -> dict[str, Any]:
     events = read_events(path)
+    invalid = []
+    valid_events: list[dict[str, Any]] = []
+    for index, event in enumerate(events):
+        issues = validate_event(event, topic)
+        if issues:
+            invalid.append((index, event, issues))
+        else:
+            valid_events.append(event)
+    append_contract_quarantine(path, topic, invalid)
     delivery_errors: list[str] = []
     delivery_latencies: list[float] = []
 
@@ -180,7 +199,7 @@ def publish_batch(
         else:
             delivery_latencies.append(max(0.0, time.monotonic() - enqueued_at))
 
-    for event in events:
+    for event in valid_events:
         event_id = event.get("event_id")
         if not event_id:
             raise ValueError(f"Missing stable event_id in {path}")
@@ -234,11 +253,51 @@ def publish_batch(
     return {
         "attempted_events": len(events),
         "delivered_events": len(delivery_latencies),
-        "rejected_events": 0,
+        "rejected_events": len(invalid),
+        "_contract_rejections": invalid,
         "p95_delivery_latency_seconds": p95_latency,
         "delivery_latency_samples": len(delivery_latencies),
         "_delivery_latencies": delivery_latencies,
     }
+
+
+def append_contract_quarantine(
+    path: Path,
+    topic: str,
+    invalid: list[tuple[int, dict[str, Any], list[str]]],
+) -> None:
+    """Record invalid raw-row references and reasons without copying payloads."""
+    if not invalid:
+        return
+    quarantine_path = PIPELINE_AUDIT_DIR / "source_contract_quarantine.jsonl"
+    quarantine_path.parent.mkdir(parents=True, exist_ok=True)
+    with quarantine_path.open("a", encoding="utf-8") as quarantine_file:
+        if fcntl is not None:
+            fcntl.flock(quarantine_file.fileno(), fcntl.LOCK_EX)
+        try:
+            for index, event, issues in invalid:
+                payload = json.dumps(
+                    event, ensure_ascii=False, sort_keys=True,
+                    separators=(",", ":"), allow_nan=True,
+                ).encode("utf-8")
+                record = {
+                    "source": event.get("source"),
+                    "topic": topic,
+                    "batch_path": path.name,
+                    "record_index": index,
+                    "event_id": event.get("event_id"),
+                    "payload_hash": hashlib.sha256(payload).hexdigest(),
+                    "reason_codes": issues,
+                    "quarantined_at": datetime.now(timezone.utc).isoformat(),
+                }
+                quarantine_file.write(
+                    json.dumps(record, ensure_ascii=False, separators=(",", ":")) + "\n"
+                )
+            quarantine_file.flush()
+            os.fsync(quarantine_file.fileno())
+        finally:
+            if fcntl is not None:
+                fcntl.flock(quarantine_file.fileno(), fcntl.LOCK_UN)
 
 
 def append_publish_audit(record: dict[str, Any]) -> None:
@@ -325,6 +384,8 @@ def main() -> None:
 
     total_events = 0
     attempted_events = 0
+    rejected_events = 0
+    processed_batches = 0
     published_batches = 0
     delivery_latencies: list[float] = []
     topic_metrics: dict[str, dict[str, int]] = {}
@@ -336,7 +397,9 @@ def main() -> None:
     previously_published_topics = {
         batch_state.get("topic")
         for batch_path, batch_state in state.items()
-        if batch_path != "_topic_low_watermarks" and isinstance(batch_state, dict)
+        if batch_path != "_topic_low_watermarks"
+        and isinstance(batch_state, dict)
+        and int(batch_state.get("event_count", 0) or 0) > 0
     }
     expected_published_counts: dict[str, int] = {}
     for path, topic in batches:
@@ -383,21 +446,34 @@ def main() -> None:
 
         batch_metrics = publish_batch(producer, path, topic)
         count = int(batch_metrics["delivered_events"])
+        rejected_count = int(batch_metrics["rejected_events"])
         attempted_events += int(batch_metrics["attempted_events"])
-        topic_metrics.setdefault(topic, {"attempted_events": 0, "delivered_events": 0})
+        rejected_events += rejected_count
+        processed_batches += 1
+        topic_metrics.setdefault(topic, {
+            "attempted_events": 0, "delivered_events": 0, "rejected_events": 0,
+        })
         topic_metrics[topic]["attempted_events"] += int(batch_metrics["attempted_events"])
         topic_metrics[topic]["delivered_events"] += count
+        topic_metrics[topic]["rejected_events"] += rejected_count
         delivery_latencies.extend(batch_metrics.pop("_delivery_latencies"))
         state[relative_path] = {
             "sha256": checksum,
             "event_count": count,
-            "published_at": datetime.now(timezone.utc).isoformat(),
+            "processed_at": datetime.now(timezone.utc).isoformat(),
             "topic": topic,
         }
+        if count:
+            state[relative_path]["published_at"] = state[relative_path]["processed_at"]
         save_state(state)
         total_events += count
-        published_batches += 1
-        print(f"Published {count} event(s) from {relative_path} to {topic}", flush=True)
+        if count:
+            published_batches += 1
+        print(
+            f"Batch {relative_path}: delivered={count}, contract_rejected={rejected_count}, "
+            f"topic={topic}",
+            flush=True,
+        )
 
     if published_batches == 0:
         if args.force_replay:
@@ -423,10 +499,11 @@ def main() -> None:
         "completed_at": completed_at.isoformat().replace("+00:00", "Z"),
         "duration_seconds": round(elapsed_seconds, 3),
         "batches_discovered": len(batches),
+        "batches_processed": processed_batches,
         "batches_published": published_batches,
         "attempted_events": attempted_events,
         "delivered_events": total_events,
-        "rejected_events": 0,
+        "rejected_events": rejected_events,
         "delivery_failures": 0,
         "acceptance_rate_percent": round(100 * total_events / attempted_events, 2)
         if attempted_events else None,
@@ -435,17 +512,18 @@ def main() -> None:
         "p95_delivery_latency_seconds": percentile(delivery_latencies, 0.95),
         "delivery_latency_samples": len(delivery_latencies),
         "topic_metrics": topic_metrics,
+        "status": "degraded" if rejected_events else "success",
     }
     append_publish_audit(publish_audit)
     if push_stage_metrics is not None:
         push_stage_metrics(
             component="kafka_publisher",
             stage="kafka",
-            status="success",
+            status=publish_audit["status"],
             values={
                 "attempted_events": attempted_events,
                 "delivered_events": total_events,
-                "rejected_events": 0,
+                "rejected_events": rejected_events,
                 "acceptance_rate_percent": publish_audit["acceptance_rate_percent"],
                 "throughput_records_per_second": publish_audit["throughput_events_per_second"],
                 "p95_delivery_latency_seconds": publish_audit["p95_delivery_latency_seconds"],

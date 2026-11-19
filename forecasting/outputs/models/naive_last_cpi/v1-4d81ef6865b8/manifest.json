@@ -1,8 +1,8 @@
 {
   "model_name": "naive_last_cpi",
   "model_version": "v1-4d81ef6865b8",
-  "evaluation_run_id": "20261109T180822Z",
-  "generated_at_utc": "2026-11-09T18:08:22.699225+00:00",
+  "evaluation_run_id": "20261112T153149Z",
+  "generated_at_utc": "2026-11-12T15:31:49.349347+00:00",
   "source_code_sha256": "c30e3b9019d1e9d4d3be0ce2d8effa6d5ba3e175d96adafedd64b33891d171bb",
   "role": "baseline",
   "model_family": "naive_last_observation",

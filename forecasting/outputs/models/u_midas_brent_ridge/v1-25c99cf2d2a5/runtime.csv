@@ -1,0 +1,2 @@
+model,fit_predict_seconds,failed_folds,ineligible_folds,completed_folds,max_fit_predict_seconds,max_rss_kb,script_wall_seconds,strict_vintage_available
+u_midas_brent_ridge,0.4250453360014035,0,1,130,0.009855543999947258,142508,65.297,False

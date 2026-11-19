@@ -1,2 +1,2 @@
 model,fit_predict_seconds,failed_folds,ineligible_folds,completed_folds,max_fit_predict_seconds,max_rss_kb,script_wall_seconds,strict_vintage_available
-midas_huber,12.785079936001239,0,1,130,0.17259509199993772,140332,63.912,False
+midas_huber,12.559979211993777,0,1,130,0.19510709099995438,139452,60.755,False

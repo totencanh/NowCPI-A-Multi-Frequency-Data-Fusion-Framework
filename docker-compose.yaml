@@ -411,7 +411,7 @@ services:
       PROMETHEUS_METRICS_PORT: "9404"
       # New checkpoint replays retained Kafka offsets into the offset-keyed,
       # append-only Bronze receipt table and envelope quarantine.
-      BRONZE_KAFKA_CHECKPOINT: /opt/spark/work-dir/checkpoints/bronze-kafka-events-v4
+      BRONZE_KAFKA_CHECKPOINT: /opt/spark/work-dir/checkpoints/bronze-kafka-events-v5
     volumes:
       - ./workspace:/opt/spark/work-dir
       - ./processing:/opt/spark/app:ro

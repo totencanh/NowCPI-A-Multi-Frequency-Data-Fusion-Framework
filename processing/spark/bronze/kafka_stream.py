@@ -3,13 +3,20 @@
 from __future__ import annotations
 
 import os
+import sys
 import time
 from datetime import datetime, timezone
+from pathlib import Path
 
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.types import StringType, StructField, StructType
 from prometheus_client import Counter, Gauge, Histogram, start_http_server
+
+_processing_root = Path(__file__).resolve().parents[2]
+if str(_processing_root) not in sys.path:
+    sys.path.insert(0, str(_processing_root))
+from spark.common.schemas import SCHEMA_VERSION, TOPIC_CONTRACTS
 
 
 TOPICS = [
@@ -47,10 +54,39 @@ BRONZE_LAST_BATCH_TIMESTAMP = Gauge(
     "nowcpi_bronze_last_batch_completion_timestamp_seconds",
     "Unix timestamp when the last non-empty Bronze micro-batch completed.",
 )
+BRONZE_LATEST_LATE_EVENTS = Gauge(
+    "nowcpi_bronze_latest_late_events",
+    "Late arrivals in the latest non-empty Bronze micro-batch; retained, never dropped.",
+)
+BRONZE_LATEST_SOURCE_TO_KAFKA_P95 = Gauge(
+    "nowcpi_bronze_latest_p95_source_to_kafka_seconds",
+    "P95 source-availability-to-Kafka delay for the latest Bronze micro-batch.",
+)
 BRONZE_STREAM_UP = Gauge(
     "nowcpi_bronze_stream_up",
     "Whether the Bronze streaming driver initialized its metrics endpoint.",
 )
+
+
+def _append_delta_batch_once(frame, path: str, table_name: str, batch_id: int) -> None:
+    """Append one streaming batch once, including when Spark replays a batch.
+
+    Bronze is an append-only Kafka receipt log. Delta's transaction app/version
+    pair provides replay idempotence without building a costly MERGE plan for
+    every micro-batch. The checkpoint generation is included in appId so a
+    deliberate checkpoint migration can use a fresh transaction namespace.
+    """
+    checkpoint_generation = Path(
+        os.getenv("BRONZE_KAFKA_CHECKPOINT", "bronze-kafka-events-v5")
+    ).name
+    app_id = f"nowcpi-bronze-{checkpoint_generation}-{table_name}"
+    (
+        frame.write.format("delta")
+        .mode("append")
+        .option("txnAppId", app_id)
+        .option("txnVersion", int(batch_id))
+        .save(path)
+    )
 
 
 def _record_bronze_metrics(
@@ -59,6 +95,8 @@ def _record_bronze_metrics(
     rejected_events: int,
     persisted_candidates: int,
     processing_duration_seconds: float,
+    late_events: int = 0,
+    p95_source_to_kafka_seconds: float | None = None,
 ) -> None:
     for outcome, count in (
         ("input", input_events),
@@ -73,6 +111,9 @@ def _record_bronze_metrics(
     if processing_duration_seconds > 0:
         BRONZE_LATEST_THROUGHPUT.set(persisted_candidates / processing_duration_seconds)
     BRONZE_LAST_BATCH_TIMESTAMP.set(time.time())
+    BRONZE_LATEST_LATE_EVENTS.set(late_events)
+    if p95_source_to_kafka_seconds is not None:
+        BRONZE_LATEST_SOURCE_TO_KAFKA_P95.set(p95_source_to_kafka_seconds)
 
 
 def _write_bronze_batch_audit(
@@ -85,6 +126,8 @@ def _write_bronze_batch_audit(
     persisted_candidates: int,
     batch_started_at: datetime,
     processing_duration_seconds: float,
+    late_events: int = 0,
+    p95_source_to_kafka_seconds: float | None = None,
 ) -> None:
     """Persist idempotent per-microbatch counts and processing latency."""
     audit_path = f"s3a://{bucket}/bronze/kafka_batch_audit"
@@ -96,44 +139,116 @@ def _write_bronze_batch_audit(
             int(valid_events),
             int(rejected_events),
             int(persisted_candidates),
+            int(late_events),
+            p95_source_to_kafka_seconds,
             batch_started_at,
             round(float(processing_duration_seconds), 6),
         )],
         "stream_id STRING, batch_id LONG, input_events LONG, valid_events LONG, "
-        "rejected_events LONG, persisted_candidates LONG, batch_started_at TIMESTAMP, "
+        "rejected_events LONG, persisted_candidates LONG, late_events LONG, "
+        "p95_source_to_kafka_seconds DOUBLE, batch_started_at TIMESTAMP, "
         "processing_duration_seconds DOUBLE",
     ).withColumn("batch_committed_at", F.current_timestamp())
 
-    delta_log = spark._jvm.org.apache.hadoop.fs.Path(
-        f"{audit_path.rstrip('/')}/_delta_log"
-    )
-    filesystem = delta_log.getFileSystem(spark._jsc.hadoopConfiguration())
-    if filesystem.exists(delta_log):
-        audit.createOrReplaceGlobalTempView("nowcpi_bronze_batch_audit")
-        try:
-            spark.sql(
-                f"""MERGE INTO delta.`{audit_path}` AS target
-                    USING global_temp.nowcpi_bronze_batch_audit AS incoming
-                    ON target.stream_id = incoming.stream_id
-                       AND target.batch_id = incoming.batch_id
-                    WHEN MATCHED THEN UPDATE SET
-                      input_events = incoming.input_events,
-                      valid_events = incoming.valid_events,
-                      rejected_events = incoming.rejected_events,
-                      persisted_candidates = incoming.persisted_candidates,
-                      batch_started_at = incoming.batch_started_at,
-                      batch_committed_at = incoming.batch_committed_at,
-                      processing_duration_seconds = incoming.processing_duration_seconds
-                    WHEN NOT MATCHED THEN INSERT *"""
-            )
-        finally:
-            spark.catalog.dropGlobalTempView("nowcpi_bronze_batch_audit")
-    else:
-        audit.write.format("delta").mode("overwrite").save(audit_path)
+    _append_delta_batch_once(audit, audit_path, "batch-audit", batch_id)
     spark.sql(
         "CREATE TABLE IF NOT EXISTS bronze.kafka_batch_audit "
         f"USING DELTA LOCATION '{audit_path}'"
     )
+
+
+def _with_contract_reasons(decoded):
+    """Validate the full event contract after JSON decoding, by Kafka topic."""
+    extracted = (
+        decoded
+        .withColumn("_contract_schema_version", F.expr("try_cast(get_json_object(event_json, '$.schema_version') AS INT)"))
+        .withColumn("_contract_source", F.get_json_object("event_json", "$.source"))
+        .withColumn("_contract_series", F.get_json_object("event_json", "$.series_id"))
+        .withColumn("_contract_country", F.get_json_object("event_json", "$.country"))
+        .withColumn("_contract_period", F.get_json_object("event_json", "$.observation_period"))
+        .withColumn("_contract_frequency", F.get_json_object("event_json", "$.frequency"))
+        .withColumn("_contract_value", F.expr("try_cast(get_json_object(event_json, '$.value') AS DOUBLE)"))
+        .withColumn("_contract_unit", F.get_json_object("event_json", "$.unit"))
+        .withColumn("_contract_ingested_at", F.get_json_object("event_json", "$.ingested_at"))
+        .withColumn("_contract_release_ts", F.get_json_object("event_json", "$.release_ts"))
+        .withColumn("_contract_source_record_id", F.get_json_object("event_json", "$.source_record_id"))
+    )
+    topic = F.col("kafka_topic")
+    schema_version = F.col("_contract_schema_version")
+    source = F.col("_contract_source")
+    series = F.col("_contract_series")
+    country = F.col("_contract_country")
+    period = F.col("_contract_period")
+    frequency = F.col("_contract_frequency")
+    value = F.col("_contract_value")
+    unit = F.col("_contract_unit")
+    ingested_at = F.col("_contract_ingested_at")
+    release_ts = F.col("_contract_release_ts")
+    source_record_id = F.col("_contract_source_record_id")
+
+    topic_issue = F.lit(None).cast("string")
+    for topic_name, contract in TOPIC_CONTRACTS.items():
+        if contract["period_frequency"] == "month":
+            period_valid = period.rlike(r"^\d{4}-(0[1-9]|1[0-2])$")
+        else:
+            period_valid = (
+                period.rlike(r"^\d{4}-\d{2}-\d{2}([T ].*)?$")
+                & F.try_to_timestamp(period).isNotNull()
+            )
+        number_valid = (
+            value.isNotNull()
+            & ~F.isnan(value)
+            & (F.abs(value) != F.lit(float("inf")))
+        )
+        checks = [
+            F.when(~source.isin(*sorted(contract["sources"])), "source_not_allowed_for_topic"),
+            F.when(~series.rlike(contract["series_pattern"]), "series_not_allowed_for_topic"),
+            F.when(country != contract["country"], "country_not_allowed_for_topic"),
+            F.when(frequency != contract["frequency"], "frequency_mismatch"),
+            F.when(~unit.isin(*sorted(contract["units"])), "unit_mismatch"),
+            F.when(~F.coalesce(period_valid, F.lit(False)), "invalid_observation_period"),
+            F.when(~F.coalesce(number_valid, F.lit(False)), "value_must_be_finite_numeric"),
+        ]
+        if contract.get("positive_value"):
+            checks.append(F.when(value <= 0, "value_must_be_positive"))
+        topic_reason = F.concat_ws(";", *checks)
+        topic_issue = F.when(
+            topic == topic_name,
+            F.when(F.length(topic_reason) > 0, topic_reason),
+        ).otherwise(topic_issue)
+
+    common_issues = [
+        F.when(schema_version.isNull() | (schema_version != SCHEMA_VERSION), "unsupported_schema_version"),
+        F.when(source.isNull() | (F.length(F.trim(source)) == 0), "missing_source"),
+        F.when(series.isNull() | (F.length(F.trim(series)) == 0), "missing_series_id"),
+        F.when(country.isNull() | (F.length(F.trim(country)) == 0), "missing_country"),
+        F.when(frequency.isNull() | (F.length(F.trim(frequency)) == 0), "missing_frequency"),
+        F.when(unit.isNull() | (F.length(F.trim(unit)) == 0), "missing_unit"),
+        F.when(source_record_id.isNull() | (F.length(F.trim(source_record_id)) == 0), "missing_source_record_id"),
+        F.when(F.try_to_timestamp(ingested_at).isNull(), "invalid_ingested_at"),
+        F.when(release_ts.isNotNull() & F.try_to_timestamp(release_ts).isNull(), "invalid_release_ts"),
+    ]
+    common_reason = F.concat_ws(";", *common_issues)
+    base_reason = F.when(F.length(common_reason) > 0, common_reason)
+    unknown_topic = ~topic.isin(*sorted(TOPIC_CONTRACTS))
+    contract_reason = F.when(
+        F.col("_envelope").isNull(), F.lit("invalid_json")
+    ).when(
+        F.col("_envelope.event_id").isNull()
+        | (F.length(F.trim(F.col("_envelope.event_id"))) == 0),
+        F.lit("missing_event_id"),
+    ).when(
+        ~F.col("_envelope.event_id").rlike(r"^[a-f0-9]{64}$"),
+        F.lit("event_id_must_be_sha256_hex"),
+    ).otherwise(
+        F.concat_ws(
+            ";",
+            base_reason,
+            F.when(unknown_topic, "unknown_topic"),
+            F.when(F.length(topic_issue) > 0, topic_issue),
+        )
+    )
+    return extracted.withColumn("_contract_rejection_reason", contract_reason)
 
 
 def upsert_bronze_batch(spark: SparkSession, batch_df, batch_id: int, output_path: str) -> None:
@@ -144,7 +259,7 @@ def upsert_bronze_batch(spark: SparkSession, batch_df, batch_id: int, output_pat
         print(f"Kafka micro-batch {batch_id} is empty.", flush=True)
         return
 
-    decoded = (
+    decoded = _with_contract_reasons(
         batch_df.select(
             F.col("topic").alias("kafka_topic"),
             F.col("partition").alias("kafka_partition"),
@@ -154,11 +269,7 @@ def upsert_bronze_batch(spark: SparkSession, batch_df, batch_id: int, output_pat
         )
         .withColumn("_envelope", F.from_json("event_json", EVENT_ENVELOPE_SCHEMA))
     )
-    invalid = decoded.filter(
-        F.col("_envelope").isNull()
-        | F.col("_envelope.event_id").isNull()
-        | (F.length(F.trim(F.col("_envelope.event_id"))) == 0)
-    )
+    invalid = decoded.filter(F.col("_contract_rejection_reason") != "")
     invalid_count = invalid.count()
     if invalid_count:
         bucket = os.getenv("MINIO_BUCKET", "nowcpi")
@@ -176,28 +287,12 @@ def upsert_bronze_batch(spark: SparkSession, batch_df, batch_id: int, output_pat
             "kafka_timestamp",
             F.col("event_json").alias("raw_event_json"),
             F.sha2(F.col("event_json"), 256).alias("payload_hash"),
-            F.when(F.col("_envelope").isNull(), "invalid_json")
-            .otherwise("missing_event_id")
-            .alias("rejection_reason"),
+            F.col("_contract_rejection_reason").alias("rejection_reason"),
             F.current_timestamp().alias("quarantined_at"),
         )
-        quarantine_log = spark._jvm.org.apache.hadoop.fs.Path(
-            f"{quarantine_path.rstrip('/')}/_delta_log"
+        _append_delta_batch_once(
+            quarantine, quarantine_path, "quarantine", batch_id
         )
-        filesystem = quarantine_log.getFileSystem(spark._jsc.hadoopConfiguration())
-        if filesystem.exists(quarantine_log):
-            quarantine.createOrReplaceGlobalTempView("nowcpi_bronze_quarantine_batch")
-            try:
-                spark.sql(
-                    f"""MERGE INTO delta.`{quarantine_path}` AS target
-                        USING global_temp.nowcpi_bronze_quarantine_batch AS incoming
-                        ON target.kafka_record_key = incoming.kafka_record_key
-                        WHEN NOT MATCHED THEN INSERT *"""
-                )
-            finally:
-                spark.catalog.dropGlobalTempView("nowcpi_bronze_quarantine_batch")
-        else:
-            quarantine.write.format("delta").mode("overwrite").save(quarantine_path)
         spark.sql(
             "CREATE TABLE IF NOT EXISTS bronze.kafka_events_quarantine "
             f"USING DELTA LOCATION '{quarantine_path}'"
@@ -209,10 +304,8 @@ def upsert_bronze_batch(spark: SparkSession, batch_df, batch_id: int, output_pat
         )
 
     decoded = decoded.filter(
-        F.col("_envelope").isNotNull()
-        & F.col("_envelope.event_id").isNotNull()
-        & (F.length(F.trim(F.col("_envelope.event_id"))) > 0)
-    ).drop("_envelope")
+        F.col("_contract_rejection_reason") == ""
+    ).drop("_envelope", "_contract_rejection_reason")
     if not decoded.head(1):
         processing_duration = time.monotonic() - batch_started_clock
         _write_bronze_batch_audit(
@@ -249,6 +342,11 @@ def upsert_bronze_batch(spark: SparkSession, batch_df, batch_id: int, output_pat
         .withColumn("release_ts", F.get_json_object("event_json", "$.release_ts"))
         .withColumn("ingested_at", F.get_json_object("event_json", "$.ingested_at"))
         .withColumn(
+            "event_time_contract_version",
+            F.expr("try_cast(get_json_object(event_json, '$.event_time_contract_version') AS INT)"),
+        )
+        .withColumn("event_time_basis", F.get_json_object("event_json", "$.event_time_basis"))
+        .withColumn(
             "source_record_id",
             F.get_json_object("event_json", "$.source_record_id"),
         )
@@ -256,7 +354,44 @@ def upsert_bronze_batch(spark: SparkSession, batch_df, batch_id: int, output_pat
         .withColumn("payload_hash", F.get_json_object("event_json", "$.payload_hash"))
         .withColumn(
             "event_time",
-            F.try_to_timestamp(F.get_json_object("event_json", "$.event_time")),
+            F.coalesce(
+                F.try_to_timestamp(F.get_json_object("event_json", "$.release_ts")),
+                F.when(
+                    (F.col("event_time_contract_version") >= 2)
+                    & (F.col("event_time_basis") == "source_event_time"),
+                    F.try_to_timestamp(F.get_json_object("event_json", "$.event_time")),
+                ),
+                F.try_to_timestamp(F.get_json_object("event_json", "$.ingested_at")),
+                F.col("kafka_timestamp").cast("timestamp"),
+            ),
+        )
+        .withColumn(
+            "event_time_basis",
+            F.when(
+                F.try_to_timestamp(F.get_json_object("event_json", "$.release_ts")).isNotNull(),
+                "source_release_ts",
+            )
+            .when(
+                (F.col("event_time_contract_version") >= 2)
+                & (F.col("event_time_basis") == "source_event_time")
+                & F.try_to_timestamp(F.get_json_object("event_json", "$.event_time")).isNotNull(),
+                "source_event_time",
+            )
+            .when(
+                F.try_to_timestamp(F.get_json_object("event_json", "$.ingested_at")).isNotNull(),
+                "source_ingested_at",
+            )
+            .when(F.col("kafka_timestamp").isNotNull(), "kafka_timestamp_proxy")
+            .otherwise("unavailable"),
+        )
+        .withColumn(
+            "event_lag_seconds",
+            F.unix_timestamp("kafka_timestamp") - F.unix_timestamp("event_time"),
+        )
+        .withColumn(
+            "is_late_arrival",
+            F.col("event_lag_seconds")
+            > F.lit(int(os.getenv("BRONZE_LATE_ARRIVAL_THRESHOLD_SECONDS", "86400"))),
         )
         .withColumn(
             "business_key",
@@ -299,34 +434,23 @@ def upsert_bronze_batch(spark: SparkSession, batch_df, batch_id: int, output_pat
 
     # A topic/partition/offset identifies one Kafka receipt deterministically.
     batch = events.dropDuplicates(["bronze_key"])
-    delta_log = spark._jvm.org.apache.hadoop.fs.Path(
-        f"{output_path.rstrip('/')}/_delta_log"
-    )
-    filesystem = delta_log.getFileSystem(spark._jsc.hadoopConfiguration())
-    if filesystem.exists(delta_log):
-        # Use a global temporary view because foreachBatch callbacks can resolve
-        # SQL in a different session scope from a regular temporary view.
-        view_name = "nowcpi_kafka_bronze_batch"
-        batch.createOrReplaceGlobalTempView(view_name)
-        try:
-            spark.sql(
-                f"""
-                MERGE INTO delta.`{output_path}` AS target
-                USING global_temp.{view_name} AS incoming
-                ON target.bronze_key = incoming.bronze_key
-                WHEN NOT MATCHED THEN INSERT *
-                """
-            )
-        finally:
-            spark.catalog.dropGlobalTempView(view_name)
-    else:
-        batch.write.format("delta").mode("overwrite").save(output_path)
+    _append_delta_batch_once(batch, output_path, "kafka-events", batch_id)
 
     spark.sql(
         f"CREATE TABLE IF NOT EXISTS bronze.kafka_events "
         f"USING DELTA LOCATION '{output_path}'"
     )
     persisted_candidates = batch.count()
+    batch_lag = batch.agg(
+        F.sum(F.when(F.col("is_late_arrival"), 1).otherwise(0)).alias("late_events"),
+        F.expr("percentile_approx(CASE WHEN event_lag_seconds >= 0 "
+               "THEN event_lag_seconds END, 0.95)").alias("p95_source_to_kafka_seconds"),
+    ).first()
+    late_events = int(batch_lag["late_events"] or 0)
+    p95_source_to_kafka_seconds = (
+        float(batch_lag["p95_source_to_kafka_seconds"])
+        if batch_lag["p95_source_to_kafka_seconds"] is not None else None
+    )
     processing_duration = time.monotonic() - batch_started_clock
     print(
         f"Upserted {persisted_candidates} event(s) from Kafka micro-batch {batch_id} "
@@ -343,6 +467,8 @@ def upsert_bronze_batch(spark: SparkSession, batch_df, batch_id: int, output_pat
         persisted_candidates,
         batch_started_at,
         processing_duration,
+        late_events,
+        p95_source_to_kafka_seconds,
     )
     _record_bronze_metrics(
         input_count,
@@ -350,6 +476,8 @@ def upsert_bronze_batch(spark: SparkSession, batch_df, batch_id: int, output_pat
         invalid_count,
         persisted_candidates,
         processing_duration,
+        late_events,
+        p95_source_to_kafka_seconds,
     )
 
 

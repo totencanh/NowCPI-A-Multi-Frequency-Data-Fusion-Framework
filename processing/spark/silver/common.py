@@ -5,13 +5,20 @@ from __future__ import annotations
 import os
 import re
 import json
+import sys
 import uuid
 from collections.abc import Iterable
 from datetime import datetime, timezone
+from pathlib import Path
 
 from pyspark import StorageLevel
 from pyspark.sql import DataFrame, SparkSession, Window
 from pyspark.sql import functions as F
+
+_processing_root = Path(__file__).resolve().parents[2]
+if str(_processing_root) not in sys.path:
+    sys.path.insert(0, str(_processing_root))
+from spark.common.schemas import TOPIC_CONTRACTS
 
 try:
     from spark.common.prometheus_metrics import push_stage_metrics
@@ -42,7 +49,8 @@ REQUIRED_BRONZE_COLUMNS = {
 
 SILVER_COLUMNS = [
     "event_id", "source", "source_record_id", "source_release_ts",
-    "source_event_time", "business_key", "payload_hash",
+    "source_event_time", "source_event_time_basis", "source_to_kafka_lag_seconds",
+    "is_late_arrival", "business_key", "payload_hash",
     "source_ingested_at", "available_at", "bronze_ingested_at",
     "available_at_basis",
     "kafka_topic", "kafka_partition", "kafka_offset", "kafka_timestamp",
@@ -57,7 +65,7 @@ VERSION_COLUMNS = [
     "series_id", "country", "observation_date", "frequency", "value", "unit",
 ]
 SILVER_BUSINESS_KEY = ["series_id", "country", "frequency", "observation_date", "unit"]
-SILVER_TRANSFORM_VERSION = 6
+SILVER_TRANSFORM_VERSION = 7
 
 OBSOLETE_SILVER_TABLES = [
     "cpi_observations_quarantine",
@@ -189,6 +197,27 @@ def normalize_bronze_events(events: DataFrame, topic: str) -> DataFrame:
     )
     freq = _frequency(F.col("frequency"))
     obs_date = _observation_date(raw_period)
+    release_time = F.try_to_timestamp(F.col("release_ts"))
+    source_ingested_time = F.try_to_timestamp(F.col("ingested_at"))
+    kafka_received_time = F.col("kafka_timestamp").cast("timestamp")
+    event_time_contract_version = _optional_col(
+        events, "event_time_contract_version", "int"
+    ).cast("int")
+    stored_event_time_basis = F.trim(_optional_col(events, "event_time_basis"))
+    explicit_source_event_time = F.when(
+        (event_time_contract_version >= 2)
+        & (stored_event_time_basis == "source_event_time"),
+        F.try_to_timestamp(_optional_col(events, "event_time")),
+    )
+    source_event_time = F.coalesce(
+        release_time, explicit_source_event_time, source_ingested_time, kafka_received_time
+    )
+    computed_transport_lag = (
+        F.unix_timestamp(kafka_received_time) - F.unix_timestamp(source_event_time)
+    )
+    stored_transport_lag = _optional_col(events, "event_lag_seconds", "double").cast("double")
+    source_to_kafka_lag = F.coalesce(stored_transport_lag, computed_transport_lag)
+    late_threshold_seconds = int(os.getenv("BRONZE_LATE_ARRIVAL_THRESHOLD_SECONDS", "86400"))
     if "schema_version" in events.columns:
         schema_version = F.expr("try_cast(schema_version AS INT)")
     else:
@@ -210,8 +239,17 @@ def normalize_bronze_events(events: DataFrame, topic: str) -> DataFrame:
         freq.alias("frequency"),
         raw_value.alias("value"),
         _canonical_unit(normalized_series, F.col("unit")).alias("unit"),
-        F.try_to_timestamp(_optional_col(events, "event_time").cast("string"))
-        .alias("source_event_time"),
+        source_event_time.alias("source_event_time"),
+        F.when(release_time.isNotNull(), "source_release_ts")
+        .when(explicit_source_event_time.isNotNull(), "source_event_time")
+        .when(source_ingested_time.isNotNull(), "source_ingested_at")
+        .when(kafka_received_time.isNotNull(), "kafka_timestamp_proxy")
+        .otherwise("unavailable").alias("source_event_time_basis"),
+        source_to_kafka_lag.alias("source_to_kafka_lag_seconds"),
+        F.coalesce(
+            _optional_col(events, "is_late_arrival", "boolean").cast("boolean"),
+            source_to_kafka_lag > F.lit(late_threshold_seconds),
+        ).alias("is_late_arrival"),
         F.coalesce(
             F.trim(_optional_col(events, "business_key")),
             F.to_json(
@@ -253,20 +291,7 @@ def normalize_bronze_events(events: DataFrame, topic: str) -> DataFrame:
         .when(F.col("bronze_ingested_at").isNotNull(), "bronze_ingested_at"),
     )
 
-    topic_series = {
-        "nowcpi.cpi": F.col("series_id") == "cpi_headline",
-        "nowcpi.cpi_components": F.col("series_id").startswith("cpi_component_"),
-        "nowcpi.ppi_iip": F.col("series_id") == "iip_total_index",
-        "nowcpi.brent_oil": F.col("series_id") == "brent_front_month",
-        "nowcpi.usd_vnd": F.col("series_id") == "usd_vnd",
-        "nowcpi.vn_fuel": F.col("series_id").isin("vn_fuel_ron95", "vn_fuel_e10_ron95"),
-    }[topic]
-    expected_frequency = (
-        F.when(F.col("series_id").startswith("cpi_component_"), "monthly")
-        .when(F.col("series_id") == "cpi_headline", "monthly")
-        .when(F.col("series_id") == "iip_total_index", "monthly")
-        .when(F.col("series_id").isin("brent_front_month", "usd_vnd", "vn_fuel_ron95", "vn_fuel_e10_ron95"), "daily")
-    )
+    contract = TOPIC_CONTRACTS[topic]
     numeric_invalid = (
         F.col("value").isNull()
         | F.isnan("value")
@@ -277,13 +302,16 @@ def normalize_bronze_events(events: DataFrame, topic: str) -> DataFrame:
         F.when(F.col("event_id").isNull() | (F.col("event_id") == ""), "missing_event_id"),
         F.when(F.col("schema_version").isNull() | (F.col("schema_version") != 1), "unsupported_schema_version"),
         F.when(F.col("source").isNull() | (F.col("source") == ""), "missing_source"),
+        F.when(~F.col("source").isin(*sorted(contract["sources"])), "source_not_allowed_for_topic"),
         F.when(F.col("series_id").isNull() | (F.col("series_id") == ""), "missing_series_id"),
+        F.when(~F.col("series_id").rlike(contract["series_pattern"]), "series_not_allowed_for_topic"),
         F.when(F.col("country").isNull() | (F.col("country") == ""), "missing_country"),
+        F.when(F.col("country") != contract["country"], "country_not_allowed_for_topic"),
         F.when(F.col("observation_date").isNull(), "invalid_observation_period"),
         F.when(F.col("frequency").isNull() | (F.col("frequency") == ""), "missing_frequency"),
-        F.when(~topic_series, "series_does_not_match_topic"),
-        F.when(expected_frequency.isNotNull() & (F.col("frequency") != expected_frequency), "frequency_does_not_match_series"),
-        F.when(F.col("unit").isNull() | (F.col("unit") == ""), "missing_unit"),
+        F.when(F.col("frequency") != contract["frequency"], "frequency_mismatch"),
+        F.when(F.col("unit").isNull() | ~F.col("unit").isin(*sorted(contract["units"])), "unit_mismatch"),
+        F.when(F.col("source_record_id").isNull() | (F.col("source_record_id") == ""), "missing_source_record_id"),
     ]
     normalized = normalized.withColumn(
         "_metadata_rejection_reason", F.concat_ws(";", *metadata_issues)
@@ -408,6 +436,8 @@ def persist_observation_versions(
             f"""MERGE INTO delta.`{escaped_path}` AS target
                 USING `{view}` AS incoming
                 ON target.version_id = incoming.version_id
+                    WHEN MATCHED THEN UPDATE SET
+                      source_event_time = incoming.source_event_time
                 WHEN NOT MATCHED THEN INSERT *"""
         )
     finally:
@@ -495,6 +525,9 @@ def _write_silver_run_audit(
     accepted_events: int,
     rejected_events: int,
     stage_started_at: datetime,
+    event_duplicate_records: int = 0,
+    business_key_rows_collapsed: int = 0,
+    metadata_valid_events: int = 0,
 ) -> None:
     """Record per-topic Silver processing lineage and commit timing."""
     path = f"s3a://{bucket}/silver/_lineage/stage_runs"
@@ -511,15 +544,19 @@ def _write_silver_run_audit(
                 input_events,
                 accepted_events,
                 rejected_events,
+                event_duplicate_records,
+                business_key_rows_collapsed,
+                metadata_valid_events,
                 stage_started_at,
             )
         ],
         "audit_id STRING, stage STRING, kafka_topic STRING, run_id STRING, "
         "task_id STRING, input_events LONG, accepted_events LONG, rejected_events LONG, "
-        "stage_started_at TIMESTAMP",
+        "event_duplicate_records LONG, business_key_rows_collapsed LONG, "
+        "metadata_valid_events LONG, stage_started_at TIMESTAMP",
     )
     audit = audit.withColumn("stage_committed_at", F.current_timestamp())
-    audit.write.format("delta").mode("append").save(path)
+    audit.write.format("delta").option("mergeSchema", "true").mode("append").save(path)
     spark.sql(
         "CREATE TABLE IF NOT EXISTS silver.stage_run_audit "
         f"USING DELTA LOCATION '{_quote_sql_path(path)}'"
@@ -537,6 +574,11 @@ def _write_silver_run_audit(
                 "records_in": input_events,
                 "records_accepted": accepted_events,
                 "records_rejected": rejected_events,
+                "event_duplicate_records_removed": event_duplicate_records,
+                "business_key_rows_collapsed": business_key_rows_collapsed,
+                "metadata_valid_events": metadata_valid_events,
+                "completeness_percent": round(100 * metadata_valid_events / input_events, 2)
+                if input_events else None,
                 "acceptance_rate_percent": round(100 * accepted_events / input_events, 2)
                 if input_events else None,
                 "throughput_records_per_second": round(input_events / duration_seconds, 3)
@@ -728,6 +770,16 @@ def process_topic(
     input_event_count = source.count()
 
     normalized_versions = normalize_bronze_events(source, topic)
+    event_id_counts = (
+        normalized_versions
+        .filter(F.col("event_id").isNotNull() & (F.trim(F.col("event_id")) != ""))
+        .groupBy("event_id")
+        .count()
+        .filter(F.col("count") > 1)
+        .agg(F.sum(F.col("count") - 1).alias("duplicates"))
+        .first()
+    )
+    event_duplicate_records = int(event_id_counts["duplicates"] or 0)
     version_numeric_valid = (
         F.col("value").isNotNull()
         & ~F.isnan("value")
@@ -775,6 +827,7 @@ def process_topic(
     )
     metadata_rejected = normalized.filter(~metadata_valid)
     valid_metadata = normalized.filter(metadata_valid)
+    metadata_valid_events = valid_metadata.count()
 
     # Collapse duplicate source observations within a topic/domain. Stable
     # Bronze IDs break ties after source revision time and Kafka order.
@@ -789,6 +842,9 @@ def process_topic(
         .filter(F.col("_business_row") == 1)
         .drop("_business_row")
     )
+    # This includes corrected source revisions for an existing natural key;
+    # observation_versions retains those versions separately.
+    business_key_rows_collapsed = max(0, metadata_valid_events - valid_metadata.count())
     normalized = valid_metadata.unionByName(metadata_rejected)
 
     numeric_invalid = (
@@ -860,6 +916,9 @@ def process_topic(
         good_count,
         persisted_rejections,
         stage_started_at,
+        event_duplicate_records,
+        business_key_rows_collapsed,
+        metadata_valid_events,
     )
     _save_silver_checkpoint(spark, source, bucket, topic)
     print(

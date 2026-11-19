@@ -50,8 +50,14 @@ with DAG(
 ) as dag:
     wait_for_bronze = BashOperator(
         task_id="wait_for_bronze_catchup",
-        bash_command=spark_submit_command("wait_for_bronze", 17178),
-        pool="nowcpi_spark_pool",
+        bash_command="python -u /opt/airflow/scripts/wait_for_bronze_catchup.py",
+        env={
+            "KAFKA_BROKER": "kafka:9092",
+            "TRINO_HOST": "trino",
+            "TRINO_PORT": "8080",
+            "TRINO_USER": "nowcpi",
+        },
+        append_env=True,
         execution_timeout=timedelta(minutes=35),
     )
     silver_cpi = BashOperator(

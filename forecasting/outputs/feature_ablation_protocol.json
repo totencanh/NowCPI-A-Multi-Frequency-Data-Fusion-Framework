@@ -1,6 +1,6 @@
 {
   "protocol_version": 4,
-  "evaluation_run_id": "20261118T095735Z",
+  "evaluation_run_id": "20261119T175304Z",
   "primary_model": "full_multisource_ridge",
   "model_registry": "feature_ablation_model_registry.csv",
   "per_model_artifacts": "models/<model_name>/<model_version>/",
@@ -84,7 +84,7 @@
   "operational_metrics": "per-model fit/predict seconds, max fold seconds, runtime failures, data-ineligible folds, completed folds, process peak RSS",
   "fold_status_policy": "insufficient training history or unavailable point-in-time predictors are ineligible, not runtime failures",
   "primary_model_policy": "full_multisource_ridge is the primary model; naive, CPI-only, AR-MIDAS and alternative estimators are baselines/ablations",
-  "nso_calendar_snapshot": "snapshot_d0b13806ed499691.json",
+  "nso_calendar_snapshot": "snapshot_3d51efb1e6164576.json",
   "source_vintages": "strict results require archived source vintages; a separately labeled pseudo-vintage proxy track is reported and is not strict PIT evidence",
   "real_time_performance_claim_allowed": false
 }

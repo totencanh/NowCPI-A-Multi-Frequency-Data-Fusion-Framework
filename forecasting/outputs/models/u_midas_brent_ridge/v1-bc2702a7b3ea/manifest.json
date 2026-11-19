@@ -1,8 +1,8 @@
 {
   "model_name": "u_midas_brent_ridge",
   "model_version": "v1-bc2702a7b3ea",
-  "evaluation_run_id": "20261109T180822Z",
-  "generated_at_utc": "2026-11-09T18:08:22.847507+00:00",
+  "evaluation_run_id": "20261112T153149Z",
+  "generated_at_utc": "2026-11-12T15:31:49.496618+00:00",
   "source_code_sha256": "c30e3b9019d1e9d4d3be0ce2d8effa6d5ba3e175d96adafedd64b33891d171bb",
   "role": "single_source_ablation",
   "model_family": "U-MIDAS Ridge",
@@ -31,13 +31,13 @@
   "failures_file": "failures.csv",
   "operational_metrics": {
     "model": "u_midas_brent_ridge",
-    "fit_predict_seconds": 0.42441179800061946,
+    "fit_predict_seconds": 0.4015905779979221,
     "failed_folds": 0,
     "ineligible_folds": 1,
     "completed_folds": 130,
-    "max_fit_predict_seconds": 0.007464970999990328,
-    "max_rss_kb": 140332,
-    "script_wall_seconds": 63.912,
+    "max_fit_predict_seconds": 0.006152961999760009,
+    "max_rss_kb": 139452,
+    "script_wall_seconds": 60.755,
     "strict_vintage_available": false
   },
   "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",

@@ -1,8 +1,8 @@
 {
   "model_name": "ar_midas_ridge",
   "model_version": "v1-3f7db802df6b",
-  "evaluation_run_id": "20261109T180822Z",
-  "generated_at_utc": "2026-11-09T18:08:22.894633+00:00",
+  "evaluation_run_id": "20261112T153149Z",
+  "generated_at_utc": "2026-11-12T15:31:49.546678+00:00",
   "source_code_sha256": "c30e3b9019d1e9d4d3be0ce2d8effa6d5ba3e175d96adafedd64b33891d171bb",
   "role": "method_ablation",
   "model_family": "AR-MIDAS Ridge",
@@ -32,13 +32,13 @@
   "failures_file": "failures.csv",
   "operational_metrics": {
     "model": "ar_midas_ridge",
-    "fit_predict_seconds": 0.43517964300190215,
+    "fit_predict_seconds": 0.4175231079916557,
     "failed_folds": 0,
     "ineligible_folds": 1,
     "completed_folds": 130,
-    "max_fit_predict_seconds": 0.012883504999990691,
-    "max_rss_kb": 140332,
-    "script_wall_seconds": 63.912,
+    "max_fit_predict_seconds": 0.009405091000189714,
+    "max_rss_kb": 139452,
+    "script_wall_seconds": 60.755,
     "strict_vintage_available": false
   },
   "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",

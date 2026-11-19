@@ -1,8 +1,8 @@
 {
   "model_name": "midas_elastic_net",
   "model_version": "v1-e6856a435b4c",
-  "evaluation_run_id": "20261109T180822Z",
-  "generated_at_utc": "2026-11-09T18:08:22.941365+00:00",
+  "evaluation_run_id": "20261112T153149Z",
+  "generated_at_utc": "2026-11-12T15:31:49.595425+00:00",
   "source_code_sha256": "c30e3b9019d1e9d4d3be0ce2d8effa6d5ba3e175d96adafedd64b33891d171bb",
   "role": "method_ablation",
   "model_family": "Elastic Net",
@@ -38,13 +38,13 @@
   "failures_file": "failures.csv",
   "operational_metrics": {
     "model": "midas_elastic_net",
-    "fit_predict_seconds": 13.174166905002949,
+    "fit_predict_seconds": 12.50608869399639,
     "failed_folds": 0,
     "ineligible_folds": 1,
     "completed_folds": 130,
-    "max_fit_predict_seconds": 0.2030820009999843,
-    "max_rss_kb": 140332,
-    "script_wall_seconds": 63.912,
+    "max_fit_predict_seconds": 0.1393167070000345,
+    "max_rss_kb": 139452,
+    "script_wall_seconds": 60.755,
     "strict_vintage_available": false
   },
   "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",

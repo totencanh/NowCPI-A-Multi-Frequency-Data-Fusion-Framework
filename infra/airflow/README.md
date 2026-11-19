@@ -4,8 +4,8 @@ The DAG `nowcpi_daily_pipeline` runs every day at 08:00 Vietnam time:
 
 1. Run the CPI, CPI components, IIP, Brent, USD/VND, and Vietnam fuel collectors.
 2. Publish new JSON batches to their `nowcpi.*` Kafka topics.
-3. Wait until the continuously running Spark Bronze consumer has reached Kafka's
-   current end offsets, then run the CPI/IIP and market Silver jobs in sequence.
+3. Query Kafka's current end offsets and poll Bronze through Trino until those
+   offsets are persisted, then run the CPI/IIP and market Silver jobs in sequence.
 4. Run dbt staging views, remove the retired Gold tables, then build the
    subject-specific dashboard tables in Trino.
 
@@ -17,6 +17,14 @@ Brent, USD/VND, and Vietnam fuel into compact Silver Delta tables. The news
 collector is currently empty. The daily DAG runs the dbt staging and Gold tasks
 after Silver. The `nowcpi_dbt_pipeline` DAG is also available for a standalone
 manual rebuild of those dbt models.
+
+The Bronze catch-up barrier uses Kafka metadata plus a Trino aggregation over
+`delta.bronze.kafka_events`; it does not submit a Spark job or occupy the Spark
+worker pool. This avoids an unbounded wait inside Spark when no worker has
+registered or accepted the offset-check job. It reports the lagging topic
+partitions and has a wall-clock timeout. The separate `wait_for_bronze.py` Spark
+implementation is retained only for reference and is no longer called by the
+daily or full-history DAGs.
 
 Each source collector is wrapped by `infra/airflow/scripts/source_check_audit.py`.
 Every attempt appends one JSON line to
@@ -73,8 +81,12 @@ nowcast and ablation branches finish (including when either branch fails), so
 the reports are refreshed automatically at the end of each run. In addition to
 the JSON/Markdown report, `pipeline_stage_metrics_latest.csv` summarizes each
 stage and `pipeline_stage_tasks_latest.csv` lists task status, retries, and
-duration for the measured run. Stages are ingestion, Kafka, Bronze, Silver,
-Gold/dbt, and forecasting. Run-specific collector and Silver counts are joined
+duration for the measured run. `pipeline_stage_events_latest.csv` contains
+run-scoped dbt model and forecasting events: status, runtime, available output
+and fold counts, nowcast value, feature coverage, and prediction interval.
+The same events are appended to `workspace/pipeline-audit/stage_metrics.jsonl`;
+the report filters them by the latest Airflow DAG run ID. Stages are ingestion,
+Kafka, Bronze, Silver, Gold/dbt, and forecasting. Run-specific collector and Silver counts are joined
 by Airflow DAG run ID; Kafka/Bronze 24-hour observations and current Gold row
 counts are labeled with their measurement scope instead of being presented as
 run-level deltas. Gold model outputs are counted per successful dbt model and
@@ -95,6 +107,26 @@ its code; the new Bronze metrics become available after it processes a
 non-empty Kafka microbatch. P95 rows identify their basis and sample count;
 task-duration P95 for Gold and forecasting is descriptive with only a few tasks,
 not a long-run latency SLO. `N/A` in Markdown means undefined or uninstrumented.
+
+The daily DAG records Gold model results immediately after `dbt_gold` and model
+runtime/fold eligibility immediately after nowcast and ablation. Ingestion,
+Kafka, Bronze, and Silver keep their existing stage-local audit files/tables;
+the final metrics task combines these stage measurements with Airflow task
+timings. No Airflow callback is required for these artifact measurements.
+There is no need to delete existing raw data or historical audit rows before a
+new run: the append-only stage ledger keeps prior run IDs separate, while the
+`*_latest` reports are refreshed for the newest run.
+
+The shared v1 event contract is enforced before Kafka publish and again in
+Bronze. Invalid source rows are logged by reference and reason while their raw
+JSON remains untouched; valid rows from a partially invalid batch continue
+through Kafka. Bronze/Silver measure event time from source release time when
+available, otherwise from collector ingestion time, and separately retain the
+economic observation period. A 24-hour late-arrival threshold flags and counts
+late records without dropping them; this is deliberate for macroeconomic
+revisions and historical backfills. Source-to-Kafka lag from collector time is
+a proxy when a source has no reliable release timestamp, and the report shows
+release-timestamp coverage so that proxy is not mistaken for publication lag.
 
 For live monitoring during execution, use the optional Prometheus/Grafana stack
 documented in [`infra/monitoring/README.md`](../monitoring/README.md). Airflow

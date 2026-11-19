@@ -1,2 +1,2 @@
 model,fit_predict_seconds,failed_folds,ineligible_folds,completed_folds,max_fit_predict_seconds,max_rss_kb,script_wall_seconds,strict_vintage_available
-ar1_ols,0.2724516479952399,0,0,131,0.01850912800000515,140332,63.912,False
+ar1_ols,0.24833152000701375,0,0,131,0.012786995000169554,139452,60.755,False

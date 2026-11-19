@@ -7,12 +7,26 @@ the Spark streaming consumer starts:
 `nowcpi.cpi`, `nowcpi.cpi_components`, `nowcpi.ppi_iip`,
 `nowcpi.brent_oil`, `nowcpi.usd_vnd`, and `nowcpi.vn_fuel`.
 
-Airflow runs `producer.py` after the source collectors complete. The publisher
-reads only the known JSON source batch directories, sends each event envelope
-unchanged, and uses the existing `event_id` as its Kafka key. A persistent
-batch-hash manifest prevents unchanged JSON files from being sent again.
-Spark Structured Streaming consumes the topics and writes `bronze.kafka_events`
-to Delta on MinIO. The Delta merge key makes replayed events idempotent.
+Airflow runs `producer.py` after the source collectors complete. The v1 source
+contract in `processing/spark/common/schemas.py` validates required fields,
+schema version, source/topic/series/country/frequency/unit, observation period,
+numeric value, and timestamps. Invalid rows are referenced in
+`workspace/pipeline-audit/source_contract_quarantine.jsonl` by batch, row index,
+event ID, hash, and reason; raw records stay in `data/raw` and valid rows from
+the same batch are still published. The publisher uses stable `event_id` as its
+Kafka key and a persistent batch-hash manifest to skip unchanged JSON files.
+Spark Bronze repeats contract validation and stores bypassed invalid messages
+in `bronze.kafka_events_quarantine`.
+
+For transport event time, NowCPI uses source `release_ts` when present, then
+collector `ingested_at`; Kafka time is a labeled fallback. `observation_period`
+remains the economic reference date and is never substituted for arrival time.
+Bronze computes source-to-Kafka delay and flags arrivals later than
+`BRONZE_LATE_ARRIVAL_THRESHOLD_SECONDS` (default 86,400). Late events are kept
+and measured, not discarded: CPI revisions and historical backfills are valid
+late arrivals for this use case. Bronze writes the flags and delay with the
+offset-keyed receipt in `bronze.kafka_events`; Delta `MERGE` makes receipt
+replays idempotent.
 
 ## Recovery replay
 

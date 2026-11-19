@@ -2,10 +2,11 @@
 
 Silver reads `s3a://<MINIO_BUCKET>/bronze/kafka_events`, validates and
 normalizes observations, and writes one compact Delta table per indicator
-domain. It preserves event/source IDs, source release/event times, source and
-Bronze ingestion times, Kafka coordinates, business key, and payload hash. Invalid
-events are persisted in per-domain quarantine tables with Kafka coordinates and
-rejection reasons.
+domain. Topic rules come from the shared versioned contract in
+`processing/spark/common/schemas.py`; Silver also checks required metadata,
+value validity, source/series/country/frequency/unit consistency, and future
+observation dates. Invalid events are persisted in per-domain quarantine tables
+with Kafka coordinates and rejection reasons.
 
 ## Tables
 
@@ -21,6 +22,15 @@ metadata, and ingestion timestamps for replay and audit.
 - `usd_vnd_observations`
 - `vn_fuel_observations`
 
+The observation period is the economic reference date. Event time is computed
+from source release time, otherwise collector ingestion time, otherwise Kafka
+receipt time; old Bronze rows are normalized with this same rule even if their
+transport `event_time` had previously been set to the observation period.
+`source_event_time_basis`, source-to-Kafka delay, and a late-arrival flag are
+retained in Silver. Arrivals later than the configurable 24-hour default are
+flagged, never dropped; no Spark watermark is applied because old economic
+observations and revisions must remain recoverable.
+
 All valid historical observations are retained; only future-dated observations
 and invalid records are rejected. Revisions are merged using the natural key
 `(series_id, country, frequency, observation_date, unit)`. Fuel history is split into RON
@@ -30,9 +40,13 @@ records with missing keys are not collapsed into one rejection.
 
 Each successful topic transformation appends a row to
 `silver.stage_run_audit` with its Airflow run/task IDs, input/accepted/rejected
-counts and stage start/commit timestamps. The audit write completes before the
-offset checkpoint advances, so a failed audit does not silently skip a Bronze
-batch.
+counts, repeated event IDs removed, rows collapsed to one current value per
+business key, metadata-valid counts, and stage start/commit timestamps. A row
+collapsed by business key may be a legitimate source revision, not a corrupt
+duplicate; `observation_versions` retains the version history. This separates
+missing/invalid metadata from duplicates collapsed into the latest curated row.
+The audit write completes before the offset checkpoint advances, so a failed
+audit does not silently skip a Bronze batch.
 
 Every valid new Bronze observation version is also merged into
 `silver.observation_versions` using `(business_key, payload_hash)` as its version
@@ -42,7 +56,9 @@ receipt time, and Bronze ingestion time. The current curated tables still expose
 the latest value by business key, while the version table preserves revisions
 for point-in-time joins.
 
-The Silver jobs bootstrap a table from full Bronze history when the table is
+The Silver transform version is currently 7. The added event-time lineage
+columns cause a one-time Silver reconciliation from Bronze history; the normal
+daily DAG performs that migration automatically. The Silver jobs bootstrap a table from full Bronze history when the table is
 missing or has the old schema. A transform-version checkpoint also triggers a
 one-time full reconciliation after the historical-date policy changes, restoring
 older records from Bronze and replacing stale reject records. Later runs use

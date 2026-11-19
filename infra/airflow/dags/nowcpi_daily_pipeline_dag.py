@@ -165,8 +165,14 @@ with DAG(
 
     wait_for_bronze = BashOperator(
         task_id="wait_for_bronze_catchup",
-        bash_command=spark_submit_command("wait_for_bronze", 17178),
-        pool="nowcpi_spark_pool",
+        bash_command="python -u /opt/airflow/scripts/wait_for_bronze_catchup.py",
+        env={
+            "KAFKA_BROKER": "kafka:9092",
+            "TRINO_HOST": "trino",
+            "TRINO_PORT": "8080",
+            "TRINO_USER": "nowcpi",
+        },
+        append_env=True,
         execution_timeout=timedelta(minutes=35),
     )
     silver_cpi = BashOperator(
@@ -200,7 +206,9 @@ with DAG(
             "--project-dir /opt/airflow/dbt --profiles-dir /opt/airflow/dbt "
             "--select path:models/gold && "
             "cp /opt/airflow/dbt/target/run_results.json "
-            "/opt/airflow/dbt/target/nowcpi_gold_run_results.json"
+            "/opt/airflow/dbt/target/nowcpi_gold_run_results.json && "
+            "python -u /opt/airflow/scripts/stage_metrics.py dbt "
+            "--run-results /opt/airflow/dbt/target/nowcpi_gold_run_results.json"
         ),
         execution_timeout=timedelta(minutes=30),
     )
@@ -215,7 +223,11 @@ with DAG(
     )
     feature_ablation_evaluation = BashOperator(
         task_id="feature_ablation_evaluation",
-        bash_command="python -u /opt/airflow/forecasting/benchmark/evaluate_feature_ablation.py",
+        bash_command=(
+            "python -u /opt/airflow/forecasting/benchmark/evaluate_feature_ablation.py && "
+            "python -u /opt/airflow/scripts/stage_metrics.py forecast --kind ablation "
+            "--artifact /opt/airflow/forecasting/outputs/feature_ablation_run_manifest.json"
+        ),
         env={"TRINO_HOST": "trino", "TRINO_PORT": "8080", "TRINO_USER": "nowcpi"},
         append_env=True,
         execution_timeout=timedelta(minutes=45),
@@ -230,7 +242,12 @@ with DAG(
     )
     multisource_nowcast = BashOperator(
         task_id="multisource_inflation_nowcast",
-        bash_command="python -u /opt/airflow/forecasting/multisource_nowcast.py",
+        bash_command=(
+            "python -u /opt/airflow/forecasting/multisource_nowcast.py && "
+            "python -u /opt/airflow/scripts/stage_metrics.py forecast --kind nowcast "
+            "--artifact /opt/airflow/forecasting/outputs/production_models/"
+            "full_multisource_ridge/latest.json"
+        ),
         env={"TRINO_HOST": "trino", "TRINO_PORT": "8080", "TRINO_USER": "nowcpi"},
         append_env=True,
         execution_timeout=timedelta(minutes=30),

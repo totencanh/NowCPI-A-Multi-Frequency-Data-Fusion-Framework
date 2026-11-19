@@ -414,6 +414,28 @@ def _read_json_if_present(path: Path) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
 
 
+def read_stage_events(path: Path, run_id: str | None) -> list[dict[str, Any]]:
+    """Read detailed Gold/forecast events for the measured DAG run only."""
+    if not path.is_file():
+        return []
+    events: list[dict[str, Any]] = []
+    try:
+        with path.open("r", encoding="utf-8") as stream:
+            for line in stream:
+                try:
+                    event = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if not isinstance(event, dict):
+                    continue
+                if run_id and event.get("dag_run_id") != run_id:
+                    continue
+                events.append(event)
+    except OSError:
+        return []
+    return events
+
+
 def _read_csv_records_if_present(path: Path) -> list[dict[str, Any]]:
     if not path.is_file():
         return []
@@ -1347,7 +1369,10 @@ def summarize_bursts(
     return len(events), bursts
 
 
-def build_sql(existing_silver_tables: set[str] | None = None) -> tuple[str, str, str, str]:
+def build_sql(
+    existing_silver_tables: set[str] | None = None,
+    existing_bronze_columns: set[str] | None = None,
+) -> tuple[str, str, str, str]:
     quality_selects = []
     for domain, table in SILVER_TABLES.items():
         nonpositive_metric = (
@@ -1399,7 +1424,30 @@ def build_sql(existing_silver_tables: set[str] | None = None) -> tuple[str, str,
         "SELECT CAST(NULL AS varchar) AS domain, CAST(NULL AS varchar) AS rejection_reason, "
         "CAST(NULL AS bigint) AS rejected_events WHERE false"
     )
-    latency_sql = """SELECT kafka_topic, count(*) AS persisted_events,
+    if existing_bronze_columns is None or {
+        "event_lag_seconds", "is_late_arrival", "event_time_basis"
+    }.issubset(existing_bronze_columns):
+        source_to_kafka_columns = """
+            count_if(is_late_arrival) AS late_arrival_events,
+            round(100.0 * count_if(is_late_arrival)
+                / nullif(count_if(event_lag_seconds IS NOT NULL), 0), 2)
+                AS late_arrival_percent,
+            round(avg(CASE WHEN event_lag_seconds >= 0 THEN event_lag_seconds END), 3)
+                AS avg_source_to_kafka_seconds,
+            approx_percentile(CASE WHEN event_lag_seconds >= 0 THEN event_lag_seconds END, 0.95)
+                AS p95_source_to_kafka_seconds,
+            count_if(event_time_basis = 'source_release_ts') AS release_timestamp_events,
+            round(100.0 * count_if(event_time_basis = 'source_release_ts')
+                / nullif(count(*), 0), 2) AS release_timestamp_coverage_percent"""
+    else:
+        source_to_kafka_columns = """
+            CAST(NULL AS BIGINT) AS late_arrival_events,
+            CAST(NULL AS DOUBLE) AS late_arrival_percent,
+            CAST(NULL AS DOUBLE) AS avg_source_to_kafka_seconds,
+            CAST(NULL AS DOUBLE) AS p95_source_to_kafka_seconds,
+            CAST(NULL AS BIGINT) AS release_timestamp_events,
+            CAST(NULL AS DOUBLE) AS release_timestamp_coverage_percent"""
+    latency_sql = f"""SELECT kafka_topic, count(*) AS persisted_events,
         min(kafka_timestamp) AS first_kafka_event_at,
         max(kafka_timestamp) AS last_kafka_event_at,
         max(bronze_ingested_at) AS latest_bronze_commit_at,
@@ -1407,7 +1455,8 @@ def build_sql(existing_silver_tables: set[str] | None = None) -> tuple[str, str,
             AS avg_kafka_to_bronze_seconds,
         approx_percentile(
             date_diff('millisecond', kafka_timestamp, bronze_ingested_at) / 1000.0, 0.95
-        ) AS p95_kafka_to_bronze_seconds
+        ) AS p95_kafka_to_bronze_seconds,
+        {source_to_kafka_columns}
       FROM delta.bronze.kafka_events
       WHERE kafka_timestamp >= current_timestamp - INTERVAL '24' HOUR
       GROUP BY kafka_topic
@@ -1837,6 +1886,11 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=Path("/opt/airflow/audit/kafka_publish_runs.jsonl"),
     )
+    parser.add_argument(
+        "--stage-metrics-file",
+        type=Path,
+        default=Path("/opt/airflow/audit/stage_metrics.jsonl"),
+    )
     parser.add_argument("--output-dir", type=Path, default=Path("/opt/airflow/audit/reports"))
     parser.add_argument("--trino-host", default=os.getenv("TRINO_HOST", "trino"))
     parser.add_argument("--trino-port", type=int, default=int(os.getenv("TRINO_PORT", "8080")))
@@ -1871,8 +1925,10 @@ def main() -> None:
         existing_silver_tables = {
             str(row[0]) for row in cursor.fetchall()
         }
+        cursor.execute("DESCRIBE delta.bronze.kafka_events")
+        bronze_columns = {str(row[0]).lower() for row in cursor.fetchall()}
         quality_sql, rejected_sql, rejection_reasons_sql, latency_sql = build_sql(
-            existing_silver_tables
+            existing_silver_tables, bronze_columns
         )
         cursor.execute(quality_sql)
         silver_quality = rows_as_dicts(cursor)
@@ -2043,9 +2099,34 @@ def main() -> None:
         silver_tables = {str(row[0]).lower() for row in cursor.fetchall()}
         silver_stage_metrics = {"available": False, "latest_runs": []}
         if "stage_run_audit" in silver_tables:
+            cursor.execute("DESCRIBE delta.silver.stage_run_audit")
+            silver_audit_columns = {str(row[0]).lower() for row in cursor.fetchall()}
+            event_duplicates_expr = (
+                "event_duplicate_records"
+                if "event_duplicate_records" in silver_audit_columns
+                else "CAST(NULL AS BIGINT)"
+            )
+            business_collapsed_expr = (
+                "business_key_rows_collapsed"
+                if "business_key_rows_collapsed" in silver_audit_columns
+                else "CAST(NULL AS BIGINT)"
+            )
+            metadata_valid_expr = (
+                "metadata_valid_events"
+                if "metadata_valid_events" in silver_audit_columns
+                else "CAST(NULL AS BIGINT)"
+            )
             cursor.execute(
-                """SELECT stage, kafka_topic, run_id, task_id, input_events,
-                    accepted_events, rejected_events, stage_started_at, stage_committed_at,
+                f"""SELECT stage, kafka_topic, run_id, task_id, input_events,
+                    accepted_events, rejected_events, {event_duplicates_expr}
+                        AS event_duplicate_records_removed,
+                    {business_collapsed_expr} AS business_key_rows_collapsed,
+                    {metadata_valid_expr} AS metadata_valid_events,
+                    round(100.0 * {metadata_valid_expr} / nullif(input_events, 0), 2)
+                        AS metadata_completeness_percent,
+                    round(100.0 * accepted_events / nullif(input_events, 0), 2)
+                        AS acceptance_percent,
+                    stage_started_at, stage_committed_at,
                     date_diff('millisecond', stage_started_at, stage_committed_at) / 1000.0
                         AS duration_seconds
                   FROM delta.silver.stage_run_audit
@@ -2093,6 +2174,9 @@ def main() -> None:
         default=None,
     )
     latest_dag = get_latest_dag_run()
+    stage_events = read_stage_events(
+        args.stage_metrics_file, (latest_dag or {}).get("run_id")
+    )
     collector_group = latest_collector_group(
         audit_records, (latest_dag or {}).get("run_id")
     )
@@ -2343,6 +2427,14 @@ def main() -> None:
     markdown_path = args.output_dir / "pipeline_metrics_latest.md"
     stage_csv_path = args.output_dir / "pipeline_stage_metrics_latest.csv"
     task_csv_path = args.output_dir / "pipeline_stage_tasks_latest.csv"
+    event_csv_path = args.output_dir / "pipeline_stage_events_latest.csv"
+    report["run_scoped_stage_events"] = {
+        "dag_run_id": (latest_dag or {}).get("run_id"),
+        "event_count": len(stage_events),
+        "events": stage_events,
+        "scope": "Detailed dbt model and forecasting events emitted immediately after each stage task.",
+        "note": "Existing ingestion, Kafka, Bronze, and Silver audits remain the stage-level source for those stages.",
+    }
     json_path.write_text(
         json.dumps(report, ensure_ascii=False, indent=2, default=_json_default),
         encoding="utf-8",
@@ -2374,6 +2466,17 @@ def main() -> None:
         writer = csv.DictWriter(task_file, fieldnames=task_columns, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(pipeline_stage_metrics.get("tasks", []))
+    event_columns = [
+        "event_time", "metric_type", "dag_run_id", "stage", "source", "status",
+        "model_name", "model_version", "model_role", "target_month", "duration_seconds",
+        "records_out", "training_rows", "pit_macro_training_origins",
+        "feature_coverage_percent", "forecast_mom_percent", "completed_folds",
+        "ineligible_folds", "runtime_failures", "interval_lower", "interval_upper",
+    ]
+    with event_csv_path.open("w", encoding="utf-8-sig", newline="") as event_file:
+        writer = csv.DictWriter(event_file, fieldnames=event_columns, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(stage_events)
     if push_stage_metrics is not None:
         for stage_row in pipeline_stage_metrics.get("stages", []):
             push_stage_metrics(
@@ -2401,6 +2504,7 @@ def main() -> None:
     print(f"Markdown report: {markdown_path}")
     print(f"Stage metrics CSV: {stage_csv_path}")
     print(f"Task metrics CSV: {task_csv_path}")
+    print(f"Per-stage model event CSV: {event_csv_path}")
     print(markdown_report(report))
 
 

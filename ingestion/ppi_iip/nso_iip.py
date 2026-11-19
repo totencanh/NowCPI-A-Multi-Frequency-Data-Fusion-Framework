@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 import sys
+import time
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -92,14 +93,44 @@ def parse_nso_iip(xml_text: str) -> list[dict[str, object]]:
 
 
 def fetch_nso_iip() -> list[dict[str, object]]:
-    response = requests.get(
-        NSDP_IIP_URL,
-        headers={"User-Agent": "NowCPI/1.0 (research; Vietnam IIP)"},
-        timeout=45,
-    )
-    response.raise_for_status()
-    response.encoding = response.apparent_encoding or "utf-8"
-    return parse_nso_iip(response.text)
+    max_attempts = 4
+    retryable_statuses = {429, 500, 502, 503, 504}
+    headers = {"User-Agent": "NowCPI/1.0 (research; Vietnam IIP)"}
+
+    for attempt in range(1, max_attempts + 1):
+        try:
+            response = requests.get(
+                NSDP_IIP_URL,
+                headers=headers,
+                # Short connection timeout makes DNS/network failures fail fast;
+                # the read timeout allows NSDP enough time to return its XML.
+                timeout=(10, 45),
+            )
+            if response.status_code in retryable_statuses and attempt < max_attempts:
+                delay = min(3 * (2 ** (attempt - 1)), 20)
+                print(
+                    f"NSDP IIP returned HTTP {response.status_code}; "
+                    f"retry {attempt + 1}/{max_attempts} in {delay}s",
+                    flush=True,
+                )
+                time.sleep(delay)
+                continue
+
+            response.raise_for_status()
+            response.encoding = response.apparent_encoding or "utf-8"
+            return parse_nso_iip(response.text)
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as exc:
+            if attempt >= max_attempts:
+                raise
+            delay = min(3 * (2 ** (attempt - 1)), 20)
+            print(
+                f"NSDP IIP network error on attempt {attempt}/{max_attempts}: "
+                f"{type(exc).__name__}: {exc}. Retrying in {delay}s",
+                flush=True,
+            )
+            time.sleep(delay)
+
+    raise RuntimeError("NSDP IIP fetch exhausted retries without a response")
 
 
 def build_events(records: list[dict[str, object]]) -> list[dict[str, object]]:
