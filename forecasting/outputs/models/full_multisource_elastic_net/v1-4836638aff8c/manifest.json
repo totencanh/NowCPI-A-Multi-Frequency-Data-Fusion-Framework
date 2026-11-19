@@ -1,8 +1,8 @@
 {
   "model_name": "full_multisource_elastic_net",
   "model_version": "v1-4836638aff8c",
-  "evaluation_run_id": "20261119T175304Z",
-  "generated_at_utc": "2026-11-19T17:53:04.922624+00:00",
+  "evaluation_run_id": "20261119T181503Z",
+  "generated_at_utc": "2026-11-19T18:15:04.356587+00:00",
   "source_code_sha256": "b47427106493e24b1e4a8b02bfca36c862a09c7ecf7792bdc8e46ab828e102e5",
   "role": "method_ablation",
   "model_family": "Full multi-source Elastic Net",
@@ -56,13 +56,13 @@
   "failures_file": "failures.csv",
   "operational_metrics": {
     "model": "full_multisource_elastic_net",
-    "fit_predict_seconds": 21.944570313998156,
+    "fit_predict_seconds": 21.703046414997516,
     "failed_folds": 0,
     "ineligible_folds": 0,
     "completed_folds": 131,
-    "max_fit_predict_seconds": 0.26161808899996686,
-    "max_rss_kb": 137968,
-    "script_wall_seconds": 72.826,
+    "max_fit_predict_seconds": 0.3228455179996672,
+    "max_rss_kb": 139152,
+    "script_wall_seconds": 70.926,
     "strict_vintage_available": false
   },
   "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",
