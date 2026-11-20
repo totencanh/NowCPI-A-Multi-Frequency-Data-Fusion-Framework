@@ -1,8 +1,8 @@
 {
   "model_name": "ar1_ols",
   "model_version": "v1-5707ab52b182",
-  "evaluation_run_id": "20261119T181503Z",
-  "generated_at_utc": "2026-11-19T18:15:03.878845+00:00",
+  "evaluation_run_id": "20261120T062711Z",
+  "generated_at_utc": "2026-11-20T06:27:11.633092+00:00",
   "source_code_sha256": "b47427106493e24b1e4a8b02bfca36c862a09c7ecf7792bdc8e46ab828e102e5",
   "role": "baseline",
   "model_family": "AR(1) OLS",
@@ -20,13 +20,13 @@
   "failures_file": "failures.csv",
   "operational_metrics": {
     "model": "ar1_ols",
-    "fit_predict_seconds": 0.28004996200525056,
+    "fit_predict_seconds": 0.25799391199882393,
     "failed_folds": 0,
     "ineligible_folds": 0,
     "completed_folds": 131,
-    "max_fit_predict_seconds": 0.011324830999910773,
-    "max_rss_kb": 139152,
-    "script_wall_seconds": 70.926,
+    "max_fit_predict_seconds": 0.004349017999970783,
+    "max_rss_kb": 141196,
+    "script_wall_seconds": 72.782,
     "strict_vintage_available": false
   },
   "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",

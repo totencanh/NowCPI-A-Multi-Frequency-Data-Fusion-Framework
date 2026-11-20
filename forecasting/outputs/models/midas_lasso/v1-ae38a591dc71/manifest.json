@@ -1,8 +1,8 @@
 {
   "model_name": "midas_lasso",
   "model_version": "v1-ae38a591dc71",
-  "evaluation_run_id": "20261119T181503Z",
-  "generated_at_utc": "2026-11-19T18:15:04.165603+00:00",
+  "evaluation_run_id": "20261120T062711Z",
+  "generated_at_utc": "2026-11-20T06:27:12.122765+00:00",
   "source_code_sha256": "b47427106493e24b1e4a8b02bfca36c862a09c7ecf7792bdc8e46ab828e102e5",
   "role": "method_ablation",
   "model_family": "Lasso",
@@ -35,13 +35,13 @@
   "failures_file": "failures.csv",
   "operational_metrics": {
     "model": "midas_lasso",
-    "fit_predict_seconds": 7.069786268993994,
+    "fit_predict_seconds": 6.90736290699931,
     "failed_folds": 0,
     "ineligible_folds": 1,
     "completed_folds": 130,
-    "max_fit_predict_seconds": 0.11402241299947491,
-    "max_rss_kb": 139152,
-    "script_wall_seconds": 70.926,
+    "max_fit_predict_seconds": 0.1385092909999912,
+    "max_rss_kb": 141196,
+    "script_wall_seconds": 72.782,
     "strict_vintage_available": false
   },
   "metrics_protocol": "paired rolling-origin comparisons; MAE primary, RMSE guardrail, MAPE excluding abs(actual)<0.05pp and sMAPE supplementary",

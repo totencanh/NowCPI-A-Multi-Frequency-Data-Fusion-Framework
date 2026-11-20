@@ -21,9 +21,14 @@ with countries as (
     select
         months.target_month,
         countries.country,
+        -- Use the same inclusive UTC end-of-day bound as the Python nowcast.
         least(
-            cast(current_timestamp as timestamp),
-            cast(date_add('day', -1, date_add('month', 1, months.target_month)) as timestamp)
+            cast(at_timezone(current_timestamp, 'UTC') as timestamp),
+            date_add(
+                'second',
+                -1,
+                cast(date_add('month', 1, months.target_month) as timestamp)
+            )
         ) as feature_cutoff_at
     from target_months as months
     cross join countries

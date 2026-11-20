@@ -75,7 +75,7 @@ NowCPI/
 4. Spark Silver processing validates schemas, handles timestamps and duplicate observations, and harmonizes units and frequencies while retaining source lineage.
 5. dbt builds staging views and Gold subject, reporting, and model tables through Trino.
 6. The primary full multi-source Ridge model reads point-in-time features from Gold through Trino; AR-MIDAS and other candidates are evaluated as comparison models. Forecasts and evaluation metrics are written under `forecasting/outputs/`.
-7. Airflow schedules daily collection, processing, Gold transformations, and nowcasting. Power BI can query Gold through Trino; Power BI is not a Compose service. News NLP remains outside the implemented pipeline.
+7. Airflow schedules daily collection, processing, Gold transformations, and nowcasting. Power BI Desktop can query Gold through Trino using the community Trino `.mez` connector; Power BI is not a Compose service. See [`analytics/powerbi/README.md`](analytics/powerbi/README.md) for setup, connection fields, and refresh steps. News NLP remains outside the implemented pipeline.
 
 The forecast target is always the month immediately after the latest actual CPI month. Historical source-release vintages are not fully archived, so historical metrics remain diagnostics rather than strict real-time evidence. See `forecasting/README.md` for model roles and output details. The separate
 `nowcpi_full_history_rebuild` DAG is manually triggered for intentional

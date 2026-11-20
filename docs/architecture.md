@@ -45,9 +45,13 @@ daily nowcasting workflow over a streaming architecture, not continuous
 real-time forecast generation. The current model freezes a data cutoff at run
 start and independently respects each source's recorded availability time.
 
-Power BI can connect to Trino and query the dashboard-ready Gold models. It is
-not currently deployed as a Compose service. Historical forecast metrics are
-pseudo-out-of-sample because archived publication-time vintages are unavailable.
+Power BI Desktop can connect to Trino and query the dashboard-ready Gold
+models using the community Trino Power BI custom connector (`.mez`). For local
+Trino OSS, this is the documented project path; the generic Starburst ODBC route
+may not be compatible. Power BI is not currently deployed as a Compose service.
+See `analytics/powerbi/README.md` for installation, connection parameters, and
+refresh instructions. Historical forecast metrics are pseudo-out-of-sample
+because archived publication-time vintages are unavailable.
 
 The latest verified full daily-pipeline run completed successfully on
 2026-10-17. CPI was available through 2026-07, so the model's one-step target
